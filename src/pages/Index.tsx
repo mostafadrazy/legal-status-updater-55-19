@@ -82,7 +82,7 @@ const Index = () => {
     <div className="min-h-screen bg-[#111] text-white">
       <Navbar />
       <Hero />
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 -mt-32 pb-20">
         <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
           <WhatWeDo />
           <Features />
