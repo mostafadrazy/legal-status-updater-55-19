@@ -30,7 +30,8 @@ const mockCases = [
 
 const Index = () => {
   return (
-    <div className="flex h-screen bg-[#111]">
+    <div className="flex h-screen bg-[#111] flex-row-reverse">
+      <Sidebar />
       <main className="flex-1 overflow-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
@@ -63,7 +64,6 @@ const Index = () => {
           </div>
         </div>
       </main>
-      <Sidebar />
     </div>
   );
 };
