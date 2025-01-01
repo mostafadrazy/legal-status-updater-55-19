@@ -1,6 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { FileText, Mic, StickyNote } from "lucide-react";
 
 interface CaseCardProps {
   title: string;
@@ -19,21 +21,46 @@ const statusColors = {
 export function CaseCard({ title, caseNumber, status, lastUpdated, description }: CaseCardProps) {
   return (
     <Card className="bg-[#222] border-gray-800 hover:bg-[#2a2a2a] transition-colors">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-medium text-gray-200">{title}</CardTitle>
-        <Badge className={cn("font-medium border", statusColors[status])}>
-          {status.charAt(0).toUpperCase() + status.slice(1)}
-        </Badge>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="text-sm font-medium text-gray-400">
-            Case #{caseNumber}
-          </div>
-          <p className="text-sm text-gray-300 line-clamp-2">{description}</p>
-          <div className="text-xs text-gray-500 flex items-center">
-            <span className="inline-block w-2 h-2 rounded-full bg-gray-600 mr-2" />
-            Last updated: {lastUpdated}
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-medium text-gray-200 truncate">{title}</h3>
+                <Badge className={cn("text-xs font-medium border", statusColors[status])}>
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </Badge>
+              </div>
+              <span className="text-xs text-gray-500">{lastUpdated}</span>
+            </div>
+            <p className="text-sm text-gray-400 mb-3 line-clamp-2">{description}</p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
+              >
+                <FileText className="w-4 h-4 mr-1" />
+                Transcript
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
+              >
+                <Mic className="w-4 h-4 mr-1" />
+                Record
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-green-500/10 hover:bg-green-500/20 text-green-400"
+              >
+                <StickyNote className="w-4 h-4 mr-1" />
+                Note
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

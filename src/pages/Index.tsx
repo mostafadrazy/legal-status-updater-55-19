@@ -9,21 +9,21 @@ const mockCases = [
     caseNumber: "2024-0123",
     status: "active" as const,
     lastUpdated: "2024-02-20",
-    description: "Corporate litigation regarding intellectual property rights.",
+    description: "Randy asked me to email you the updated documents. Please see attached and let us know if you have any questions regarding the intellectual property rights case.",
   },
   {
     title: "Estate of Williams",
     caseNumber: "2024-0124",
     status: "pending" as const,
     lastUpdated: "2024-02-19",
-    description: "Estate planning and will execution case.",
+    description: "Jane requested the latest updates on the estate planning documents. The will execution case requires immediate attention.",
   },
   {
     title: "Brown Family Trust",
     caseNumber: "2024-0125",
     status: "closed" as const,
     lastUpdated: "2024-02-18",
-    description: "Trust fund management and distribution resolution.",
+    description: "Final distribution resolution has been completed. All trust fund management documents have been processed and archived.",
   },
 ];
 
@@ -34,7 +34,7 @@ const Index = () => {
       <main className="flex-1 overflow-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+            <h1 className="text-2xl font-semibold text-white">Recent Cases</h1>
             <div className="relative w-72">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
               <Input
@@ -44,7 +44,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-3">
             {mockCases.map((caseItem, index) => (
               <div
                 key={caseItem.caseNumber}
