@@ -3,6 +3,9 @@ import { Sidebar } from "@/components/Sidebar";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import NewCaseForm from "@/components/NewCaseForm";
+import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const mockCases = [
   {
@@ -37,10 +40,17 @@ const Index = () => {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold text-white">القضايا الحديثة</h1>
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 ml-2" />
-                إنشاء قضية
-              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Plus className="w-4 h-4 ml-2" />
+                    إنشاء قضية
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-full sm:w-[540px] overflow-y-auto">
+                  <NewCaseForm />
+                </SheetContent>
+              </Sheet>
             </div>
             <div className="relative w-72">
               <Search className="absolute right-2 top-2.5 h-4 w-4 text-gray-400" />
