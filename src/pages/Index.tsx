@@ -1,11 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { FileText, Shield, Users, Briefcase, Scale, Lock } from "lucide-react";
+import { FileText, Shield, Users, Briefcase, Scale, Lock, Plus } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
 import NewCaseForm from "@/components/NewCaseForm";
+import { useState } from "react";
 
 // Mock data for cases
 const mockCases = [
