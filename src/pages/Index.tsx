@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
@@ -7,7 +7,7 @@ import Services from "@/components/landing/Services";
 import WhatWeDo from "@/components/landing/WhatWeDo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Scale, Plus, ArrowRight, ExternalLink, Users, Shield } from "lucide-react";
+import { Scale, Plus, ArrowRight } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
@@ -33,7 +33,7 @@ const mockCases = [
 const Index = () => {
   const { session } = useAuth();
   const navigate = useNavigate();
-  const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = React.useState(false);
+  const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
 
   if (session) {
     return (
@@ -82,9 +82,13 @@ const Index = () => {
     <div className="min-h-screen bg-[#111] text-white">
       <Navbar />
       <Hero />
-      <WhatWeDo />
-      <Features />
-      <Services />
+      <div className="container mx-auto px-4 py-20">
+        <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
+          <WhatWeDo />
+          <Features />
+          <Services />
+        </div>
+      </div>
     </div>
   );
 };
