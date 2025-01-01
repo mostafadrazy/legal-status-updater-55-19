@@ -1,7 +1,8 @@
 import { CaseCard } from "@/components/CaseCard";
 import { Sidebar } from "@/components/Sidebar";
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const mockCases = [
   {
@@ -34,7 +35,13 @@ const Index = () => {
       <main className="flex-1 overflow-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-semibold text-white">Recent Cases</h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-semibold text-white">Recent Cases</h1>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Create Case
+              </Button>
+            </div>
             <div className="relative w-72">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
               <Input

@@ -42,7 +42,7 @@ export function CaseCard({ title, caseNumber, status, lastUpdated, description }
                 className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
               >
                 <FileText className="w-4 h-4 mr-1" />
-                Transcript
+                Files
               </Button>
               <Button
                 variant="secondary"
