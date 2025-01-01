@@ -13,7 +13,7 @@ const menuItems = [
 
 export function Sidebar() {
   return (
-    <div className="w-64 bg-[#222] border-r border-gray-800 p-4 flex flex-col">
+    <aside className="w-64 bg-[#222] border-l border-gray-800 p-4 flex flex-col">
       <div className="flex items-center gap-2 px-2 py-4">
         <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
           <span className="text-black font-bold">ح</span>
@@ -44,6 +44,6 @@ export function Sidebar() {
           <span className="text-xs text-gray-400">محامي</span>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
