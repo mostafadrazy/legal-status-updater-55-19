@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Scale } from "lucide-react";
+import { Scale, Plus } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
