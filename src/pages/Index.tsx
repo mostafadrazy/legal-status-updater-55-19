@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Auth } from "@/components/Auth";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ArrowRight, Plus, Scale, Shield, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FileText, Shield, Users, Briefcase, Scale, Lock } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
@@ -30,6 +27,7 @@ const mockCases = [
 
 const Index = () => {
   const { session } = useAuth();
+  const navigate = useNavigate();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
 
   if (session) {
@@ -75,56 +73,99 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-legal-900 to-legal-800 text-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16 animate-fade-in">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            نظام إدارة القضايا القانونية
-          </h1>
-          <p className="text-xl md:text-2xl text-legal-200 mb-8 max-w-3xl mx-auto">
-            منصة متكاملة لإدارة القضايا القانونية بكفاءة وفعالية، مصممة خصيصاً للمحامين والمكاتب القانونية
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 transform hover:scale-105 transition-all">
-              ابدأ الآن مجاناً
-              <ArrowRight className="mr-2" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 transform hover:scale-105 transition-all">
-              تعرف على المزيد
+    <div className="min-h-screen bg-gradient-to-b from-legal-900 to-legal-800">
+      {/* Navigation */}
+      <nav className="container mx-auto px-4 py-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Scale className="w-8 h-8 text-blue-500" />
+            <span className="text-2xl font-bold text-white">نظام إدارة القضايا</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-blue-400"
+              onClick={() => navigate("/auth/login")}
+            >
+              تسجيل الدخول
             </Button>
           </div>
         </div>
+      </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <Card className="p-6 bg-legal-800/50 border-legal-700 transform hover:scale-105 transition-all animate-fade-in hover:border-blue-500/50">
-            <div className="flex flex-col items-center text-center">
-              <Scale className="w-12 h-12 mb-4 text-blue-500" />
-              <h3 className="text-xl font-semibold mb-2">إدارة القضايا بسهولة</h3>
-              <p className="text-legal-300">تتبع وإدارة جميع القضايا القانونية في مكان واحد</p>
-            </div>
-          </Card>
-          <Card className="p-6 bg-legal-800/50 border-legal-700 transform hover:scale-105 transition-all animate-fade-in hover:border-blue-500/50" style={{ animationDelay: "150ms" }}>
-            <div className="flex flex-col items-center text-center">
-              <Users className="w-12 h-12 mb-4 text-blue-500" />
-              <h3 className="text-xl font-semibold mb-2">تعاون الفريق</h3>
-              <p className="text-legal-300">العمل بكفاءة مع الزملاء والعملاء</p>
-            </div>
-          </Card>
-          <Card className="p-6 bg-legal-800/50 border-legal-700 transform hover:scale-105 transition-all animate-fade-in hover:border-blue-500/50" style={{ animationDelay: "300ms" }}>
-            <div className="flex flex-col items-center text-center">
-              <Shield className="w-12 h-12 mb-4 text-blue-500" />
-              <h3 className="text-xl font-semibold mb-2">أمان وخصوصية</h3>
-              <p className="text-legal-300">حماية البيانات والمعلومات الحساسة</p>
-            </div>
-          </Card>
-        </div>
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-20 text-center">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white animate-fade-in">
+          أفضل نظام لإدارة
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+            القضايا القانونية
+          </span>
+        </h1>
+        <p className="text-xl text-legal-200 mb-12 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: "150ms" }}>
+          منصة متكاملة لإدارة القضايا القانونية بكفاءة وفعالية، مصممة خصيصاً للمحامين والمكاتب القانونية
+        </p>
+        <Button 
+          size="lg" 
+          className="bg-blue-600 hover:bg-blue-700 animate-fade-in"
+          style={{ animationDelay: "300ms" }}
+          onClick={() => navigate("/auth/login")}
+        >
+          ابدأ الآن مجاناً
+        </Button>
+      </section>
 
-        <div className="max-w-md mx-auto glass-card p-8 rounded-lg animate-fade-in" style={{ animationDelay: "450ms" }}>
-          <Auth />
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-3xl font-bold text-center mb-12 text-white">خدماتنا القانونية</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <div
+              key={feature.title}
+              className="p-6 rounded-lg bg-legal-800/50 border border-legal-700 hover:border-blue-500/50 transition-all duration-300 animate-fade-in"
+              style={{ animationDelay: `${index * 150}ms` }}
+            >
+              <feature.icon className="w-12 h-12 text-blue-500 mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+              <p className="text-legal-300">{feature.description}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
+
+const features = [
+  {
+    title: "إدارة القضايا",
+    description: "تتبع وإدارة جميع القضايا القانونية في مكان واحد",
+    icon: FileText
+  },
+  {
+    title: "إدارة العملاء",
+    description: "إدارة معلومات وملفات العملاء بشكل فعال",
+    icon: Users
+  },
+  {
+    title: "إدارة المستندات",
+    description: "تنظيم وتخزين المستندات القانونية بأمان",
+    icon: Briefcase
+  },
+  {
+    title: "الأمن والخصوصية",
+    description: "حماية البيانات والمعلومات الحساسة",
+    icon: Shield
+  },
+  {
+    title: "التقارير والإحصائيات",
+    description: "تحليل وتتبع أداء القضايا والمكتب",
+    icon: Scale
+  },
+  {
+    title: "صلاحيات الوصول",
+    description: "إدارة صلاحيات الوصول للمستخدمين",
+    icon: Lock
+  }
+];
 
 export default Index;
