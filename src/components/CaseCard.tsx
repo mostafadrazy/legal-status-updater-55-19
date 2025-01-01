@@ -18,6 +18,12 @@ const statusColors = {
   closed: "bg-gray-500/20 text-gray-400 border-gray-500/30",
 };
 
+const statusLabels = {
+  active: "نشط",
+  pending: "معلق",
+  closed: "مغلق",
+};
+
 export function CaseCard({ title, caseNumber, status, lastUpdated, description }: CaseCardProps) {
   return (
     <Card className="bg-[#222] border-gray-800 hover:bg-[#2a2a2a] transition-colors">
@@ -29,7 +35,7 @@ export function CaseCard({ title, caseNumber, status, lastUpdated, description }
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-medium text-gray-200 truncate">{title}</h3>
                 <Badge className={cn("text-xs font-medium border", statusColors[status])}>
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                  {statusLabels[status]}
                 </Badge>
               </div>
               <span className="text-xs text-gray-500">{lastUpdated}</span>
@@ -41,24 +47,24 @@ export function CaseCard({ title, caseNumber, status, lastUpdated, description }
                 size="sm"
                 className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
               >
-                <FileText className="w-4 h-4 mr-1" />
-                Files
+                <FileText className="w-4 h-4 ml-1" />
+                الملفات
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
               >
-                <Mic className="w-4 h-4 mr-1" />
-                Record
+                <Mic className="w-4 h-4 ml-1" />
+                تسجيل
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 className="bg-green-500/10 hover:bg-green-500/20 text-green-400"
               >
-                <StickyNote className="w-4 h-4 mr-1" />
-                Note
+                <StickyNote className="w-4 h-4 ml-1" />
+                ملاحظة
               </Button>
             </div>
           </div>

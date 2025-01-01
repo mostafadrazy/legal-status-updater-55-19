@@ -2,23 +2,23 @@ import { Home, MessageSquare, Phone, ClipboardList, Users, BarChart2, Settings }
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { icon: Home, label: "Dashboard", active: true },
-  { icon: MessageSquare, label: "Messages" },
-  { icon: Phone, label: "Calls" },
-  { icon: ClipboardList, label: "Tasks" },
-  { icon: Users, label: "Contacts" },
-  { icon: BarChart2, label: "Reports" },
-  { icon: Settings, label: "Settings" },
+  { icon: Home, label: "الرئيسية", active: true },
+  { icon: MessageSquare, label: "الرسائل" },
+  { icon: Phone, label: "المكالمات" },
+  { icon: ClipboardList, label: "المهام" },
+  { icon: Users, label: "جهات الاتصال" },
+  { icon: BarChart2, label: "التقارير" },
+  { icon: Settings, label: "الإعدادات" },
 ];
 
 export function Sidebar() {
   return (
-    <div className="w-64 bg-[#222] border-r border-gray-800 p-4 flex flex-col">
+    <div className="w-64 bg-[#222] border-l border-gray-800 p-4 flex flex-col">
       <div className="flex items-center gap-2 px-2 py-4">
         <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
-          <span className="text-black font-bold">H</span>
+          <span className="text-black font-bold">ح</span>
         </div>
-        <span className="text-white font-semibold">Halal Law</span>
+        <span className="text-white font-semibold">مكتب المحاماة</span>
       </div>
       
       <nav className="mt-8 flex-1">
@@ -40,8 +40,8 @@ export function Sidebar() {
       <div className="mt-auto flex items-center gap-3 px-3 py-3">
         <div className="w-8 h-8 rounded-full bg-gray-700" />
         <div className="flex flex-col">
-          <span className="text-sm text-white">John Doe</span>
-          <span className="text-xs text-gray-400">Attorney</span>
+          <span className="text-sm text-white">أحمد محمد</span>
+          <span className="text-xs text-gray-400">محامي</span>
         </div>
       </div>
     </div>

@@ -6,47 +6,46 @@ import { Button } from "@/components/ui/button";
 
 const mockCases = [
   {
-    title: "Smith vs. Johnson Corp",
+    title: "قضية سميث ضد شركة جونسون",
     caseNumber: "2024-0123",
     status: "active" as const,
     lastUpdated: "2024-02-20",
-    description: "Randy asked me to email you the updated documents. Please see attached and let us know if you have any questions regarding the intellectual property rights case.",
+    description: "طلب راندي مني إرسال المستندات المحدثة بالبريد الإلكتروني. يرجى الاطلاع على المرفقات وإخبارنا إذا كان لديك أي أسئلة بخصوص قضية حقوق الملكية الفكرية.",
   },
   {
-    title: "Estate of Williams",
+    title: "تركة وليامز",
     caseNumber: "2024-0124",
     status: "pending" as const,
     lastUpdated: "2024-02-19",
-    description: "Jane requested the latest updates on the estate planning documents. The will execution case requires immediate attention.",
+    description: "طلبت جين آخر التحديثات على وثائق تخطيط العقارات. تتطلب قضية تنفيذ الوصية اهتماماً فورياً.",
   },
   {
-    title: "Brown Family Trust",
+    title: "صندوق عائلة براون",
     caseNumber: "2024-0125",
     status: "closed" as const,
     lastUpdated: "2024-02-18",
-    description: "Final distribution resolution has been completed. All trust fund management documents have been processed and archived.",
+    description: "تم الانتهاء من قرار التوزيع النهائي. تمت معالجة جميع وثائق إدارة الصندوق الائتماني وأرشفتها.",
   },
 ];
 
 const Index = () => {
   return (
     <div className="flex h-screen bg-[#111]">
-      <Sidebar />
       <main className="flex-1 overflow-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold text-white">Recent Cases</h1>
+              <h1 className="text-2xl font-semibold text-white">القضايا الحديثة</h1>
               <Button className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Case
+                <Plus className="w-4 h-4 ml-2" />
+                إنشاء قضية
               </Button>
             </div>
             <div className="relative w-72">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <Search className="absolute right-2 top-2.5 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search cases..."
-                className="pl-8 bg-[#222] border-gray-700 text-gray-200 placeholder:text-gray-500"
+                placeholder="البحث في القضايا..."
+                className="pr-8 bg-[#222] border-gray-700 text-gray-200 placeholder:text-gray-500"
               />
             </div>
           </div>
@@ -64,6 +63,7 @@ const Index = () => {
           </div>
         </div>
       </main>
+      <Sidebar />
     </div>
   );
 };
