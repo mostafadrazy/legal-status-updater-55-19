@@ -1,13 +1,8 @@
-import { Home, MessageSquare, Phone, ClipboardList, Users, BarChart2, Settings } from "lucide-react";
+import { Home, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "الرئيسية", active: true },
-  { icon: MessageSquare, label: "الرسائل" },
-  { icon: Phone, label: "المكالمات" },
-  { icon: ClipboardList, label: "المهام" },
-  { icon: Users, label: "جهات الاتصال" },
-  { icon: BarChart2, label: "التقارير" },
   { icon: Settings, label: "الإعدادات" },
 ];
 
