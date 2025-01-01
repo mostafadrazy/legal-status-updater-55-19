@@ -56,7 +56,6 @@ export function CaseCard({ title, caseNumber, status, lastUpdated, description }
                 className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
               >
                 <Mic className="w-4 h-4 ml-1" />
-                تسجيل
               </Button>
               <Button
                 variant="secondary"
