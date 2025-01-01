@@ -1,8 +1,9 @@
-import { Home, Settings } from "lucide-react";
+import { Home, Settings, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "الرئيسية", active: true },
+  { icon: Folder, label: "القضايا" },
   { icon: Settings, label: "الإعدادات" },
 ];
 
