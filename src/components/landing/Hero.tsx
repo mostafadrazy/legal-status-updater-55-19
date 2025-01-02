@@ -18,13 +18,13 @@ const Hero = () => {
               <Scale className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight animate-fade-in text-white drop-shadow-lg">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-relaxed mb-6 animate-fade-in text-white drop-shadow-lg">
             نظام متكامل
-            <span className="block bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent drop-shadow-lg">
+            <span className="block mt-2 bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent drop-shadow-lg leading-relaxed">
               لإدارة القضايا القانونية
             </span>
           </h1>
-          <p className="text-xl text-white max-w-2xl mx-auto animate-fade-in drop-shadow">
+          <p className="text-xl text-white max-w-2xl mx-auto animate-fade-in drop-shadow leading-relaxed mb-8">
             منصة احترافية تساعد المحامين على إدارة القضايا وتنظيم الملفات ومتابعة المواعيد مع توفير بوابة آمنة للعملاء
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
