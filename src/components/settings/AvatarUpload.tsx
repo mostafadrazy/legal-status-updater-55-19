@@ -63,10 +63,12 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
         .getPublicUrl(`${userId}`);
 
       // Update the avatar_url in the profiles table
-      await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: data.publicUrl })
         .eq('id', userId);
+
+      if (updateError) throw updateError;
 
       setAvatarUrl(data.publicUrl);
 
