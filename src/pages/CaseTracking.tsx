@@ -24,16 +24,20 @@ export default function CaseTracking() {
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
 
   const { data: cases, isLoading } = useQuery({
-    queryKey: ["cases"],
+    queryKey: ["cases", session?.user?.id],
     queryFn: async () => {
+      if (!session?.user?.id) return [];
+      
       const { data, error } = await supabase
         .from("cases")
         .select("*")
+        .eq('user_id', session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data as Case[];
     },
+    enabled: !!session?.user?.id,
   });
 
   if (!session) {
@@ -81,11 +85,10 @@ export default function CaseTracking() {
             ) : cases?.length === 0 ? (
               <div className="text-white/80">لا توجد قضايا</div>
             ) : (
-              cases?.map((caseItem, index) => (
+              cases?.map((caseItem) => (
                 <div
                   key={caseItem.id}
                   className="transform hover:-translate-y-1 transition-all duration-300"
-                  style={{ animationDelay: `${index * 150}ms` }}
                 >
                   <CaseCard
                     caseNumber={caseItem.case_number}

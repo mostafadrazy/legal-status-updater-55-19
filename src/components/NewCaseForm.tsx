@@ -8,8 +8,11 @@ import { ClientInfoFields } from "./case-form/ClientInfoFields";
 import { CaseDetailsFields } from "./case-form/CaseDetailsFields";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DocumentUploadFields } from "./case-form/DocumentUploadFields";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = ["application/pdf", "image/jpeg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
 const formSchema = z.object({
@@ -17,7 +20,7 @@ const formSchema = z.object({
   clientPhone: z.string().min(8, { message: "رقم الهاتف غير صالح" }),
   clientEmail: z.string().email({ message: "البريد الإلكتروني غير صالح" }),
   clientAddress: z.string().optional(),
-  caseNumber: z.string().optional(),
+  caseNumber: z.string().min(1, { message: "رقم القضية مطلوب" }),
   court: z.string().min(1, { message: "المحكمة مطلوبة" }),
   caseType: z.string().min(1, { message: "نوع القضية مطلوب" }),
   opposingParty: z.string().min(2, { message: "اسم الطرف المقابل مطلوب" }),
@@ -43,6 +46,9 @@ interface NewCaseFormProps {
 }
 
 const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,11 +67,32 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("New Case Created:", values);
-    toast.success("تم إنشاء القضية بنجاح");
-    onOpenChange(false);
-    form.reset();
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      if (!session?.user) {
+        toast.error("يجب تسجيل الدخول لإنشاء قضية");
+        return;
+      }
+
+      const { error } = await supabase.from('cases').insert({
+        title: values.opposingParty, // Using opposing party as the title
+        case_number: values.caseNumber,
+        client: values.clientName,
+        next_hearing: values.hearingDate || null,
+        user_id: session.user.id,
+        status: 'جاري'
+      });
+
+      if (error) throw error;
+
+      toast.success("تم إنشاء القضية بنجاح");
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      console.error('Error creating case:', error);
+      toast.error("حدث خطأ أثناء إنشاء القضية");
+    }
   };
 
   return (
