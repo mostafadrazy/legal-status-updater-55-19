@@ -88,10 +88,18 @@ export type Database = {
       cases: {
         Row: {
           case_number: string
+          case_type: string | null
           client: string
+          client_address: string | null
+          client_email: string | null
+          client_phone: string | null
+          court: string | null
           created_at: string
+          filing_date: string | null
           id: string
           next_hearing: string | null
+          opposing_lawyer: string | null
+          opposing_party: string | null
           status: string
           title: string
           updated_at: string
@@ -99,10 +107,18 @@ export type Database = {
         }
         Insert: {
           case_number: string
+          case_type?: string | null
           client: string
+          client_address?: string | null
+          client_email?: string | null
+          client_phone?: string | null
+          court?: string | null
           created_at?: string
+          filing_date?: string | null
           id?: string
           next_hearing?: string | null
+          opposing_lawyer?: string | null
+          opposing_party?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -110,10 +126,18 @@ export type Database = {
         }
         Update: {
           case_number?: string
+          case_type?: string | null
           client?: string
+          client_address?: string | null
+          client_email?: string | null
+          client_phone?: string | null
+          court?: string | null
           created_at?: string
+          filing_date?: string | null
           id?: string
           next_hearing?: string | null
+          opposing_lawyer?: string | null
+          opposing_party?: string | null
           status?: string
           title?: string
           updated_at?: string
