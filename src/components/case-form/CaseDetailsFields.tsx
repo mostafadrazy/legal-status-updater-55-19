@@ -20,6 +20,9 @@ type CaseDetailsFieldsProps = {
 };
 
 export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
+  // Add logging for form values
+  console.log('Current form values:', form.getValues());
+  
   return (
     <>
       <FormField
@@ -129,19 +132,26 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
       <FormField
         control={form.control}
         name="additionalInfo"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>معلومات إضافية</FormLabel>
-            <FormControl>
-              <Textarea 
-                placeholder="أدخل أي معلومات إضافية عن القضية..."
-                className="h-32"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={({ field }) => {
+          console.log('Additional Info field value:', field.value);
+          return (
+            <FormItem>
+              <FormLabel>معلومات إضافية</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="أدخل أي معلومات إضافية عن القضية..."
+                  className="h-32"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    console.log('Additional Info changed to:', e.target.value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
     </>
   );
