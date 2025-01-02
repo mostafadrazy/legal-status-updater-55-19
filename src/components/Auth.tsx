@@ -74,20 +74,30 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
           },
         }}
         view={view}
-        additionalData={{
-          full_name: {
+        options={{
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: undefined,
+            phone_number: undefined,
+          },
+        }}
+        showLinks={false}
+        additionalData={[
+          {
+            key: 'full_name',
             label: "الاسم الكامل",
             type: "text",
             placeholder: "أدخل اسمك الكامل",
             required: true,
           },
-          phone_number: {
+          {
+            key: 'phone_number',
             label: "رقم الهاتف",
             type: "tel",
             placeholder: "أدخل رقم هاتفك",
             required: true,
           },
-        }}
+        ]}
       />
     </div>
   );
