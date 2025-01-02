@@ -54,31 +54,43 @@ export function EditCaseForm({ caseData, onClose }: EditCaseFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const { error } = await supabase
-      .from('cases')
-      .update({
-        title: values.title,
-        case_number: values.caseNumber,
-        status: values.status,
-        next_hearing: values.nextHearing,
-        client: values.client,
-        client_phone: values.clientPhone,
-        client_email: values.clientEmail,
-        client_address: values.clientAddress,
-        court: values.court,
-        case_type: values.caseType,
-        opposing_party: values.opposingParty,
-        opposing_lawyer: values.opposingLawyer,
-        filing_date: values.filingDate,
-      })
-      .eq('id', caseData.id);
+    // Create an object to store only the changed fields
+    const changedFields: Record<string, any> = {};
 
-    if (error) {
-      toast({ title: "Error", description: "Failed to update case", variant: "destructive" });
+    // Compare each field with the original data
+    if (values.title !== caseData.title) changedFields.title = values.title;
+    if (values.caseNumber !== caseData.case_number) changedFields.case_number = values.caseNumber;
+    if (values.status !== caseData.status) changedFields.status = values.status;
+    if (values.nextHearing !== caseData.next_hearing) changedFields.next_hearing = values.nextHearing;
+    if (values.client !== caseData.client) changedFields.client = values.client;
+    if (values.clientPhone !== caseData.client_phone) changedFields.client_phone = values.clientPhone;
+    if (values.clientEmail !== caseData.client_email) changedFields.client_email = values.clientEmail;
+    if (values.clientAddress !== caseData.client_address) changedFields.client_address = values.clientAddress;
+    if (values.court !== caseData.court) changedFields.court = values.court;
+    if (values.caseType !== caseData.case_type) changedFields.case_type = values.caseType;
+    if (values.opposingParty !== caseData.opposing_party) changedFields.opposing_party = values.opposingParty;
+    if (values.opposingLawyer !== caseData.opposing_lawyer) changedFields.opposing_lawyer = values.opposingLawyer;
+    if (values.filingDate !== caseData.filing_date) changedFields.filing_date = values.filingDate;
+
+    // If no fields have changed, show a message and return
+    if (Object.keys(changedFields).length === 0) {
+      toast({ title: "لم يتم إجراء أي تغييرات", description: "لم يتم تحديث أي حقول" });
+      onClose();
       return;
     }
 
-    toast({ title: "Success", description: "Case updated successfully" });
+    // Only update the changed fields
+    const { error } = await supabase
+      .from('cases')
+      .update(changedFields)
+      .eq('id', caseData.id);
+
+    if (error) {
+      toast({ title: "خطأ", description: "فشل تحديث القضية", variant: "destructive" });
+      return;
+    }
+
+    toast({ title: "نجاح", description: "تم تحديث القضية بنجاح" });
     queryClient.invalidateQueries({ queryKey: ['cases'] });
     onClose();
   };
