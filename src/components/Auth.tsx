@@ -2,38 +2,31 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { ProfileCompletionForm } from "./auth/ProfileCompletionForm";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
 }
 
-interface ProfileFormData {
-  full_name: string;
-  phone_number: string;
-}
-
 export const Auth = ({ view = "sign_in" }: AuthProps) => {
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
-  const { toast } = useToast();
-  const { register, handleSubmit } = useForm<ProfileFormData>();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event);
+      
       if (event === 'SIGNED_IN') {
         if (view === 'sign_up') {
-          console.log('Showing profile completion form');
           setShowProfileCompletion(true);
         } else {
-          console.log('Redirecting to dashboard');
           navigate('/');
         }
+      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+        navigate('/auth/login');
       }
     });
 
@@ -42,89 +35,8 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
     };
   }, [view, navigate]);
 
-  const onProfileSubmit = async (data: ProfileFormData) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "خطأ",
-          description: "يجب تسجيل الدخول أولاً",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      console.log('Updating profile for user:', user.id);
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          full_name: data.full_name,
-          phone_number: data.phone_number,
-          updated_at: new Date().toISOString(),
-        });
-
-      if (error) {
-        console.error('Profile update error:', error);
-        throw error;
-      }
-
-      console.log('Profile updated successfully');
-      toast({
-        title: "تم بنجاح",
-        description: "تم حفظ معلومات الملف الشخصي",
-      });
-      
-      setShowProfileCompletion(false);
-      navigate('/');
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast({
-        title: "خطأ",
-        description: "حدث خطأ أثناء حفظ المعلومات",
-        variant: "destructive",
-      });
-    }
-  };
-
   if (showProfileCompletion) {
-    return (
-      <div className="w-full max-w-md mx-auto">
-        <h2 className="text-2xl font-bold text-white mb-6 text-center">
-          أكمل معلومات ملفك الشخصي
-        </h2>
-        <form onSubmit={handleSubmit(onProfileSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              الاسم الكامل
-            </label>
-            <Input
-              {...register("full_name", { required: true })}
-              className="w-full bg-transparent border-white/20 text-white"
-              placeholder="أدخل اسمك الكامل"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              رقم الهاتف
-            </label>
-            <Input
-              {...register("phone_number", { required: true })}
-              type="tel"
-              className="w-full bg-transparent border-white/20 text-white"
-              placeholder="أدخل رقم هاتفك"
-            />
-          </div>
-          <Button
-            type="submit"
-            className="w-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black"
-          >
-            حفظ المعلومات
-          </Button>
-        </form>
-      </div>
-    );
+    return <ProfileCompletionForm />;
   }
 
   return (
@@ -172,6 +84,14 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         providers={["google", "github"]}
         redirectTo={`${window.location.origin}/auth/callback`}
+        onError={(error) => {
+          console.error('Auth error:', error);
+          toast({
+            title: "خطأ في تسجيل الدخول",
+            description: "يرجى التحقق من بيانات الدخول والمحاولة مرة أخرى",
+            variant: "destructive",
+          });
+        }}
         localization={{
           variables: {
             sign_in: {
