@@ -64,7 +64,7 @@ export default function Settings() {
         <div className="p-8 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
-            <h1 className="text-3xl font-bold text-gray-900">الإعدادات</h1>
+            <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
           </div>
 
           <div className="glass-card p-6 rounded-xl space-y-8">
