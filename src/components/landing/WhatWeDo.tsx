@@ -43,11 +43,11 @@ const WhatWeDo = () => {
           </Button>
         </div>
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/20 to-transparent opacity-30 rounded-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/20 to-transparent opacity-30 rounded-lg" />
           <img 
             src="/lovable-uploads/91fe343d-4b53-4607-89d9-af0070a4f130.png" 
             alt="Professional Legal Team" 
-            className="w-full h-auto rounded-3xl shadow-2xl"
+            className="w-full h-auto rounded-lg shadow-2xl"
           />
         </div>
       </div>
