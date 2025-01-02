@@ -25,11 +25,11 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-20 relative overflow-hidden bg-gray-900">
+    <section className="py-20 relative overflow-hidden bg-[#111]">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#4CD6B4]/5" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">خدماتنا المتميزة</h2>
+          <h2 className="text-3xl font-bold mb-4 text-white">خدماتنا المتميزة</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -38,13 +38,15 @@ const Services = () => {
             return (
               <div
                 key={index}
-                className="p-8 rounded-xl bg-gray-800/80 backdrop-blur-sm border border-gray-700 hover:border-[#4CD6B4]/50 transition-all duration-300 flex flex-col justify-between"
+                className="p-8 rounded-xl glass-card border border-legal-200/10 hover:border-legal-200/20 transition-all duration-300 flex flex-col justify-between"
                 style={{ minHeight: '400px' }}
               >
                 <div>
-                  <Icon className="w-12 h-12 text-[#4CD6B4] mb-6" />
-                  <h3 className="text-2xl font-bold mb-4 text-white">{service.title}</h3>
-                  <p className="text-gray-300 mb-8 leading-relaxed">{service.description}</p>
+                  <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-3 rounded-lg w-fit mb-6">
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-legal-800 dark:text-legal-200">{service.title}</h3>
+                  <p className="text-gray-400 mb-8 leading-relaxed">{service.description}</p>
                 </div>
                 <Button 
                   variant="outline"
