@@ -26,7 +26,6 @@ const Services = () => {
 
   return (
     <section className="py-20 relative overflow-hidden bg-[#111]">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#4CD6B4]/5" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 text-white">خدماتنا المتميزة</h2>
