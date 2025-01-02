@@ -65,7 +65,23 @@ export const Auth = () => {
               loading_button_label: "جاري إنشاء الحساب...",
               social_provider_text: "إنشاء حساب باستخدام {{provider}}",
               link_text: "ليس لديك حساب؟ قم بإنشاء حساب جديد",
+              confirmation_text: "تم إرسال رابط التأكيد إلى بريدك الإلكتروني",
             },
+          },
+        }}
+        view="sign_up"
+        additionalData={{
+          full_name: {
+            label: "الاسم الكامل",
+            type: "text",
+            placeholder: "أدخل اسمك الكامل",
+            required: true,
+          },
+          phone_number: {
+            label: "رقم الهاتف",
+            type: "tel",
+            placeholder: "أدخل رقم هاتفك",
+            required: true,
           },
         }}
       />
