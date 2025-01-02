@@ -1,32 +1,24 @@
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-
 interface StatusBadgeProps {
-  status: "active" | "pending" | "closed";
-  className?: string;
+  status: string;
 }
 
-const statusConfig = {
-  active: {
-    color: "bg-green-100 text-green-800 hover:bg-green-200",
-    label: "Active",
-  },
-  pending: {
-    color: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    label: "Pending",
-  },
-  closed: {
-    color: "bg-gray-100 text-gray-800 hover:bg-gray-200",
-    label: "Closed",
-  },
-};
+export function StatusBadge({ status }: StatusBadgeProps) {
+  const getStatusStyles = () => {
+    switch (status) {
+      case "جاري":
+        return "bg-green-500/20 text-green-500 border-green-500/30";
+      case "معلق":
+        return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30";
+      case "مغلق":
+        return "bg-red-500/20 text-red-500 border-red-500/30";
+      default:
+        return "bg-gray-500/20 text-gray-500 border-gray-500/30";
+    }
+  };
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const config = statusConfig[status];
-  
   return (
-    <Badge className={cn(config.color, className)}>
-      {config.label}
-    </Badge>
+    <span className={`px-3 py-1 rounded-full text-sm border ${getStatusStyles()}`}>
+      {status}
+    </span>
   );
 }

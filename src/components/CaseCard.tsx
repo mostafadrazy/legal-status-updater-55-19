@@ -1,74 +1,40 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { FileText, Mic, StickyNote } from "lucide-react";
+import { Calendar, User, Scale } from "lucide-react";
+import { StatusBadge } from "./StatusBadge";
 
 interface CaseCardProps {
-  title: string;
   caseNumber: string;
-  status: "active" | "pending" | "closed";
-  lastUpdated: string;
-  description: string;
+  title: string;
+  status: string;
+  nextHearing: string;
+  client: string;
 }
 
-const statusColors = {
-  active: "bg-green-500/20 text-green-400 border-green-500/30",
-  pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  closed: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-};
-
-const statusLabels = {
-  active: "نشط",
-  pending: "معلق",
-  closed: "مغلق",
-};
-
-export function CaseCard({ title, caseNumber, status, lastUpdated, description }: CaseCardProps) {
+export function CaseCard({ caseNumber, title, status, nextHearing, client }: CaseCardProps) {
   return (
-    <Card className="bg-[#222] border-gray-800 hover:bg-[#2a2a2a] transition-colors">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2 mb-1">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-medium text-gray-200 truncate">{title}</h3>
-                <Badge className={cn("text-xs font-medium border", statusColors[status])}>
-                  {statusLabels[status]}
-                </Badge>
-              </div>
-              <span className="text-xs text-gray-500">{lastUpdated}</span>
-            </div>
-            <p className="text-sm text-gray-400 mb-3 line-clamp-2">{description}</p>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
-              >
-                <FileText className="w-4 h-4 ml-1" />
-                الملفات
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
-              >
-                <Mic className="w-4 h-4 ml-1" />
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-green-500/10 hover:bg-green-500/20 text-green-400"
-              >
-                <StickyNote className="w-4 h-4 ml-1" />
-                ملاحظة
-              </Button>
-            </div>
-          </div>
+    <div className="glass-card p-6 rounded-xl border border-legal-200/10 hover:border-legal-200/20 transition-all duration-300 animate-fade-in">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
+          <p className="text-gray-400 text-sm">رقم القضية: {caseNumber}</p>
         </div>
-      </CardContent>
-    </Card>
+        <StatusBadge status={status} />
+      </div>
+      
+      <div className="space-y-3">
+        <div className="flex items-center gap-3 text-gray-300">
+          <Calendar className="w-4 h-4 text-[#4CD6B4]" />
+          <span className="text-sm">الجلسة القادمة: {nextHearing}</span>
+        </div>
+        <div className="flex items-center gap-3 text-gray-300">
+          <User className="w-4 h-4 text-[#4CD6B4]" />
+          <span className="text-sm">العميل: {client}</span>
+        </div>
+      </div>
+      
+      <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-white transition-all duration-300">
+        <Scale className="w-4 h-4" />
+        <span>عرض التفاصيل</span>
+      </button>
+    </div>
   );
 }
