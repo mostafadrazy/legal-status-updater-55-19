@@ -3,7 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ProfileCompletionForm } from "./auth/ProfileCompletionForm";
 
 interface AuthProps {
@@ -25,7 +25,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         } else {
           navigate('/');
         }
-      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+      } else if (event === 'SIGNED_OUT') {
         navigate('/auth/login');
       }
     });
@@ -34,6 +34,27 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       subscription.unsubscribe();
     };
   }, [view, navigate]);
+
+  const handleAuthError = (error: Error) => {
+    console.error('Auth error:', error);
+    
+    let errorMessage = "حدث خطأ في تسجيل الدخول";
+    
+    // Check for specific error messages
+    if (error.message.includes("Invalid login credentials")) {
+      errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+    } else if (error.message.includes("Email not confirmed")) {
+      errorMessage = "يرجى تأكيد بريدك الإلكتروني أولاً";
+    } else if (error.message.includes("Email rate limit exceeded")) {
+      errorMessage = "تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً";
+    }
+
+    toast({
+      title: "خطأ في تسجيل الدخول",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
 
   if (showProfileCompletion) {
     return <ProfileCompletionForm />;
@@ -84,14 +105,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         providers={["google", "github"]}
         redirectTo={`${window.location.origin}/auth/callback`}
-        onError={(error) => {
-          console.error('Auth error:', error);
-          toast({
-            title: "خطأ في تسجيل الدخول",
-            description: "يرجى التحقق من بيانات الدخول والمحاولة مرة أخرى",
-            variant: "destructive",
-          });
-        }}
+        onError={handleAuthError}
         localization={{
           variables: {
             sign_in: {
