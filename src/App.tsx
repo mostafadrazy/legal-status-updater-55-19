@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
 import CaseTracking from "./pages/CaseTracking";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/callback" element={<Callback />} />
             <Route path="/case-tracking" element={<CaseTracking />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
