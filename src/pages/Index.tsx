@@ -4,7 +4,6 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
 import Services from "@/components/landing/Services";
-import Statistics from "@/components/landing/Statistics";
 import Testimonials from "@/components/landing/Testimonials";
 import FAQ from "@/components/landing/FAQ";
 import ContactCTA from "@/components/landing/ContactCTA";
@@ -88,7 +87,6 @@ const Index = () => {
       <Hero />
       <div className="container mx-auto px-4">
         <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
-          <Statistics />
           <WhatWeDo />
           <Features />
           <Services />
