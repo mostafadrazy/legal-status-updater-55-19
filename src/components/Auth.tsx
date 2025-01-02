@@ -74,13 +74,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
           },
         }}
         view={view}
-        options={{
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            full_name: undefined,
-            phone_number: undefined,
-          },
-        }}
         showLinks={false}
         additionalData={[
           {
