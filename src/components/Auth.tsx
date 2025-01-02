@@ -34,6 +34,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         return;
       }
 
+      console.log('Updating profile for user:', user.id);
       const { error } = await supabase
         .from('profiles')
         .upsert({
@@ -43,14 +44,19 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
           updated_at: new Date().toISOString(),
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Profile update error:', error);
+        throw error;
+      }
 
+      console.log('Profile updated successfully');
       toast({
         title: "تم بنجاح",
         description: "تم حفظ معلومات الملف الشخصي",
       });
       
       setShowProfileCompletion(false);
+      window.location.href = '/';
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
@@ -169,7 +175,9 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         view={view}
         showLinks={false}
         onAuthStateChange={(event) => {
-          if (event.event === 'SIGNED_UP') {
+          console.log('Auth state changed:', event.event);
+          if (event.event === 'SIGNED_IN' && view === 'sign_up') {
+            console.log('User signed up, showing profile completion form');
             setShowProfileCompletion(true);
           }
         }}
