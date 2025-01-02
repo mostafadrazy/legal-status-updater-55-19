@@ -46,7 +46,7 @@ const WhatWeDo = () => {
           <img 
             src="/lovable-uploads/91fe343d-4b53-4607-89d9-af0070a4f130.png" 
             alt="Professional Legal Team" 
-            className="w-full h-auto rounded-lg shadow-2xl"
+            className="w-full h-auto"
           />
         </div>
       </div>
