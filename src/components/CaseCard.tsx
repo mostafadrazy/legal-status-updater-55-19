@@ -1,15 +1,10 @@
 import { useState } from "react";
-import { Calendar, User, Scale } from "lucide-react";
-import { StatusBadge } from "./StatusBadge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-import { CaseDetailsTab } from "./case-details/CaseDetailsTab";
-import { NotesTab } from "./case-details/NotesTab";
-import { DocumentsTab } from "./case-details/DocumentsTab";
+import { CasePreview } from "./case-preview/CasePreview";
+import { CaseDetailsDialog } from "./case-details/CaseDetailsDialog";
 
 interface CaseCardProps {
   id: string;
@@ -151,94 +146,31 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
 
   return (
     <>
-      <div className="relative p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-xl" />
-        <div className="relative">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
-              <p className="text-[#4CD6B4] text-sm">رقم القضية: {caseNumber}</p>
-            </div>
-            <StatusBadge status={status} />
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-gray-300">
-              <Calendar className="w-4 h-4 text-[#4CD6B4]" />
-              <span className="text-sm">الجلسة القادمة: {nextHearing || "غير محدد"}</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-300">
-              <User className="w-4 h-4 text-[#4CD6B4]" />
-              <span className="text-sm">العميل: {client}</span>
-            </div>
-          </div>
-          
-          <button 
-            onClick={() => {
-              setShowDetails(true);
-              fetchCaseDetails();
-              fetchNotes();
-              fetchDocuments();
-            }}
-            className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-black transition-all duration-300"
-          >
-            <Scale className="w-4 h-4" />
-            <span>عرض التفاصيل</span>
-          </button>
-        </div>
-      </div>
+      <CasePreview
+        title={title}
+        caseNumber={caseNumber}
+        status={status}
+        nextHearing={nextHearing}
+        client={client}
+        onClick={() => {
+          setShowDetails(true);
+          fetchCaseDetails();
+          fetchNotes();
+          fetchDocuments();
+        }}
+      />
 
-      <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white">تفاصيل القضية</DialogTitle>
-          </DialogHeader>
-          
-          <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid grid-cols-3 gap-4 bg-white/5">
-              <TabsTrigger value="details">التفاصيل</TabsTrigger>
-              <TabsTrigger value="notes">الملاحظات</TabsTrigger>
-              <TabsTrigger value="documents">المستندات</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="details">
-              {caseDetails && (
-                <CaseDetailsTab
-                  id={caseDetails.id}
-                  caseNumber={caseDetails.case_number}
-                  title={caseDetails.title}
-                  status={caseDetails.status}
-                  nextHearing={caseDetails.next_hearing}
-                  client={caseDetails.client}
-                  clientPhone={caseDetails.client_phone}
-                  clientEmail={caseDetails.client_email}
-                  court={caseDetails.court}
-                  caseType={caseDetails.case_type}
-                  opposingParty={caseDetails.opposing_party}
-                  opposingLawyer={caseDetails.opposing_lawyer}
-                  filingDate={caseDetails.filing_date}
-                  onDelete={handleDelete}
-                />
-              )}
-            </TabsContent>
-
-            <TabsContent value="notes">
-              <NotesTab
-                notes={notes}
-                onAddNote={handleAddNote}
-              />
-            </TabsContent>
-
-            <TabsContent value="documents">
-              <DocumentsTab
-                documents={documents}
-                onUpload={handleFileUpload}
-                onViewDocument={handleViewDocument}
-              />
-            </TabsContent>
-          </Tabs>
-        </DialogContent>
-      </Dialog>
+      <CaseDetailsDialog
+        showDetails={showDetails}
+        setShowDetails={setShowDetails}
+        caseDetails={caseDetails}
+        notes={notes}
+        documents={documents}
+        onDelete={handleDelete}
+        onAddNote={handleAddNote}
+        onUpload={handleFileUpload}
+        onViewDocument={handleViewDocument}
+      />
     </>
   );
 }
