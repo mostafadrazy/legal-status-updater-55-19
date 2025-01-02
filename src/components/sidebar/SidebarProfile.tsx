@@ -1,15 +1,66 @@
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function SidebarProfile() {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const [profileData, setProfileData] = useState<{
+    full_name?: string | null;
+    avatar_url?: string | null;
+  }>({});
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (!error && data) {
+        setProfileData(data);
+      }
+    };
+
+    fetchProfile();
+
+    // Subscribe to realtime changes
+    const channel = supabase
+      .channel('profile_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${user?.id}`,
+        },
+        (payload) => {
+          setProfileData(payload.new as any);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
 
   return (
     <div className="mt-auto">
       <div className="flex items-center gap-3 px-3 py-3">
-        <div className="w-8 h-8 rounded-full bg-gray-700/50 backdrop-blur-sm" />
+        <Avatar className="w-8 h-8">
+          <AvatarImage src={profileData.avatar_url || undefined} className="object-cover" />
+          <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4]">
+            {profileData.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm text-white">أحمد محمد</span>
+          <span className="text-sm text-white">{profileData.full_name || 'مستخدم'}</span>
           <span className="text-xs text-[#4CD6B4]">محامي</span>
         </div>
       </div>

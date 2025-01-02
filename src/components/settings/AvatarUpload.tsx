@@ -22,9 +22,36 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
 
     setIsUploadingAvatar(true);
     try {
+      // Create a canvas to crop the image
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      await new Promise((resolve) => {
+        img.onload = resolve;
+        img.src = URL.createObjectURL(file);
+      });
+
+      // Make the canvas square with the smaller dimension
+      const size = Math.min(img.width, img.height);
+      canvas.width = size;
+      canvas.height = size;
+
+      // Calculate cropping
+      const offsetX = (img.width - size) / 2;
+      const offsetY = (img.height - size) / 2;
+
+      // Draw the image centered and cropped
+      ctx?.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
+
+      // Convert canvas to blob
+      const croppedBlob = await new Promise<Blob>((resolve) => 
+        canvas.toBlob((blob) => resolve(blob!), file.type)
+      );
+
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(`${userId}`, file, {
+        .upload(`${userId}`, croppedBlob, {
           upsert: true,
           contentType: file.type,
         });
@@ -34,6 +61,12 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
       const { data } = await supabase.storage
         .from('avatars')
         .getPublicUrl(`${userId}`);
+
+      // Update the avatar_url in the profiles table
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: data.publicUrl })
+        .eq('id', userId);
 
       setAvatarUrl(data.publicUrl);
 
@@ -56,7 +89,7 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
   return (
     <div className="flex flex-col items-center space-y-4">
       <Avatar className="w-24 h-24 border-4 border-[#4CD6B4]/20">
-        <AvatarImage src={avatarUrl || undefined} />
+        <AvatarImage src={avatarUrl || undefined} className="object-cover" />
         <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4] text-xl">
           {fullName?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
         </AvatarFallback>
