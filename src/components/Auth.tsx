@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { AuthChangeEvent } from "@supabase/supabase-js";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
@@ -174,13 +175,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
-        onAuthStateChange={(event) => {
-          console.log('Auth state changed:', event.event);
-          if (event.event === 'SIGNED_IN' && view === 'sign_up') {
-            console.log('User signed up, showing profile completion form');
-            setShowProfileCompletion(true);
-          }
-        }}
       />
     </div>
   );
