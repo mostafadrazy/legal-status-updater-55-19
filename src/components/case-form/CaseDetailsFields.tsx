@@ -1,7 +1,6 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 
@@ -12,7 +11,6 @@ const formSchema = z.object({
   opposingParty: z.string().min(2, { message: "اسم الطرف المقابل مطلوب" }),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
-  additionalInfo: z.string().optional(),
 });
 
 type CaseDetailsFieldsProps = {
@@ -127,31 +125,6 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
             <FormMessage />
           </FormItem>
         )}
-      />
-
-      <FormField
-        control={form.control}
-        name="additionalInfo"
-        render={({ field }) => {
-          console.log('Additional Info field value:', field.value);
-          return (
-            <FormItem>
-              <FormLabel>معلومات إضافية</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="أدخل أي معلومات إضافية عن القضية..."
-                  className="h-32"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    console.log('Additional Info changed to:', e.target.value);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          );
-        }}
       />
     </>
   );
