@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { StatusBadge } from "../StatusBadge";
-import { EditCaseForm } from "./EditCaseForm";
 import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
+import { EditCaseForm } from "./EditCaseForm";
+import { CaseInformationSection } from "./sections/CaseInformationSection";
+import { ClientInformationSection } from "./sections/ClientInformationSection";
+import { OpposingPartySection } from "./sections/OpposingPartySection";
 
 interface CaseDetailsTabProps {
   id: string;
@@ -13,7 +15,6 @@ interface CaseDetailsTabProps {
   client: string;
   clientPhone?: string;
   clientEmail?: string;
-  clientAddress?: string;
   court?: string;
   caseType?: string;
   opposingParty?: string;
@@ -31,7 +32,6 @@ export function CaseDetailsTab({
   client,
   clientPhone,
   clientEmail,
-  clientAddress,
   court,
   caseType,
   opposingParty,
@@ -53,7 +53,6 @@ export function CaseDetailsTab({
           client,
           client_phone: clientPhone,
           client_email: clientEmail,
-          client_address: clientAddress,
           court,
           case_type: caseType,
           opposing_party: opposingParty,
@@ -67,86 +66,39 @@ export function CaseDetailsTab({
 
   return (
     <div className="space-y-6 py-4">
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <h4 className="text-[#4CD6B4] font-medium">معلومات القضية</h4>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-[#4CD6B4] border-[#4CD6B4]"
-            onClick={() => setIsEditing(true)}
-          >
-            <Pencil className="w-4 h-4 mr-2" />
-            تعديل
-          </Button>
-        </div>
-        <div className="grid grid-cols-2 gap-4 text-gray-300">
-          <div>
-            <p className="text-sm text-gray-400">رقم القضية</p>
-            <p className="text-white">{caseNumber}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">الحالة</p>
-            <StatusBadge status={status} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">العنوان</p>
-            <p className="text-white">{title}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">الجلسة القادمة</p>
-            <p className="text-white">{nextHearing || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">المحكمة</p>
-            <p className="text-white">{court || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">نوع القضية</p>
-            <p className="text-white">{caseType || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">تاريخ التقديم</p>
-            <p className="text-white">{filingDate || "غير محدد"}</p>
-          </div>
-        </div>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex-1" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-[#4CD6B4] border-[#4CD6B4]"
+          onClick={() => setIsEditing(true)}
+        >
+          <Pencil className="w-4 h-4 mr-2" />
+          تعديل
+        </Button>
       </div>
 
-      <div className="space-y-2">
-        <h4 className="text-[#4CD6B4] font-medium">معلومات العميل</h4>
-        <div className="grid grid-cols-2 gap-4 text-gray-300">
-          <div>
-            <p className="text-sm text-gray-400">اسم العميل</p>
-            <p className="text-white">{client}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">رقم الهاتف</p>
-            <p className="text-white">{clientPhone || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">البريد الإلكتروني</p>
-            <p className="text-white">{clientEmail || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">العنوان</p>
-            <p className="text-white">{clientAddress || "غير محدد"}</p>
-          </div>
-        </div>
-      </div>
+      <CaseInformationSection
+        caseNumber={caseNumber}
+        status={status}
+        title={title}
+        nextHearing={nextHearing}
+        court={court}
+        caseType={caseType}
+        filingDate={filingDate}
+      />
 
-      <div className="space-y-2">
-        <h4 className="text-[#4CD6B4] font-medium">معلومات الطرف المقابل</h4>
-        <div className="grid grid-cols-2 gap-4 text-gray-300">
-          <div>
-            <p className="text-sm text-gray-400">الطرف المقابل</p>
-            <p className="text-white">{opposingParty || "غير محدد"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">محامي الطرف المقابل</p>
-            <p className="text-white">{opposingLawyer || "غير محدد"}</p>
-          </div>
-        </div>
-      </div>
+      <ClientInformationSection
+        client={client}
+        clientPhone={clientPhone}
+        clientEmail={clientEmail}
+      />
+
+      <OpposingPartySection
+        opposingParty={opposingParty}
+        opposingLawyer={opposingLawyer}
+      />
 
       <div className="flex justify-end space-x-2">
         <button
