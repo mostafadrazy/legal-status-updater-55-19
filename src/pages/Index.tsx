@@ -20,16 +20,16 @@ const mockCases = [
   {
     title: "قضية عقارية - برج السلام",
     caseNumber: "CASE-001",
-    status: "active" as const,
-    lastUpdated: "منذ ساعتين",
-    description: "نزاع على ملكية عقار في منطقة السلام"
+    status: "active",
+    nextHearing: "2024-03-15",
+    client: "شركة العقارات المتحدة"
   },
   {
     title: "قضية تجارية - شركة النور",
     caseNumber: "CASE-002",
-    status: "pending" as const,
-    lastUpdated: "منذ 3 أيام",
-    description: "نزاع تجاري حول عقد توريد"
+    status: "pending",
+    nextHearing: "2024-03-20",
+    client: "مؤسسة النور التجارية"
   }
 ];
 
