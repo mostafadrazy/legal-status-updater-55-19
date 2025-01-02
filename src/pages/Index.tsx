@@ -17,6 +17,7 @@ import NewCaseForm from "@/components/NewCaseForm";
 
 const mockCases = [
   {
+    id: "1",
     title: "قضية عقارية - برج السلام",
     caseNumber: "CASE-001",
     status: "جاري",
@@ -24,6 +25,7 @@ const mockCases = [
     client: "شركة العقارات المتحدة"
   },
   {
+    id: "2",
     title: "قضية تجارية - شركة النور",
     caseNumber: "CASE-002",
     status: "معلق",
