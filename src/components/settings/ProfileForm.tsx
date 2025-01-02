@@ -34,22 +34,40 @@ export function ProfileForm({ userId, initialData, onUpdate }: ProfileFormProps)
   const onSubmit = async (data: ProfileFormData) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: data.full_name,
-          phone_number: data.phone_number,
-        })
-        .eq("id", userId);
+      // Create an object to store only the changed fields
+      const changedFields: Partial<ProfileFormData> = {};
+      
+      // Compare each field with initial data and only include changed ones
+      if (data.full_name !== initialData?.full_name) {
+        changedFields.full_name = data.full_name;
+      }
+      if (data.phone_number !== initialData?.phone_number) {
+        changedFields.phone_number = data.phone_number;
+      }
 
-      if (error) throw error;
+      // Only proceed with update if there are changes
+      if (Object.keys(changedFields).length > 0) {
+        console.log('Updating fields:', changedFields);
+        
+        const { error } = await supabase
+          .from("profiles")
+          .update(changedFields)
+          .eq("id", userId);
 
-      toast({
-        title: "تم تحديث الإعدادات بنجاح",
-        description: "تم حفظ التغييرات الخاصة بك",
-      });
+        if (error) throw error;
 
-      onUpdate?.(data);
+        toast({
+          title: "تم تحديث الإعدادات بنجاح",
+          description: "تم حفظ التغييرات الخاصة بك",
+        });
+
+        onUpdate?.(data);
+      } else {
+        toast({
+          title: "لم يتم إجراء أي تغييرات",
+          description: "لم يتم تعديل أي معلومات",
+        });
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
       toast({
