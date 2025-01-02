@@ -1,12 +1,40 @@
+import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
-import NewCaseForm from "@/components/NewCaseForm";
 import { CaseCard } from "@/components/CaseCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import NewCaseForm from "@/components/NewCaseForm";
+import { useQuery } from "@tanstack/react-query";
+
+interface Case {
+  id: string;
+  title: string;
+  case_number: string;
+  status: string;
+  next_hearing: string;
+  client: string;
+}
 
 export default function CaseTracking() {
   const { session } = useAuth();
+  const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
+
+  const { data: cases, isLoading } = useQuery({
+    queryKey: ["cases"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("cases")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as Case[];
+    },
+  });
 
   if (!session) {
     return <Navigate to="/auth/login" replace />;
@@ -24,8 +52,14 @@ export default function CaseTracking() {
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white">لوحة التحكم</h1>
-            <NewCaseForm open={false} onOpenChange={() => {}} />
+            <h1 className="text-3xl font-bold text-white">القضايا</h1>
+            <Button 
+              className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+              onClick={() => setIsNewCaseDialogOpen(true)}
+            >
+              <Plus className="w-4 h-4 ml-2" />
+              إنشاء قضية
+            </Button>
           </div>
 
           <div className="glass-card p-4 rounded-xl">
@@ -33,30 +67,30 @@ export default function CaseTracking() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CaseCard
-              caseNumber="2024/123"
-              title="قضية تجارية"
-              status="جاري"
-              nextHearing="2024-03-20"
-              client="شركة التقدم"
-            />
-            <CaseCard
-              caseNumber="2024/124"
-              title="قضية مدنية"
-              status="معلق"
-              nextHearing="2024-03-22"
-              client="أحمد محمد"
-            />
-            <CaseCard
-              caseNumber="2024/125"
-              title="قضية عمالية"
-              status="مغلق"
-              nextHearing="2024-03-25"
-              client="مؤسسة النور"
-            />
+            {isLoading ? (
+              <div>جاري التحميل...</div>
+            ) : cases?.length === 0 ? (
+              <div className="text-white">لا توجد قضايا</div>
+            ) : (
+              cases?.map((caseItem) => (
+                <CaseCard
+                  key={caseItem.id}
+                  caseNumber={caseItem.case_number}
+                  title={caseItem.title}
+                  status={caseItem.status}
+                  nextHearing={caseItem.next_hearing}
+                  client={caseItem.client}
+                />
+              ))
+            )}
           </div>
         </div>
       </main>
+
+      <NewCaseForm 
+        open={isNewCaseDialogOpen} 
+        onOpenChange={setIsNewCaseDialogOpen}
+      />
     </div>
   );
 }
