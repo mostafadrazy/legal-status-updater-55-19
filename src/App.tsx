@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
+import CaseTracking from "./pages/CaseTracking";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/callback" element={<Callback />} />
+            <Route path="/case-tracking" element={<CaseTracking />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
