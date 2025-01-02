@@ -19,7 +19,7 @@ export function SidebarProfile() {
         .from("profiles")
         .select("full_name, avatar_url")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
       if (!error && data) {
         setProfileData(data);
@@ -40,6 +40,7 @@ export function SidebarProfile() {
           filter: `id=eq.${user?.id}`,
         },
         (payload) => {
+          console.log('Profile updated:', payload);
           setProfileData(payload.new as any);
         }
       )
