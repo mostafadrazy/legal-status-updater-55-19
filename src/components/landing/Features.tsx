@@ -18,11 +18,11 @@ const Features = () => {
         {features.map((feature, index) => (
           <div 
             key={index}
-            className="flex items-center gap-3 p-4 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 animate-fade-in"
+            className="flex items-center gap-4 p-6 rounded-lg bg-[#1A1A1A] hover:bg-[#222] transition-all duration-300 animate-fade-in"
             style={{ animationDelay: `${index * 100}ms` }}
           >
-            <CheckCircle className="text-[#4CD6B4] h-5 w-5 flex-shrink-0" />
-            <span>{feature}</span>
+            <CheckCircle className="text-[#4CD6B4] h-6 w-6 flex-shrink-0" />
+            <span className="text-white/90">{feature}</span>
           </div>
         ))}
       </div>
