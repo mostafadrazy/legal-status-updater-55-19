@@ -36,19 +36,19 @@ export default function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="p-6 rounded-xl glass-card border border-legal-200/10 hover:border-legal-200/20"
+              className="p-6 rounded-xl bg-legal-800/80 backdrop-blur-sm border border-legal-700 hover:border-legal-600 transition-all duration-300"
             >
               <div className="flex mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-gray-300 mb-6 leading-relaxed">{testimonial.content}</p>
+              <p className="text-gray-200 mb-6 leading-relaxed">{testimonial.content}</p>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82]" />
                 <div>
                   <h4 className="font-semibold text-white">{testimonial.name}</h4>
-                  <p className="text-sm text-gray-400">{testimonial.role}</p>
+                  <p className="text-gray-400">{testimonial.role}</p>
                 </div>
               </div>
             </div>
