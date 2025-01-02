@@ -8,7 +8,6 @@ import { ClientInfoFields } from "./case-form/ClientInfoFields";
 import { CaseDetailsFields } from "./case-form/CaseDetailsFields";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DocumentUploadFields } from "./case-form/DocumentUploadFields";
-import { AdditionalInfoFields } from "./case-form/AdditionalInfoFields";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = ["application/pdf", "image/jpeg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
@@ -25,8 +24,6 @@ const formSchema = z.object({
   opposingLawyer: z.string().optional(),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
-  caseValue: z.string().optional(),
-  caseDescription: z.string().optional(),
   documents: z
     .array(
       z.object({
@@ -38,9 +35,6 @@ const formSchema = z.object({
       })
     )
     .optional(),
-  additionalNotes: z.string().optional(),
-  priority: z.enum(["high", "medium", "low"]).optional(),
-  tags: z.array(z.string()).optional(),
 });
 
 interface NewCaseFormProps {
@@ -63,12 +57,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
       opposingLawyer: "",
       filingDate: "",
       hearingDate: "",
-      caseValue: "",
-      caseDescription: "",
       documents: [],
-      additionalNotes: "",
-      priority: "medium",
-      tags: [],
     },
   });
 
@@ -104,10 +93,6 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
                 <div className="space-y-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                   <h3 className="text-lg font-semibold text-[#4CD6B4]">تفاصيل القضية</h3>
                   <CaseDetailsFields form={form} />
-                </div>
-                <div className="space-y-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-[#4CD6B4]">معلومات إضافية</h3>
-                  <AdditionalInfoFields form={form} />
                 </div>
               </div>
             </div>
