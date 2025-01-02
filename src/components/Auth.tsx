@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Auth = () => {
   return (
-    <div className="w-full max-w-md mx-auto p-6">
+    <div className="w-full">
       <SupabaseAuth
         supabaseClient={supabase}
         appearance={{
@@ -12,9 +12,37 @@ export const Auth = () => {
           variables: {
             default: {
               colors: {
-                brand: "#2563eb",
-                brandAccent: "#1d4ed8",
+                brand: "#4CD6B4",
+                brandAccent: "#3BC5A3",
+                brandButtonText: "black",
+                defaultButtonBackground: "transparent",
+                defaultButtonBackgroundHover: "#ffffff10",
+                defaultButtonBorder: "#ffffff20",
+                defaultButtonText: "white",
+                dividerBackground: "#ffffff20",
+                inputBackground: "transparent",
+                inputBorder: "#ffffff20",
+                inputBorderHover: "#ffffff40",
+                inputBorderFocus: "#4CD6B4",
+                inputText: "white",
+                inputLabelText: "white",
+                inputPlaceholder: "#ffffff80",
               },
+            },
+          },
+          style: {
+            button: {
+              borderRadius: "9999px",
+              padding: "0.75rem 1rem",
+              transition: "all 0.3s ease",
+            },
+            input: {
+              borderRadius: "0.5rem",
+              padding: "0.75rem 1rem",
+            },
+            label: {
+              marginBottom: "0.5rem",
+              fontSize: "0.875rem",
             },
           },
         }}
@@ -26,11 +54,17 @@ export const Auth = () => {
               email_label: "البريد الإلكتروني",
               password_label: "كلمة المرور",
               button_label: "تسجيل الدخول",
+              loading_button_label: "جاري تسجيل الدخول...",
+              social_provider_text: "تسجيل الدخول باستخدام {{provider}}",
+              link_text: "لديك حساب بالفعل؟ قم بتسجيل الدخول",
             },
             sign_up: {
               email_label: "البريد الإلكتروني",
               password_label: "كلمة المرور",
               button_label: "إنشاء حساب",
+              loading_button_label: "جاري إنشاء الحساب...",
+              social_provider_text: "إنشاء حساب باستخدام {{provider}}",
+              link_text: "ليس لديك حساب؟ قم بإنشاء حساب جديد",
             },
           },
         }}
