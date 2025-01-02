@@ -1,7 +1,6 @@
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -41,6 +40,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
           id: user.id,
           full_name: data.full_name,
           phone_number: data.phone_number,
+          updated_at: new Date().toISOString(),
         });
 
       if (error) throw error;
@@ -168,7 +168,11 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
-        onSignUp={() => setShowProfileCompletion(true)}
+        onAuthStateChange={(event) => {
+          if (event.event === 'SIGNED_UP') {
+            setShowProfileCompletion(true);
+          }
+        }}
       />
     </div>
   );
