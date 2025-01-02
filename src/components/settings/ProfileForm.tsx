@@ -70,11 +70,11 @@ export function ProfileForm({ userId, initialData, onUpdate }: ProfileFormProps)
           name="full_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">الاسم الكامل</FormLabel>
+              <FormLabel className="text-gray-700">الاسم الكامل</FormLabel>
               <FormControl>
                 <Input
                   placeholder="أدخل اسمك الكامل"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-500"
                   {...field}
                 />
               </FormControl>
@@ -88,11 +88,11 @@ export function ProfileForm({ userId, initialData, onUpdate }: ProfileFormProps)
           name="phone_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">رقم الهاتف</FormLabel>
+              <FormLabel className="text-gray-700">رقم الهاتف</FormLabel>
               <FormControl>
                 <Input
                   placeholder="أدخل رقم هاتفك"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-500"
                   {...field}
                 />
               </FormControl>
