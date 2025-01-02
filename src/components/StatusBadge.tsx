@@ -6,18 +6,18 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusStyles = () => {
     switch (status) {
       case "جاري":
-        return "bg-green-500/20 text-green-500 border-green-500/30";
+        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
       case "معلق":
-        return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30";
+        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
       case "مغلق":
-        return "bg-red-500/20 text-red-500 border-red-500/30";
+        return "bg-red-500/20 text-red-400 border-red-500/30";
       default:
-        return "bg-gray-500/20 text-gray-500 border-gray-500/30";
+        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
 
   return (
-    <span className={`px-3 py-1 rounded-full text-sm border ${getStatusStyles()}`}>
+    <span className={`px-3 py-1 rounded-full text-sm border backdrop-blur-sm ${getStatusStyles()}`}>
       {status}
     </span>
   );
