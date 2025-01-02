@@ -3,11 +3,12 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Settings as SettingsIcon } from "lucide-react";
+import { Settings as SettingsIcon, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SettingsFormData {
   full_name: string;
@@ -18,6 +19,8 @@ export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   const form = useForm<SettingsFormData>({
     defaultValues: {
@@ -46,6 +49,16 @@ export default function Settings() {
           full_name: data.full_name || "",
           phone_number: data.phone_number || "",
         });
+      }
+
+      // Fetch avatar URL
+      const { data: avatarData } = await supabase
+        .storage
+        .from('avatars')
+        .getPublicUrl(`${user.id}`);
+
+      if (avatarData) {
+        setAvatarUrl(avatarData.publicUrl);
       }
     };
 
@@ -83,6 +96,45 @@ export default function Settings() {
     }
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setIsUploadingAvatar(true);
+    try {
+      // Upload the file to Supabase storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(`${user.id}`, file, {
+          upsert: true,
+          contentType: file.type,
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data } = await supabase.storage
+        .from('avatars')
+        .getPublicUrl(`${user.id}`);
+
+      setAvatarUrl(data.publicUrl);
+
+      toast({
+        title: "تم تحديث الصورة الشخصية",
+        description: "تم رفع الصورة بنجاح",
+      });
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      toast({
+        variant: "destructive",
+        title: "خطأ في رفع الصورة",
+        description: "يرجى المحاولة مرة أخرى لاحقاً",
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex w-full bg-[#111]">
       {/* Background effects */}
@@ -100,7 +152,40 @@ export default function Settings() {
             <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
           </div>
 
-          <div className="glass-card p-6 rounded-xl">
+          <div className="glass-card p-6 rounded-xl space-y-8">
+            {/* Avatar Section */}
+            <div className="flex flex-col items-center space-y-4">
+              <Avatar className="w-24 h-24 border-4 border-[#4CD6B4]/20">
+                <AvatarImage src={avatarUrl || undefined} />
+                <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4] text-xl">
+                  {form.watch("full_name")?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="avatar-upload"
+                  className="flex items-center gap-2 px-4 py-2 rounded-md bg-[#4CD6B4]/10 hover:bg-[#4CD6B4]/20 transition-colors cursor-pointer text-[#4CD6B4]"
+                >
+                  {isUploadingAvatar ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  تغيير الصورة الشخصية
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                  disabled={isUploadingAvatar}
+                />
+              </div>
+            </div>
+
+            {/* Profile Form */}
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
