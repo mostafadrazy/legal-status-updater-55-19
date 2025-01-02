@@ -41,15 +41,22 @@ export default function CaseTracking() {
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-b from-black to-gray-900">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
-        <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
+    <div className="min-h-screen flex w-full bg-[#111]">
+      {/* Background gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] 
+          bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
+        />
+        <div 
+          className="absolute bottom-0 left-1/4 w-[800px] h-[800px] 
+          bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10"
+        />
       </div>
 
       <Sidebar />
       
-      <main className="flex-1 p-8 animate-fade-in">
+      <main className="flex-1 p-8 relative animate-fade-in">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
