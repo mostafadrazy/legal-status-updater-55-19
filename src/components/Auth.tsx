@@ -2,7 +2,11 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Auth = () => {
+interface AuthProps {
+  view?: "sign_in" | "sign_up";
+}
+
+export const Auth = ({ view = "sign_in" }: AuthProps) => {
   return (
     <div className="w-full">
       <SupabaseAuth
@@ -69,7 +73,7 @@ export const Auth = () => {
             },
           },
         }}
-        view="sign_up"
+        view={view}
         additionalData={{
           full_name: {
             label: "الاسم الكامل",
