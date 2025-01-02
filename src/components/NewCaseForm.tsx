@@ -11,6 +11,7 @@ import { DocumentUploadFields } from "./case-form/DocumentUploadFields";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { Scale, Users, FileText } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = ["application/pdf", "image/jpeg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
@@ -27,7 +28,6 @@ const formSchema = z.object({
   opposingLawyer: z.string().optional(),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
-  additionalInfo: z.string().optional(),
   documents: z.array(
     z.object({
       file: z.instanceof(File)
@@ -62,7 +62,6 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
       opposingLawyer: "",
       filingDate: "",
       hearingDate: "",
-      additionalInfo: "",
       documents: [],
     },
   });
@@ -76,7 +75,6 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
 
       console.log('Submitting case with values:', values);
 
-      // Create the case with all fields
       const { data: caseData, error: caseError } = await supabase.from('cases').insert({
         title: values.opposingParty,
         case_number: values.caseNumber,
@@ -102,7 +100,6 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
 
       console.log('Case created successfully:', caseData);
 
-      // Handle document uploads
       if (values.documents && values.documents.length > 0) {
         for (const doc of values.documents) {
           const fileExt = doc.file.name.split('.').pop();
@@ -148,7 +145,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-[#111] to-[#1A1A1A] border border-white/10">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold mb-6 bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+          <DialogTitle className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent text-center">
             إضافة قضية جديدة
           </DialogTitle>
         </DialogHeader>
@@ -156,25 +153,41 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-8">
-                <div className="space-y-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-[#4CD6B4]">معلومات العميل</h3>
+                {/* Client Information Section */}
+                <div className="space-y-6 p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Users className="w-6 h-6 text-[#4CD6B4]" />
+                    <h3 className="text-xl font-semibold text-white">معلومات العميل</h3>
+                  </div>
                   <ClientInfoFields form={form} />
                 </div>
-                <div className="space-y-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-[#4CD6B4]">المستندات والمرفقات</h3>
+                
+                {/* Documents Section */}
+                <div className="space-y-6 p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <FileText className="w-6 h-6 text-[#4CD6B4]" />
+                    <h3 className="text-xl font-semibold text-white">المستندات والمرفقات</h3>
+                  </div>
                   <DocumentUploadFields form={form} />
                 </div>
               </div>
+              
+              {/* Case Details Section */}
               <div className="space-y-8">
-                <div className="space-y-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-[#4CD6B4]">تفاصيل القضية</h3>
+                <div className="space-y-6 p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Scale className="w-6 h-6 text-[#4CD6B4]" />
+                    <h3 className="text-xl font-semibold text-white">تفاصيل القضية</h3>
+                  </div>
                   <CaseDetailsFields form={form} />
                 </div>
               </div>
             </div>
+            
+            {/* Submit Button */}
             <Button 
               type="submit" 
-              className="w-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-8 py-6 rounded-full transition-all duration-300 transform hover:scale-105"
+              className="w-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-semibold px-8 py-6 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               إنشاء القضية
             </Button>
