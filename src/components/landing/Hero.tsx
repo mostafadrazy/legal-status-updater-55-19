@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { Scale } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -13,20 +13,25 @@ const Hero = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center space-y-8">
+          <div className="flex justify-center mb-6">
+            <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-4 rounded-2xl">
+              <Scale className="w-12 h-12 text-white" />
+            </div>
+          </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight animate-fade-in">
-            أفضل خدمة قانونية
+            نظام متكامل
             <span className="block bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
-              لتأسيس الشركات الناشئة
+              لإدارة القضايا القانونية
             </span>
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto animate-fade-in">
-            منصة متكاملة لإدارة الخدمات القانونية بكفاءة وفعالية، مصممة خصيصاً للشركات الناشئة والمؤسسات
+            منصة احترافية تساعد المحامين على إدارة القضايا وتنظيم الملفات ومتابعة المواعيد مع توفير بوابة آمنة للعملاء
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
             <Button 
               className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-8 py-6 rounded-full transition-all duration-300 transform hover:scale-105 min-w-[200px]"
             >
-              تواصل معنا
+              ابدأ الآن مجاناً
             </Button>
           </div>
         </div>
