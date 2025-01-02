@@ -49,10 +49,12 @@ export default function CaseTracking() {
 
       <Sidebar />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 animate-fade-in">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white">القضايا</h1>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+              القضايا
+            </h1>
             <Button 
               className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
               onClick={() => setIsNewCaseDialogOpen(true)}
@@ -68,19 +70,24 @@ export default function CaseTracking() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {isLoading ? (
-              <div>جاري التحميل...</div>
+              <div className="text-[#4CD6B4] animate-pulse">جاري التحميل...</div>
             ) : cases?.length === 0 ? (
-              <div className="text-white">لا توجد قضايا</div>
+              <div className="text-white/80">لا توجد قضايا</div>
             ) : (
-              cases?.map((caseItem) => (
-                <CaseCard
+              cases?.map((caseItem, index) => (
+                <div
                   key={caseItem.id}
-                  caseNumber={caseItem.case_number}
-                  title={caseItem.title}
-                  status={caseItem.status}
-                  nextHearing={caseItem.next_hearing}
-                  client={caseItem.client}
-                />
+                  className="transform hover:-translate-y-1 transition-all duration-300"
+                  style={{ animationDelay: `${index * 150}ms` }}
+                >
+                  <CaseCard
+                    caseNumber={caseItem.case_number}
+                    title={caseItem.title}
+                    status={caseItem.status}
+                    nextHearing={caseItem.next_hearing}
+                    client={caseItem.client}
+                  />
+                </div>
               ))
             )}
           </div>

@@ -6,7 +6,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusStyles = () => {
     switch (status) {
       case "جاري":
-        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        return "bg-[#4CD6B4]/20 text-[#4CD6B4] border-[#4CD6B4]/30";
       case "معلق":
         return "bg-amber-500/20 text-amber-400 border-amber-500/30";
       case "مغلق":
