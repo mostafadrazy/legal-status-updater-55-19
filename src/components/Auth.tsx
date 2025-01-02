@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
@@ -20,20 +21,26 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
   const { toast } = useToast();
   const { register, handleSubmit } = useForm<ProfileFormData>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event);
-      if (event === 'SIGNED_IN' && view === 'sign_up') {
-        console.log('Showing profile completion form');
-        setShowProfileCompletion(true);
+      if (event === 'SIGNED_IN') {
+        if (view === 'sign_up') {
+          console.log('Showing profile completion form');
+          setShowProfileCompletion(true);
+        } else {
+          console.log('Redirecting to dashboard');
+          navigate('/');
+        }
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [view]);
+  }, [view, navigate]);
 
   const onProfileSubmit = async (data: ProfileFormData) => {
     try {
@@ -70,7 +77,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       });
       
       setShowProfileCompletion(false);
-      window.location.href = '/';
+      navigate('/');
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
