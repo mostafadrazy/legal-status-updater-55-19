@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { Calendar, User, Scale, Edit } from "lucide-react";
+import { Calendar, User, Scale } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,13 +22,27 @@ interface CaseCardProps {
 
 export function CaseCard({ id, caseNumber, title, status, nextHearing, client }: CaseCardProps) {
   const [showDetails, setShowDetails] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedCase, setEditedCase] = useState({ title, status, nextHearing, client });
+  const [caseDetails, setCaseDetails] = useState<any>(null);
   const [notes, setNotes] = useState<any[]>([]);
   const [documents, setDocuments] = useState<any[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { session } = useAuth();
+
+  const fetchCaseDetails = async () => {
+    const { data, error } = await supabase
+      .from('cases')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      toast({ title: "Error", description: "Failed to fetch case details", variant: "destructive" });
+      return;
+    }
+    
+    setCaseDetails(data);
+  };
 
   const fetchNotes = async () => {
     const { data, error } = await supabase
@@ -60,22 +72,6 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
     }
     
     setDocuments(data || []);
-  };
-
-  const handleSaveChanges = async () => {
-    const { error } = await supabase
-      .from('cases')
-      .update(editedCase)
-      .eq('id', id);
-
-    if (error) {
-      toast({ title: "Error", description: "Failed to update case", variant: "destructive" });
-      return;
-    }
-
-    toast({ title: "Success", description: "Case updated successfully" });
-    setIsEditing(false);
-    queryClient.invalidateQueries({ queryKey: ['cases'] });
   };
 
   const handleDelete = async () => {
@@ -169,7 +165,7 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-gray-300">
               <Calendar className="w-4 h-4 text-[#4CD6B4]" />
-              <span className="text-sm">الجلسة القادمة: {nextHearing}</span>
+              <span className="text-sm">الجلسة القادمة: {nextHearing || "غير محدد"}</span>
             </div>
             <div className="flex items-center gap-3 text-gray-300">
               <User className="w-4 h-4 text-[#4CD6B4]" />
@@ -180,6 +176,7 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
           <button 
             onClick={() => {
               setShowDetails(true);
+              fetchCaseDetails();
               fetchNotes();
               fetchDocuments();
             }}
@@ -192,28 +189,37 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
       </div>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-3xl">
+        <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-white">تفاصيل القضية</DialogTitle>
           </DialogHeader>
           
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid grid-cols-4 gap-4 bg-white/5">
+            <TabsList className="grid grid-cols-3 gap-4 bg-white/5">
               <TabsTrigger value="details">التفاصيل</TabsTrigger>
               <TabsTrigger value="notes">الملاحظات</TabsTrigger>
               <TabsTrigger value="documents">المستندات</TabsTrigger>
-              <TabsTrigger value="edit">تعديل</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details">
-              <CaseDetailsTab
-                caseNumber={caseNumber}
-                title={title}
-                status={status}
-                nextHearing={nextHearing}
-                client={client}
-                onDelete={handleDelete}
-              />
+              {caseDetails && (
+                <CaseDetailsTab
+                  caseNumber={caseDetails.case_number}
+                  title={caseDetails.title}
+                  status={caseDetails.status}
+                  nextHearing={caseDetails.next_hearing}
+                  client={caseDetails.client}
+                  clientPhone={caseDetails.client_phone}
+                  clientEmail={caseDetails.client_email}
+                  clientAddress={caseDetails.client_address}
+                  court={caseDetails.court}
+                  caseType={caseDetails.case_type}
+                  opposingParty={caseDetails.opposing_party}
+                  opposingLawyer={caseDetails.opposing_lawyer}
+                  filingDate={caseDetails.filing_date}
+                  onDelete={handleDelete}
+                />
+              )}
             </TabsContent>
 
             <TabsContent value="notes">
@@ -229,46 +235,6 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
                 onUpload={handleFileUpload}
                 onViewDocument={handleViewDocument}
               />
-            </TabsContent>
-
-            <TabsContent value="edit" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-gray-400">العنوان</label>
-                  <Input
-                    value={editedCase.title}
-                    onChange={(e) => setEditedCase({ ...editedCase, title: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">الحالة</label>
-                  <Input
-                    value={editedCase.status}
-                    onChange={(e) => setEditedCase({ ...editedCase, status: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">الجلسة القادمة</label>
-                  <Input
-                    type="date"
-                    value={editedCase.nextHearing}
-                    onChange={(e) => setEditedCase({ ...editedCase, nextHearing: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">العميل</label>
-                  <Input
-                    value={editedCase.client}
-                    onChange={(e) => setEditedCase({ ...editedCase, client: e.target.value })}
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button onClick={handleSaveChanges} className="flex items-center gap-2">
-                    <Edit className="w-4 h-4" />
-                    حفظ التغييرات
-                  </Button>
-                </div>
-              </div>
             </TabsContent>
           </Tabs>
         </DialogContent>
