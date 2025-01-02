@@ -7,6 +7,7 @@ import { Settings as SettingsIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
+import { Sidebar } from "@/components/Sidebar";
 
 interface SettingsFormData {
   full_name: string;
@@ -83,70 +84,73 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111] text-white p-6">
-      {/* Background gradients */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/10 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#4CD6B4]/5 to-transparent" />
+    <div className="min-h-screen flex w-full bg-[#111]">
+      {/* Background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-2xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
-          <h1 className="text-3xl font-bold">الإعدادات</h1>
+      <Sidebar />
+      
+      <main className="flex-1 overflow-auto relative">
+        <div className="p-8 max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
+            <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
+          </div>
+
+          <div className="glass-card p-6 rounded-xl">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="full_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">الاسم الكامل</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="أدخل اسمك الكامل"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">رقم الهاتف</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="أدخل رقم هاتفك"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full bg-[#4CD6B4] hover:bg-[#3bc4a2] text-black font-medium"
+                >
+                  {isLoading ? "جاري الحفظ..." : "حفظ التغييرات"}
+                </Button>
+              </form>
+            </Form>
+          </div>
         </div>
-
-        <div className="glass-card p-6 rounded-xl">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="full_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>الاسم الكامل</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="أدخل اسمك الكامل"
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>رقم الهاتف</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="أدخل رقم هاتفك"
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-                className="w-full bg-[#4CD6B4] hover:bg-[#3bc4a2] text-white"
-              >
-                {isLoading ? "جاري الحفظ..." : "حفظ التغييرات"}
-              </Button>
-            </form>
-          </Form>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
