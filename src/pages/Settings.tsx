@@ -67,7 +67,7 @@ export default function Settings() {
             <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
           </div>
 
-          <div className="glass-card p-6 rounded-xl space-y-8">
+          <div className="bg-[#1E293B]/80 backdrop-blur-sm p-6 rounded-xl space-y-8 border border-white/10">
             <AvatarUpload 
               userId={user.id}
               userEmail={user.email}
