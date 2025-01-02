@@ -8,6 +8,7 @@ import Statistics from "@/components/landing/Statistics";
 import Testimonials from "@/components/landing/Testimonials";
 import FAQ from "@/components/landing/FAQ";
 import ContactCTA from "@/components/landing/ContactCTA";
+import WhatWeDo from "@/components/landing/WhatWeDo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Scale, Plus, ArrowRight } from "lucide-react";
@@ -88,6 +89,7 @@ const Index = () => {
       <div className="container mx-auto px-4">
         <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
           <Statistics />
+          <WhatWeDo />
           <Features />
           <Services />
           <Testimonials />
