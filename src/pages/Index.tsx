@@ -21,19 +21,30 @@ const Index = () => {
   const { session } = useAuth();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
 
-  const { data: cases } = useQuery({
+  const { data: cases, error } = useQuery({
     queryKey: ['cases'],
     queryFn: async () => {
+      console.log('Fetching cases for user:', session?.user?.id);
       const { data, error } = await supabase
         .from('cases')
         .select('*')
+        .eq('user_id', session?.user?.id)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching cases:', error);
+        throw error;
+      }
+      
+      console.log('Fetched cases:', data);
       return data;
     },
     enabled: !!session
   });
+
+  if (error) {
+    console.error('Query error:', error);
+  }
 
   if (session) {
     return (

@@ -74,6 +74,8 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
         return;
       }
 
+      console.log('Submitting case with values:', values);
+
       // Create the case with all fields
       const { data: caseData, error: caseError } = await supabase.from('cases').insert({
         title: values.opposingParty,
@@ -92,7 +94,13 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
         status: 'جاري'
       }).select().single();
 
-      if (caseError) throw caseError;
+      if (caseError) {
+        console.error('Error creating case:', caseError);
+        toast.error("حدث خطأ أثناء إنشاء القضية");
+        return;
+      }
+
+      console.log('Case created successfully:', caseData);
 
       // Handle document uploads
       if (values.documents && values.documents.length > 0) {
@@ -100,11 +108,16 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
           const fileExt = doc.file.name.split('.').pop();
           const filePath = `${session.user.id}/${crypto.randomUUID()}.${fileExt}`;
 
+          console.log('Uploading document:', doc.file.name);
+
           const { error: uploadError } = await supabase.storage
             .from('case-documents')
             .upload(filePath, doc.file);
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error('Error uploading document:', uploadError);
+            continue;
+          }
 
           const { error: docError } = await supabase.from('case_documents').insert({
             case_id: caseData.id,
@@ -115,7 +128,9 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
             user_id: session.user.id
           });
 
-          if (docError) throw docError;
+          if (docError) {
+            console.error('Error saving document metadata:', docError);
+          }
         }
       }
 
