@@ -1,12 +1,105 @@
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
 }
 
+interface ProfileFormData {
+  full_name: string;
+  phone_number: string;
+}
+
 export const Auth = ({ view = "sign_in" }: AuthProps) => {
+  const [showProfileCompletion, setShowProfileCompletion] = useState(false);
+  const { toast } = useToast();
+  const { register, handleSubmit } = useForm<ProfileFormData>();
+
+  const onProfileSubmit = async (data: ProfileFormData) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "خطأ",
+          description: "يجب تسجيل الدخول أولاً",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: data.full_name,
+          phone_number: data.phone_number,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "تم بنجاح",
+        description: "تم حفظ معلومات الملف الشخصي",
+      });
+      
+      setShowProfileCompletion(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء حفظ المعلومات",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (showProfileCompletion) {
+    return (
+      <div className="w-full max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">
+          أكمل معلومات ملفك الشخصي
+        </h2>
+        <form onSubmit={handleSubmit(onProfileSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-white mb-2">
+              الاسم الكامل
+            </label>
+            <Input
+              {...register("full_name", { required: true })}
+              className="w-full bg-transparent border-white/20 text-white"
+              placeholder="أدخل اسمك الكامل"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-white mb-2">
+              رقم الهاتف
+            </label>
+            <Input
+              {...register("phone_number", { required: true })}
+              type="tel"
+              className="w-full bg-transparent border-white/20 text-white"
+              placeholder="أدخل رقم هاتفك"
+            />
+          </div>
+          <Button
+            type="submit"
+            className="w-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black"
+          >
+            حفظ المعلومات
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <SupabaseAuth
@@ -75,22 +168,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
-        additionalData={[
-          {
-            key: 'full_name',
-            label: "الاسم الكامل",
-            type: "text",
-            placeholder: "أدخل اسمك الكامل",
-            required: true,
-          },
-          {
-            key: 'phone_number',
-            label: "رقم الهاتف",
-            type: "tel",
-            placeholder: "أدخل رقم هاتفك",
-            required: true,
-          },
-        ]}
+        onSignUp={() => setShowProfileCompletion(true)}
       />
     </div>
   );
