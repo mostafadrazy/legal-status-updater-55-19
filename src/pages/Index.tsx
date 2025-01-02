@@ -72,7 +72,14 @@ const Index = () => {
                   className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
-                  <CaseCard {...caseItem} />
+                  <CaseCard 
+                    id={caseItem.id}
+                    caseNumber={caseItem.case_number}
+                    title={caseItem.title}
+                    status={caseItem.status}
+                    nextHearing={caseItem.next_hearing}
+                    client={caseItem.client}
+                  />
                 </div>
               ))}
             </div>
