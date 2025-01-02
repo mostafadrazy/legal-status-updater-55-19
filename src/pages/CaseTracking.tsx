@@ -91,6 +91,7 @@ export default function CaseTracking() {
                   className="transform hover:-translate-y-1 transition-all duration-300"
                 >
                   <CaseCard
+                    id={caseItem.id}
                     caseNumber={caseItem.case_number}
                     title={caseItem.title}
                     status={caseItem.status}

@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { Calendar, User, Scale, Edit, Trash, PlusCircle, Upload, FileText } from "lucide-react";
+import { Calendar, User, Scale, Edit } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
+import { CaseDetailsTab } from "./case-details/CaseDetailsTab";
+import { NotesTab } from "./case-details/NotesTab";
+import { DocumentsTab } from "./case-details/DocumentsTab";
 
 interface CaseCardProps {
   id: string;
@@ -23,12 +25,11 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedCase, setEditedCase] = useState({ title, status, nextHearing, client });
-  const [newNote, setNewNote] = useState("");
   const [notes, setNotes] = useState<any[]>([]);
   const [documents, setDocuments] = useState<any[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { session } = useAuth();
 
   const fetchNotes = async () => {
     const { data, error } = await supabase
@@ -80,7 +81,8 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
     const { error } = await supabase
       .from('cases')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('user_id', session?.user?.id);
 
     if (error) {
       toast({ title: "Error", description: "Failed to delete case", variant: "destructive" });
@@ -92,14 +94,13 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
     queryClient.invalidateQueries({ queryKey: ['cases'] });
   };
 
-  const handleAddNote = async () => {
-    if (!newNote.trim()) return;
-
+  const handleAddNote = async (content: string) => {
     const { error } = await supabase
       .from('case_notes')
       .insert({
         case_id: id,
-        content: newNote,
+        content,
+        user_id: session?.user?.id
       });
 
     if (error) {
@@ -108,27 +109,20 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
     }
 
     toast({ title: "Success", description: "Note added successfully" });
-    setNewNote("");
     fetchNotes();
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
+  const handleFileUpload = async (file: File) => {
     const fileExt = file.name.split('.').pop();
-    const filePath = `${id}/${crypto.randomUUID()}.${fileExt}`;
+    const filePath = `${session?.user?.id}/${crypto.randomUUID()}.${fileExt}`;
 
     try {
-      // Upload file to storage
       const { error: uploadError } = await supabase.storage
         .from('case-documents')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
-      // Save file metadata to database
       const { error: dbError } = await supabase
         .from('case_documents')
         .insert({
@@ -136,6 +130,7 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
           file_name: file.name,
           file_path: filePath,
           file_type: file.type,
+          user_id: session?.user?.id
         });
 
       if (dbError) throw dbError;
@@ -144,8 +139,16 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
       fetchDocuments();
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to upload file", variant: "destructive" });
-    } finally {
-      setIsUploading(false);
+    }
+  };
+
+  const handleViewDocument = async (doc: any) => {
+    const { data } = await supabase.storage
+      .from('case-documents')
+      .createSignedUrl(doc.file_path, 60);
+    
+    if (data?.signedUrl) {
+      window.open(data.signedUrl, '_blank');
     }
   };
 
@@ -201,128 +204,30 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
               <TabsTrigger value="edit">تعديل</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="details" className="space-y-6 py-4">
-              <div className="space-y-2">
-                <h4 className="text-[#4CD6B4] font-medium">معلومات القضية</h4>
-                <div className="grid grid-cols-2 gap-4 text-gray-300">
-                  <div>
-                    <p className="text-sm text-gray-400">رقم القضية</p>
-                    <p className="text-white">{caseNumber}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">الحالة</p>
-                    <StatusBadge status={status} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">العنوان</p>
-                    <p className="text-white">{title}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">الجلسة القادمة</p>
-                    <p className="text-white">{nextHearing || "غير محدد"}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="text-[#4CD6B4] font-medium">معلومات العميل</h4>
-                <div className="grid grid-cols-2 gap-4 text-gray-300">
-                  <div>
-                    <p className="text-sm text-gray-400">اسم العميل</p>
-                    <p className="text-white">{client}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                  className="flex items-center gap-2"
-                >
-                  <Trash className="w-4 h-4" />
-                  حذف القضية
-                </Button>
-              </div>
+            <TabsContent value="details">
+              <CaseDetailsTab
+                caseNumber={caseNumber}
+                title={title}
+                status={status}
+                nextHearing={nextHearing}
+                client={client}
+                onDelete={handleDelete}
+              />
             </TabsContent>
 
-            <TabsContent value="notes" className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex gap-2">
-                  <Textarea
-                    value={newNote}
-                    onChange={(e) => setNewNote(e.target.value)}
-                    placeholder="أضف ملاحظة جديدة..."
-                    className="flex-1"
-                  />
-                  <Button onClick={handleAddNote} className="flex items-center gap-2">
-                    <PlusCircle className="w-4 h-4" />
-                    إضافة
-                  </Button>
-                </div>
-
-                <div className="space-y-4">
-                  {notes.map((note) => (
-                    <div key={note.id} className="p-4 rounded-lg bg-white/5 border border-white/10">
-                      <p className="text-white">{note.content}</p>
-                      <p className="text-sm text-gray-400 mt-2">
-                        {new Date(note.created_at).toLocaleString('ar-SA')}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <TabsContent value="notes">
+              <NotesTab
+                notes={notes}
+                onAddNote={handleAddNote}
+              />
             </TabsContent>
 
-            <TabsContent value="documents" className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-lg cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 mb-2 text-[#4CD6B4]" />
-                      <p className="mb-2 text-sm text-gray-300">
-                        <span className="font-semibold">اضغط للرفع</span> أو اسحب وأفلت
-                      </p>
-                    </div>
-                    <Input
-                      type="file"
-                      className="hidden"
-                      onChange={handleFileUpload}
-                      disabled={isUploading}
-                    />
-                  </label>
-                </div>
-
-                <div className="space-y-4">
-                  {documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-[#4CD6B4]" />
-                        <div>
-                          <p className="text-white">{doc.file_name}</p>
-                          <p className="text-sm text-gray-400">
-                            {new Date(doc.uploaded_at).toLocaleString('ar-SA')}
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        onClick={async () => {
-                          const { data } = await supabase.storage
-                            .from('case-documents')
-                            .createSignedUrl(doc.file_path, 60);
-                          
-                          if (data?.signedUrl) {
-                            window.open(data.signedUrl, '_blank');
-                          }
-                        }}
-                      >
-                        عرض
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <TabsContent value="documents">
+              <DocumentsTab
+                documents={documents}
+                onUpload={handleFileUpload}
+                onViewDocument={handleViewDocument}
+              />
             </TabsContent>
 
             <TabsContent value="edit" className="space-y-4">
