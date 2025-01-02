@@ -18,7 +18,6 @@ type CaseDetailsFieldsProps = {
 };
 
 export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
-  // Add logging for form values
   console.log('Current form values:', form.getValues());
   
   return (
@@ -28,7 +27,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="caseNumber"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>رقم القضية (اختياري)</FormLabel>
+            <FormLabel className="text-gray-300">رقم القضية (اختياري)</FormLabel>
             <FormControl>
               <Input placeholder="أدخل رقم القضية" {...field} />
             </FormControl>
@@ -42,7 +41,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="court"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>المحكمة</FormLabel>
+            <FormLabel className="text-gray-300">المحكمة</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -66,7 +65,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="caseType"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>نوع القضية</FormLabel>
+            <FormLabel className="text-gray-300">نوع القضية</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -90,7 +89,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="opposingParty"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>الطرف المقابل</FormLabel>
+            <FormLabel className="text-gray-300">الطرف المقابل</FormLabel>
             <FormControl>
               <Input placeholder="أدخل اسم الطرف المقابل" {...field} />
             </FormControl>
@@ -104,7 +103,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="filingDate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>تاريخ التقديم</FormLabel>
+            <FormLabel className="text-gray-300">تاريخ التقديم</FormLabel>
             <FormControl>
               <Input type="date" {...field} />
             </FormControl>
@@ -118,7 +117,7 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         name="hearingDate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>تاريخ الجلسة (اختياري)</FormLabel>
+            <FormLabel className="text-gray-300">تاريخ الجلسة (اختياري)</FormLabel>
             <FormControl>
               <Input type="date" {...field} />
             </FormControl>
