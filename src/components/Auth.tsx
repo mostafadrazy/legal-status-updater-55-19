@@ -35,27 +35,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
     };
   }, [view, navigate]);
 
-  const handleAuthError = (error: Error) => {
-    console.error('Auth error:', error);
-    
-    let errorMessage = "حدث خطأ في تسجيل الدخول";
-    
-    // Check for specific error messages
-    if (error.message.includes("Invalid login credentials")) {
-      errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-    } else if (error.message.includes("Email not confirmed")) {
-      errorMessage = "يرجى تأكيد بريدك الإلكتروني أولاً";
-    } else if (error.message.includes("Email rate limit exceeded")) {
-      errorMessage = "تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً";
-    }
-
-    toast({
-      title: "خطأ في تسجيل الدخول",
-      description: errorMessage,
-      variant: "destructive",
-    });
-  };
-
   if (showProfileCompletion) {
     return <ProfileCompletionForm />;
   }
@@ -105,7 +84,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         providers={["google", "github"]}
         redirectTo={`${window.location.origin}/auth/callback`}
-        onError={handleAuthError}
         localization={{
           variables: {
             sign_in: {
@@ -129,6 +107,25 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
+        onAuthError={(error) => {
+          console.error('Auth error:', error);
+          
+          let errorMessage = "حدث خطأ في تسجيل الدخول";
+          
+          if (error.message.includes("Invalid login credentials")) {
+            errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+          } else if (error.message.includes("Email not confirmed")) {
+            errorMessage = "يرجى تأكيد بريدك الإلكتروني أولاً";
+          } else if (error.message.includes("Email rate limit exceeded")) {
+            errorMessage = "تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً";
+          }
+
+          toast({
+            title: "خطأ في تسجيل الدخول",
+            description: errorMessage,
+            variant: "destructive",
+          });
+        }}
       />
     </div>
   );
