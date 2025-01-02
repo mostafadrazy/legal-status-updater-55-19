@@ -74,16 +74,42 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
         return;
       }
 
-      const { error } = await supabase.from('cases').insert({
-        title: values.opposingParty, // Using opposing party as the title
+      // First create the case
+      const { data: caseData, error: caseError } = await supabase.from('cases').insert({
+        title: values.opposingParty,
         case_number: values.caseNumber,
         client: values.clientName,
         next_hearing: values.hearingDate || null,
         user_id: session.user.id,
         status: 'جاري'
-      });
+      }).select().single();
 
-      if (error) throw error;
+      if (caseError) throw caseError;
+
+      // Then upload documents if any
+      if (values.documents && values.documents.length > 0) {
+        for (const doc of values.documents) {
+          const fileExt = doc.file.name.split('.').pop();
+          const filePath = `${session.user.id}/${crypto.randomUUID()}.${fileExt}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('case-documents')
+            .upload(filePath, doc.file);
+
+          if (uploadError) throw uploadError;
+
+          const { error: docError } = await supabase.from('case_documents').insert({
+            case_id: caseData.id,
+            file_name: doc.file.name,
+            file_path: filePath,
+            file_type: doc.file.type,
+            description: doc.description,
+            user_id: session.user.id
+          });
+
+          if (docError) throw docError;
+        }
+      }
 
       toast.success("تم إنشاء القضية بنجاح");
       queryClient.invalidateQueries({ queryKey: ['cases'] });

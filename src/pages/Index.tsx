@@ -14,29 +14,26 @@ import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
 import NewCaseForm from "@/components/NewCaseForm";
-
-const mockCases = [
-  {
-    id: "1",
-    title: "قضية عقارية - برج السلام",
-    caseNumber: "CASE-001",
-    status: "جاري",
-    nextHearing: "2024-03-15",
-    client: "شركة العقارات المتحدة"
-  },
-  {
-    id: "2",
-    title: "قضية تجارية - شركة النور",
-    caseNumber: "CASE-002",
-    status: "معلق",
-    nextHearing: "2024-03-20",
-    client: "مؤسسة النور التجارية"
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const { session } = useAuth();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
+
+  const { data: cases } = useQuery({
+    queryKey: ['cases'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cases')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session
+  });
 
   if (session) {
     return (
@@ -69,9 +66,9 @@ const Index = () => {
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {mockCases.map((caseItem, index) => (
+              {cases?.map((caseItem, index) => (
                 <div
-                  key={caseItem.caseNumber}
+                  key={caseItem.id}
                   className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
