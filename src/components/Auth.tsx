@@ -1,12 +1,11 @@
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { AuthChangeEvent } from "@supabase/supabase-js";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
@@ -21,6 +20,20 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
   const { toast } = useToast();
   const { register, handleSubmit } = useForm<ProfileFormData>();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event);
+      if (event === 'SIGNED_IN' && view === 'sign_up') {
+        console.log('Showing profile completion form');
+        setShowProfileCompletion(true);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [view]);
 
   const onProfileSubmit = async (data: ProfileFormData) => {
     try {
