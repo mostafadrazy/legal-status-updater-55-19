@@ -17,17 +17,17 @@ const ACCEPTED_FILE_TYPES = ["application/pdf", "image/jpeg", "image/png", "appl
 
 const formSchema = z.object({
   clientName: z.string().min(2, { message: "اسم العميل مطلوب" }),
-  clientPhone: z.string().min(8, { message: "رقم الهاتف غير صالح" }).optional(),
-  clientEmail: z.string().email({ message: "البريد الإلكتروني غير صالح" }).optional(),
+  clientPhone: z.string().min(8, { message: "رقم الهاتف غير صالح" }),
+  clientEmail: z.string().email({ message: "البريد الإلكتروني غير صالح" }),
   clientAddress: z.string().optional(),
   caseNumber: z.string().min(1, { message: "رقم القضية مطلوب" }),
-  court: z.string().optional(),
-  caseType: z.string().optional(),
-  opposingParty: z.string().optional(),
+  court: z.string().min(1, { message: "المحكمة مطلوبة" }),
+  caseType: z.string().min(1, { message: "نوع القضية مطلوب" }),
+  opposingParty: z.string().min(2, { message: "اسم الطرف المقابل مطلوب" }),
   opposingLawyer: z.string().optional(),
-  filingDate: z.string().optional(),
+  filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
-  title: z.string().min(2, { message: "عنوان القضية مطلوب" }),
+  additionalInfo: z.string().optional(),
   documents: z.array(
     z.object({
       file: z.instanceof(File)
@@ -62,7 +62,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
       opposingLawyer: "",
       filingDate: "",
       hearingDate: "",
-      title: "",
+      additionalInfo: "",
       documents: [],
     },
   });
@@ -78,7 +78,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
 
       // Create the case with all fields
       const { data: caseData, error: caseError } = await supabase.from('cases').insert({
-        title: values.title,
+        title: values.opposingParty,
         case_number: values.caseNumber,
         client: values.clientName,
         client_phone: values.clientPhone,

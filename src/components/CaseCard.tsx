@@ -25,7 +25,6 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
   const { session } = useAuth();
 
   const fetchCaseDetails = async () => {
-    console.log('Fetching case details for ID:', id);
     const { data, error } = await supabase
       .from('cases')
       .select('*')
@@ -33,12 +32,10 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
       .single();
     
     if (error) {
-      console.error('Error fetching case details:', error);
       toast({ title: "Error", description: "Failed to fetch case details", variant: "destructive" });
       return;
     }
     
-    console.log('Fetched case details:', data);
     setCaseDetails(data);
   };
 
