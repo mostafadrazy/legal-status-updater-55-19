@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { AvatarUpload } from "@/components/settings/AvatarUpload";
 import { ProfileForm } from "@/components/settings/ProfileForm";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProfileData {
   full_name: string | null;
@@ -15,38 +16,66 @@ export default function Settings() {
   const { user } = useAuth();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
       
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching profile:", error);
-        return;
-      }
+        if (error) {
+          console.error("Error fetching profile:", error);
+          toast({
+            variant: "destructive",
+            title: "خطأ في تحميل البيانات",
+            description: "يرجى المحاولة مرة أخرى لاحقاً",
+          });
+          return;
+        }
 
-      if (data) {
-        setProfileData(data);
-      }
+        // If no profile exists, create one
+        if (!data) {
+          const { error: createError } = await supabase
+            .from("profiles")
+            .insert([{ id: user.id }]);
 
-      const { data: avatarData } = await supabase
-        .storage
-        .from('avatars')
-        .getPublicUrl(`${user.id}`);
+          if (createError) {
+            console.error("Error creating profile:", createError);
+            toast({
+              variant: "destructive",
+              title: "خطأ في إنشاء الملف الشخصي",
+              description: "يرجى المحاولة مرة أخرى لاحقاً",
+            });
+            return;
+          }
 
-      if (avatarData) {
-        setAvatarUrl(avatarData.publicUrl);
+          setProfileData({ full_name: null, phone_number: null });
+        } else {
+          setProfileData(data);
+        }
+
+        // Get avatar URL if it exists
+        if (data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+      } catch (error) {
+        console.error("Error in profile management:", error);
+        toast({
+          variant: "destructive",
+          title: "خطأ غير متوقع",
+          description: "يرجى المحاولة مرة أخرى لاحقاً",
+        });
       }
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, toast]);
 
   if (!user) return null;
 
