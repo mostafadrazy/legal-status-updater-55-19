@@ -21,7 +21,7 @@ export const ClientInfoFields = ({ form }: ClientInfoFieldsProps) => {
         name="clientName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>اسم العميل</FormLabel>
+            <FormLabel className="text-gray-300">اسم العميل</FormLabel>
             <FormControl>
               <Input placeholder="أدخل اسم العميل" {...field} />
             </FormControl>
@@ -35,7 +35,7 @@ export const ClientInfoFields = ({ form }: ClientInfoFieldsProps) => {
         name="clientPhone"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>رقم الهاتف</FormLabel>
+            <FormLabel className="text-gray-300">رقم الهاتف</FormLabel>
             <FormControl>
               <Input placeholder="أدخل رقم الهاتف" {...field} />
             </FormControl>
@@ -49,7 +49,7 @@ export const ClientInfoFields = ({ form }: ClientInfoFieldsProps) => {
         name="clientEmail"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>البريد الإلكتروني</FormLabel>
+            <FormLabel className="text-gray-300">البريد الإلكتروني</FormLabel>
             <FormControl>
               <Input placeholder="أدخل البريد الإلكتروني" {...field} />
             </FormControl>
