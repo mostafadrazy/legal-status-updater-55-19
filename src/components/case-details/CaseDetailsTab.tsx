@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { StatusBadge } from "../StatusBadge";
+import { EditCaseForm } from "./EditCaseForm";
+import { Button } from "../ui/button";
+import { Pencil } from "lucide-react";
 
 interface CaseDetailsTabProps {
+  id: string;
   caseNumber: string;
   title: string;
   status: string;
@@ -18,6 +23,7 @@ interface CaseDetailsTabProps {
 }
 
 export function CaseDetailsTab({ 
+  id,
   caseNumber, 
   title, 
   status, 
@@ -33,10 +39,47 @@ export function CaseDetailsTab({
   filingDate,
   onDelete 
 }: CaseDetailsTabProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  if (isEditing) {
+    return (
+      <EditCaseForm
+        caseData={{
+          id,
+          title,
+          case_number: caseNumber,
+          status,
+          next_hearing: nextHearing,
+          client,
+          client_phone: clientPhone,
+          client_email: clientEmail,
+          client_address: clientAddress,
+          court,
+          case_type: caseType,
+          opposing_party: opposingParty,
+          opposing_lawyer: opposingLawyer,
+          filing_date: filingDate,
+        }}
+        onClose={() => setIsEditing(false)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6 py-4">
       <div className="space-y-2">
-        <h4 className="text-[#4CD6B4] font-medium">معلومات القضية</h4>
+        <div className="flex justify-between items-center">
+          <h4 className="text-[#4CD6B4] font-medium">معلومات القضية</h4>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[#4CD6B4] border-[#4CD6B4]"
+            onClick={() => setIsEditing(true)}
+          >
+            <Pencil className="w-4 h-4 mr-2" />
+            تعديل
+          </Button>
+        </div>
         <div className="grid grid-cols-2 gap-4 text-gray-300">
           <div>
             <p className="text-sm text-gray-400">رقم القضية</p>

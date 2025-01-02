@@ -204,6 +204,7 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
             <TabsContent value="details">
               {caseDetails && (
                 <CaseDetailsTab
+                  id={caseDetails.id}
                   caseNumber={caseDetails.case_number}
                   title={caseDetails.title}
                   status={caseDetails.status}
