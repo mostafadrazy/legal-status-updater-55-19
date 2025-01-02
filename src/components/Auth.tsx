@@ -3,7 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { ProfileCompletionForm } from "./auth/ProfileCompletionForm";
 
 interface AuthProps {
@@ -13,7 +12,6 @@ interface AuthProps {
 export const Auth = ({ view = "sign_in" }: AuthProps) => {
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -107,25 +105,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
-        onError={(error: Error) => {
-          console.error('Auth error:', error);
-          
-          let errorMessage = "حدث خطأ في تسجيل الدخول";
-          
-          if (error.message.includes("Invalid login credentials")) {
-            errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-          } else if (error.message.includes("Email not confirmed")) {
-            errorMessage = "يرجى تأكيد بريدك الإلكتروني أولاً";
-          } else if (error.message.includes("Email rate limit exceeded")) {
-            errorMessage = "تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً";
-          }
-
-          toast({
-            title: "خطأ في تسجيل الدخول",
-            description: errorMessage,
-            variant: "destructive",
-          });
-        }}
       />
     </div>
   );
