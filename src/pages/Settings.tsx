@@ -1,33 +1,20 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Settings as SettingsIcon, Upload, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { Settings as SettingsIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { AvatarUpload } from "@/components/settings/AvatarUpload";
+import { ProfileForm } from "@/components/settings/ProfileForm";
 
-interface SettingsFormData {
-  full_name: string;
-  phone_number: string;
+interface ProfileData {
+  full_name: string | null;
+  phone_number: string | null;
 }
 
 export default function Settings() {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-
-  const form = useForm<SettingsFormData>({
-    defaultValues: {
-      full_name: "",
-      phone_number: "",
-    },
-  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -45,13 +32,9 @@ export default function Settings() {
       }
 
       if (data) {
-        form.reset({
-          full_name: data.full_name || "",
-          phone_number: data.phone_number || "",
-        });
+        setProfileData(data);
       }
 
-      // Fetch avatar URL
       const { data: avatarData } = await supabase
         .storage
         .from('avatars')
@@ -63,77 +46,9 @@ export default function Settings() {
     };
 
     fetchProfile();
-  }, [user, form]);
+  }, [user]);
 
-  const onSubmit = async (data: SettingsFormData) => {
-    if (!user) return;
-    
-    setIsLoading(true);
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: data.full_name,
-          phone_number: data.phone_number,
-        })
-        .eq("id", user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "تم تحديث الإعدادات بنجاح",
-        description: "تم حفظ التغييرات الخاصة بك",
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast({
-        variant: "destructive",
-        title: "خطأ في تحديث الإعدادات",
-        description: "يرجى المحاولة مرة أخرى لاحقاً",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !user) return;
-
-    setIsUploadingAvatar(true);
-    try {
-      // Upload the file to Supabase storage
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(`${user.id}`, file, {
-          upsert: true,
-          contentType: file.type,
-        });
-
-      if (uploadError) throw uploadError;
-
-      // Get the public URL
-      const { data } = await supabase.storage
-        .from('avatars')
-        .getPublicUrl(`${user.id}`);
-
-      setAvatarUrl(data.publicUrl);
-
-      toast({
-        title: "تم تحديث الصورة الشخصية",
-        description: "تم رفع الصورة بنجاح",
-      });
-    } catch (error) {
-      console.error("Error uploading avatar:", error);
-      toast({
-        variant: "destructive",
-        title: "خطأ في رفع الصورة",
-        description: "يرجى المحاولة مرة أخرى لاحقاً",
-      });
-    } finally {
-      setIsUploadingAvatar(false);
-    }
-  };
+  if (!user) return null;
 
   return (
     <div className="min-h-screen flex w-full bg-[#111]">
@@ -153,86 +68,18 @@ export default function Settings() {
           </div>
 
           <div className="glass-card p-6 rounded-xl space-y-8">
-            {/* Avatar Section */}
-            <div className="flex flex-col items-center space-y-4">
-              <Avatar className="w-24 h-24 border-4 border-[#4CD6B4]/20">
-                <AvatarImage src={avatarUrl || undefined} />
-                <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4] text-xl">
-                  {form.watch("full_name")?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="avatar-upload"
-                  className="flex items-center gap-2 px-4 py-2 rounded-md bg-[#4CD6B4]/10 hover:bg-[#4CD6B4]/20 transition-colors cursor-pointer text-[#4CD6B4]"
-                >
-                  {isUploadingAvatar ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Upload className="w-4 h-4" />
-                  )}
-                  تغيير الصورة الشخصية
-                </label>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                  disabled={isUploadingAvatar}
-                />
-              </div>
-            </div>
+            <AvatarUpload 
+              userId={user.id}
+              userEmail={user.email}
+              fullName={profileData?.full_name || undefined}
+              initialAvatarUrl={avatarUrl}
+            />
 
-            {/* Profile Form */}
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="full_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">الاسم الكامل</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="أدخل اسمك الكامل"
-                          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phone_number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">رقم الهاتف</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="أدخل رقم هاتفك"
-                          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button 
-                  type="submit" 
-                  disabled={isLoading}
-                  className="w-full bg-[#4CD6B4] hover:bg-[#3bc4a2] text-black font-medium"
-                >
-                  {isLoading ? "جاري الحفظ..." : "حفظ التغييرات"}
-                </Button>
-              </form>
-            </Form>
+            <ProfileForm 
+              userId={user.id}
+              initialData={profileData || undefined}
+              onUpdate={setProfileData}
+            />
           </div>
         </div>
       </main>
