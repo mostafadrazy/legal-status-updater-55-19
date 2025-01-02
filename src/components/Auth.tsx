@@ -107,7 +107,7 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }}
         view={view}
         showLinks={false}
-        onAuthError={(error) => {
+        onError={(error) => {
           console.error('Auth error:', error);
           
           let errorMessage = "حدث خطأ في تسجيل الدخول";
