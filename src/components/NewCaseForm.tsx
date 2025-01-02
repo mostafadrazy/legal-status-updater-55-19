@@ -27,17 +27,16 @@ const formSchema = z.object({
   opposingLawyer: z.string().optional(),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
-  documents: z
-    .array(
-      z.object({
-        file: z.instanceof(File)
-          .refine(file => file.size <= MAX_FILE_SIZE, 'حجم الملف يجب أن يكون أقل من 5 ميجابايت')
-          .refine(file => ACCEPTED_FILE_TYPES.includes(file.type), 'نوع الملف غير مدعوم'),
-        type: z.string(),
-        description: z.string().optional(),
-      })
-    )
-    .optional(),
+  additionalInfo: z.string().optional(),
+  documents: z.array(
+    z.object({
+      file: z.instanceof(File)
+        .refine(file => file.size <= MAX_FILE_SIZE, 'حجم الملف يجب أن يكون أقل من 5 ميجابايت')
+        .refine(file => ACCEPTED_FILE_TYPES.includes(file.type), 'نوع الملف غير مدعوم'),
+      type: z.string(),
+      description: z.string().optional(),
+    })
+  ).optional(),
 });
 
 interface NewCaseFormProps {
@@ -63,6 +62,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
       opposingLawyer: "",
       filingDate: "",
       hearingDate: "",
+      additionalInfo: "",
       documents: [],
     },
   });
@@ -74,11 +74,19 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
         return;
       }
 
-      // First create the case
+      // Create the case with all fields
       const { data: caseData, error: caseError } = await supabase.from('cases').insert({
         title: values.opposingParty,
         case_number: values.caseNumber,
         client: values.clientName,
+        client_phone: values.clientPhone,
+        client_email: values.clientEmail,
+        client_address: values.clientAddress,
+        court: values.court,
+        case_type: values.caseType,
+        opposing_party: values.opposingParty,
+        opposing_lawyer: values.opposingLawyer,
+        filing_date: values.filingDate,
         next_hearing: values.hearingDate || null,
         user_id: session.user.id,
         status: 'جاري'
@@ -86,7 +94,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
 
       if (caseError) throw caseError;
 
-      // Then upload documents if any
+      // Handle document uploads
       if (values.documents && values.documents.length > 0) {
         for (const doc of values.documents) {
           const fileExt = doc.file.name.split('.').pop();
