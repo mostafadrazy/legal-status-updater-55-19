@@ -212,7 +212,6 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
                   client={caseDetails.client}
                   clientPhone={caseDetails.client_phone}
                   clientEmail={caseDetails.client_email}
-                  clientAddress={caseDetails.client_address}
                   court={caseDetails.court}
                   caseType={caseDetails.case_type}
                   opposingParty={caseDetails.opposing_party}
