@@ -18,7 +18,7 @@ const WhatWeDo = () => {
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-legal-900/90 to-legal-800/90 -z-10" />
-      <div className="absolute inset-0 bg-[url('/lovable-uploads/91fe343d-4b53-4607-89d9-af0070a4f130.png')] opacity-10 bg-cover bg-center -z-20" />
+      <div className="absolute inset-0 opacity-10 bg-cover bg-center -z-20" />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center container mx-auto">
         <div className="space-y-8">
