@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
 import { EditCaseForm } from "./EditCaseForm";
-import { CaseInformationSection } from "./sections/CaseInformationSection";
+import { CaseHeaderSection } from "./sections/CaseHeaderSection";
 import { ClientInformationSection } from "./sections/ClientInformationSection";
 import { OpposingPartySection } from "./sections/OpposingPartySection";
 
@@ -15,6 +15,7 @@ interface CaseDetailsTabProps {
   client: string;
   clientPhone?: string;
   clientEmail?: string;
+  clientAddress?: string;
   court?: string;
   caseType?: string;
   opposingParty?: string;
@@ -32,6 +33,7 @@ export function CaseDetailsTab({
   client,
   clientPhone,
   clientEmail,
+  clientAddress,
   court,
   caseType,
   opposingParty,
@@ -53,6 +55,7 @@ export function CaseDetailsTab({
           client,
           client_phone: clientPhone,
           client_email: clientEmail,
+          client_address: clientAddress,
           court,
           case_type: caseType,
           opposing_party: opposingParty,
@@ -65,9 +68,8 @@ export function CaseDetailsTab({
   }
 
   return (
-    <div className="space-y-6 py-4">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-1" />
+    <div className="space-y-8 py-4">
+      <div className="flex justify-end">
         <Button
           variant="outline"
           size="sm"
@@ -79,11 +81,10 @@ export function CaseDetailsTab({
         </Button>
       </div>
 
-      <CaseInformationSection
+      <CaseHeaderSection
         caseNumber={caseNumber}
-        status={status}
         title={title}
-        nextHearing={nextHearing}
+        status={status}
         court={court}
         caseType={caseType}
         filingDate={filingDate}
@@ -93,6 +94,7 @@ export function CaseDetailsTab({
         client={client}
         clientPhone={clientPhone}
         clientEmail={clientEmail}
+        clientAddress={clientAddress}
       />
 
       <OpposingPartySection
@@ -100,13 +102,14 @@ export function CaseDetailsTab({
         opposingLawyer={opposingLawyer}
       />
 
-      <div className="flex justify-end space-x-2">
-        <button
+      <div className="flex justify-end pt-4">
+        <Button
+          variant="destructive"
           onClick={onDelete}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          className="bg-red-500 hover:bg-red-600"
         >
           حذف القضية
-        </button>
+        </Button>
       </div>
     </div>
   );
