@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
@@ -45,15 +45,15 @@ export default function CaseTracking() {
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-[#111]">
+    <div className="min-h-screen flex w-full bg-[#111]" dir="rtl">
       {/* Background gradients */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] 
+          className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] 
           bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
         />
         <div 
-          className="absolute bottom-0 left-1/4 w-[800px] h-[800px] 
+          className="absolute bottom-0 right-1/4 w-[800px] h-[800px] 
           bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10"
         />
       </div>
@@ -63,7 +63,7 @@ export default function CaseTracking() {
       <main className="flex-1 p-8 relative animate-fade-in">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent">
               القضايا
             </h1>
             <Button 
