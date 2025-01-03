@@ -6,12 +6,13 @@ import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 import { ClientInfoFields } from "./case-form/ClientInfoFields";
 import { CaseDetailsFields } from "./case-form/CaseDetailsFields";
+import { NotesFields } from "./case-form/NotesFields";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DocumentUploadFields } from "./case-form/DocumentUploadFields";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { Scale, Users, FileText } from "lucide-react";
+import { Scale, Users, FileText, NotebookPen } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = ["application/pdf", "image/jpeg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
@@ -28,6 +29,7 @@ const formSchema = z.object({
   opposingLawyer: z.string().optional(),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
+  initialNote: z.string().optional(),
   documents: z.array(
     z.object({
       file: z.instanceof(File)
@@ -62,6 +64,7 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
       opposingLawyer: "",
       filingDate: "",
       hearingDate: "",
+      initialNote: "",
       documents: [],
     },
   });
@@ -100,6 +103,21 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
 
       console.log('Case created successfully:', caseData);
 
+      // Create initial note if provided
+      if (values.initialNote?.trim()) {
+        const { error: noteError } = await supabase.from('case_notes').insert({
+          case_id: caseData.id,
+          content: values.initialNote,
+          user_id: session.user.id
+        });
+
+        if (noteError) {
+          console.error('Error creating initial note:', noteError);
+          toast.error("تم إنشاء القضية ولكن حدث خطأ أثناء حفظ الملاحظات الأولية");
+        }
+      }
+
+      // Handle document uploads
       if (values.documents && values.documents.length > 0) {
         for (const doc of values.documents) {
           const fileExt = doc.file.name.split('.').pop();
@@ -172,14 +190,23 @@ const NewCaseForm = ({ open, onOpenChange }: NewCaseFormProps) => {
                 </div>
               </div>
               
-              {/* Case Details Section */}
               <div className="space-y-8">
+                {/* Case Details Section */}
                 <div className="space-y-6 p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                   <div className="flex items-center gap-3 mb-6">
                     <Scale className="w-6 h-6 text-[#4CD6B4]" />
                     <h3 className="text-xl font-semibold text-white">تفاصيل القضية</h3>
                   </div>
                   <CaseDetailsFields form={form} />
+                </div>
+
+                {/* Notes Section */}
+                <div className="space-y-6 p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <NotebookPen className="w-6 h-6 text-[#4CD6B4]" />
+                    <h3 className="text-xl font-semibold text-white">الملاحظات</h3>
+                  </div>
+                  <NotesFields form={form} />
                 </div>
               </div>
             </div>
