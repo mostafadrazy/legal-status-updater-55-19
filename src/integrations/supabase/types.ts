@@ -98,6 +98,7 @@ export type Database = {
           filing_date: string | null
           id: string
           next_hearing: string | null
+          notes: string | null
           opposing_lawyer: string | null
           opposing_party: string | null
           status: string
@@ -117,6 +118,7 @@ export type Database = {
           filing_date?: string | null
           id?: string
           next_hearing?: string | null
+          notes?: string | null
           opposing_lawyer?: string | null
           opposing_party?: string | null
           status?: string
@@ -136,6 +138,7 @@ export type Database = {
           filing_date?: string | null
           id?: string
           next_hearing?: string | null
+          notes?: string | null
           opposing_lawyer?: string | null
           opposing_party?: string | null
           status?: string
