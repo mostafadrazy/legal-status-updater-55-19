@@ -37,7 +37,7 @@ export function SessionsList({ sessions, onSessionsChange }: SessionsListProps) 
 
   if (sessions.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-400">
+      <div className="text-center py-8 text-gray-400" dir="rtl">
         <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>لا توجد جلسات مسجلة</p>
       </div>
@@ -45,22 +45,22 @@ export function SessionsList({ sessions, onSessionsChange }: SessionsListProps) 
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" dir="rtl">
       {sessions.map((session) => (
         <div
           key={session.id}
-          className="p-4 rounded-lg border border-white/10 bg-white/5 space-y-3"
+          className="p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-200"
         >
           <div className="flex justify-between items-start">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="flex items-center gap-2 text-[#4CD6B4]">
-                <Calendar className="w-4 h-4" />
-                <span>
+                <Calendar className="w-4 h-4 ml-1" />
+                <span className="font-semibold">
                   {format(new Date(session.session_date), 'dd MMMM yyyy', { locale: ar })}
                 </span>
               </div>
               {session.next_session_date && (
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 mr-6">
                   الجلسة القادمة: {format(new Date(session.next_session_date), 'dd MMMM yyyy', { locale: ar })}
                 </p>
               )}
@@ -75,24 +75,26 @@ export function SessionsList({ sessions, onSessionsChange }: SessionsListProps) 
             </Button>
           </div>
 
-          {session.room_number && (
-            <p className="text-sm text-gray-300">
-              رقم القاعة: {session.room_number}
-            </p>
-          )}
-          
-          {session.procedure_type && (
-            <p className="text-sm text-gray-300">
-              نوع الإجراء: {session.procedure_type}
-            </p>
-          )}
+          <div className="mt-4 space-y-2">
+            {session.room_number && (
+              <p className="text-sm text-gray-300">
+                <span className="text-gray-400">رقم القاعة:</span> {session.room_number}
+              </p>
+            )}
+            
+            {session.procedure_type && (
+              <p className="text-sm text-gray-300">
+                <span className="text-gray-400">نوع الإجراء:</span> {session.procedure_type}
+              </p>
+            )}
 
-          {session.decision && (
-            <div className="mt-2 p-3 rounded bg-white/5 text-sm">
-              <p className="text-gray-400 mb-1">القرار:</p>
-              <p className="text-white">{session.decision}</p>
-            </div>
-          )}
+            {session.decision && (
+              <div className="mt-3 p-3 rounded bg-white/5 text-sm">
+                <p className="text-gray-400 mb-2">القرار:</p>
+                <p className="text-white leading-relaxed">{session.decision}</p>
+              </div>
+            )}
+          </div>
         </div>
       ))}
     </div>
