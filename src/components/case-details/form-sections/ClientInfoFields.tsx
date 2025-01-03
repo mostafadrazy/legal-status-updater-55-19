@@ -16,8 +16,8 @@ interface ClientInfoFieldsProps {
 
 export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
   return (
-    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10">
-      <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
+    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10 rtl">
+      <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4 text-right">
         معلومات العميل
       </h3>
 
@@ -25,16 +25,17 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         control={form.control}
         name="client"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-[#4CD6B4]">اسم العميل</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل اسم العميل"
+                dir="rtl"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-right" />
           </FormItem>
         )}
       />
@@ -43,16 +44,17 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         control={form.control}
         name="clientPhone"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-[#4CD6B4]">رقم الهاتف</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل رقم الهاتف"
+                dir="rtl"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-right" />
           </FormItem>
         )}
       />
@@ -61,16 +63,17 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         control={form.control}
         name="clientEmail"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-[#4CD6B4]">البريد الإلكتروني</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل البريد الإلكتروني"
+                dir="rtl"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-right" />
           </FormItem>
         )}
       />
@@ -79,16 +82,17 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         control={form.control}
         name="clientAddress"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-[#4CD6B4]">العنوان</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل العنوان"
+                dir="rtl"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-right" />
           </FormItem>
         )}
       />
