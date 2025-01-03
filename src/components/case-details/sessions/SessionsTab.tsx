@@ -6,6 +6,7 @@ import { AddSessionDialog } from "./AddSessionDialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext"; // Add this import
 
 interface SessionsTabProps {
   caseId: string;
@@ -17,12 +18,14 @@ export function SessionsTab({ caseId, sessions, onSessionsChange }: SessionsTabP
   const [showAddSession, setShowAddSession] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { session } = useAuth(); // Add this line
 
   const handleAddSession = async (sessionData: any) => {
     const { error } = await supabase
       .from('case_sessions')
       .insert({
         case_id: caseId,
+        user_id: session?.user?.id, // Add this line
         ...sessionData
       });
 
