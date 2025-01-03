@@ -47,64 +47,87 @@ export function CaseDetailsDialog({
 
   return (
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
-      <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
+        <DialogHeader className="text-right space-y-2">
           <DialogTitle className="text-2xl font-bold text-white">تفاصيل القضية</DialogTitle>
+          <p className="text-gray-400 text-sm">{caseDetails?.case_number}</p>
         </DialogHeader>
         
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid grid-cols-4 gap-4 bg-white/5">
-            <TabsTrigger value="details">التفاصيل</TabsTrigger>
-            <TabsTrigger value="sessions">الجلسات</TabsTrigger>
-            <TabsTrigger value="notes">الملاحظات</TabsTrigger>
-            <TabsTrigger value="documents">المستندات</TabsTrigger>
+        <Tabs defaultValue="details" className="w-full mt-6">
+          <TabsList className="grid grid-cols-4 gap-4 bg-white/5 p-1 rounded-lg">
+            <TabsTrigger 
+              value="details"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+            >
+              التفاصيل
+            </TabsTrigger>
+            <TabsTrigger 
+              value="sessions"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+            >
+              الجلسات
+            </TabsTrigger>
+            <TabsTrigger 
+              value="notes"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+            >
+              الملاحظات
+            </TabsTrigger>
+            <TabsTrigger 
+              value="documents"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+            >
+              المستندات
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="details">
-            {caseDetails && (
-              <CaseDetailsTab
-                id={caseDetails.id}
-                caseNumber={caseDetails.case_number}
-                title={caseDetails.title}
-                status={caseDetails.status}
-                nextHearing={caseDetails.next_hearing}
-                client={caseDetails.client}
-                clientPhone={caseDetails.client_phone}
-                clientEmail={caseDetails.client_email}
-                court={caseDetails.court}
-                caseType={caseDetails.case_type}
-                opposingParty={caseDetails.opposing_party}
-                opposingLawyer={caseDetails.opposing_lawyer}
-                filingDate={caseDetails.filing_date}
-                onDelete={onDelete}
+          <div className="mt-6 space-y-6">
+            <TabsContent value="details" className="focus-visible:outline-none">
+              {caseDetails && (
+                <CaseDetailsTab
+                  id={caseDetails.id}
+                  caseNumber={caseDetails.case_number}
+                  title={caseDetails.title}
+                  status={caseDetails.status}
+                  nextHearing={caseDetails.next_hearing}
+                  client={caseDetails.client}
+                  clientPhone={caseDetails.client_phone}
+                  clientEmail={caseDetails.client_email}
+                  court={caseDetails.court}
+                  caseType={caseDetails.case_type}
+                  opposingParty={caseDetails.opposing_party}
+                  opposingLawyer={caseDetails.opposing_lawyer}
+                  filingDate={caseDetails.filing_date}
+                  onDelete={onDelete}
+                />
+              )}
+            </TabsContent>
+
+            <TabsContent value="sessions" className="focus-visible:outline-none">
+              {caseDetails && sessions && (
+                <SessionsTab
+                  caseId={caseDetails.id}
+                  sessions={sessions}
+                  onSessionsChange={refetchSessions}
+                />
+              )}
+            </TabsContent>
+
+            <TabsContent value="notes" className="focus-visible:outline-none">
+              <NotesTab
+                notes={notes}
+                onAddNote={onAddNote}
               />
-            )}
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="sessions">
-            {caseDetails && sessions && (
-              <SessionsTab
-                caseId={caseDetails.id}
-                sessions={sessions}
-                onSessionsChange={refetchSessions}
+            <TabsContent value="documents" className="focus-visible:outline-none">
+              <DocumentsTab
+                documents={documents}
+                onUpload={onUpload}
+                onViewDocument={onViewDocument}
               />
-            )}
-          </TabsContent>
-
-          <TabsContent value="notes">
-            <NotesTab
-              notes={notes}
-              onAddNote={onAddNote}
-            />
-          </TabsContent>
-
-          <TabsContent value="documents">
-            <DocumentsTab
-              documents={documents}
-              onUpload={onUpload}
-              onViewDocument={onViewDocument}
-            />
-          </TabsContent>
+            </TabsContent>
+          </div>
         </Tabs>
       </DialogContent>
     </Dialog>
