@@ -85,6 +85,53 @@ export type Database = {
           },
         ]
       }
+      case_sessions: {
+        Row: {
+          case_id: string
+          created_at: string
+          decision: string | null
+          id: string
+          next_session_date: string | null
+          procedure_type: string | null
+          room_number: string | null
+          session_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          decision?: string | null
+          id?: string
+          next_session_date?: string | null
+          procedure_type?: string | null
+          room_number?: string | null
+          session_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          decision?: string | null
+          id?: string
+          next_session_date?: string | null
+          procedure_type?: string | null
+          room_number?: string | null
+          session_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_sessions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cases: {
         Row: {
           case_number: string
