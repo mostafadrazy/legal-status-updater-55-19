@@ -17,7 +17,7 @@ interface BasicCaseInfoFieldsProps {
 
 export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
   return (
-    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10" dir="rtl">
+    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10">
       <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
         معلومات القضية الأساسية
       </h3>
@@ -31,8 +31,9 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل عنوان القضية"
+                dir="rtl"
               />
             </FormControl>
             <FormMessage />
@@ -49,8 +50,9 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
                 placeholder="أدخل رقم القضية"
+                dir="rtl"
               />
             </FormControl>
             <FormMessage />
@@ -66,7 +68,7 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
             <FormLabel className="text-[#4CD6B4]">الحالة</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4]">
+                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4] text-right">
                   <SelectValue placeholder="اختر الحالة" />
                 </SelectTrigger>
               </FormControl>
@@ -91,7 +93,8 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
               <Input 
                 type="date" 
                 {...field} 
-                className="bg-white/5 border-white/10 text-[#4CD6B4]"
+                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
+                dir="rtl"
               />
             </FormControl>
             <FormMessage />
