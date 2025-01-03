@@ -48,7 +48,7 @@ export function CaseDetailsDialog({
   return (
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
       <DialogContent className="bg-[#1F1F1F] border-white/10 max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
-        <DialogHeader className="text-right space-y-2">
+        <DialogHeader className="space-y-2">
           <DialogTitle className="text-2xl font-bold text-white">تفاصيل القضية</DialogTitle>
           <p className="text-gray-400 text-sm">{caseDetails?.case_number}</p>
         </DialogHeader>
@@ -57,32 +57,32 @@ export function CaseDetailsDialog({
           <TabsList className="grid grid-cols-4 gap-4 bg-white/5 p-1 rounded-lg">
             <TabsTrigger 
               value="details"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300 hover:bg-white/10"
             >
               التفاصيل
             </TabsTrigger>
             <TabsTrigger 
               value="sessions"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300 hover:bg-white/10"
             >
               الجلسات
             </TabsTrigger>
             <TabsTrigger 
               value="notes"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300 hover:bg-white/10"
             >
               الملاحظات
             </TabsTrigger>
             <TabsTrigger 
               value="documents"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md transition-all duration-300 hover:bg-white/10"
             >
               المستندات
             </TabsTrigger>
           </TabsList>
 
           <div className="mt-6 space-y-6">
-            <TabsContent value="details" className="focus-visible:outline-none">
+            <TabsContent value="details" className="focus-visible:outline-none animate-fade-in">
               {caseDetails && (
                 <CaseDetailsTab
                   id={caseDetails.id}
@@ -103,7 +103,7 @@ export function CaseDetailsDialog({
               )}
             </TabsContent>
 
-            <TabsContent value="sessions" className="focus-visible:outline-none">
+            <TabsContent value="sessions" className="focus-visible:outline-none animate-fade-in">
               {caseDetails && sessions && (
                 <SessionsTab
                   caseId={caseDetails.id}
@@ -113,14 +113,14 @@ export function CaseDetailsDialog({
               )}
             </TabsContent>
 
-            <TabsContent value="notes" className="focus-visible:outline-none">
+            <TabsContent value="notes" className="focus-visible:outline-none animate-fade-in">
               <NotesTab
                 notes={notes}
                 onAddNote={onAddNote}
               />
             </TabsContent>
 
-            <TabsContent value="documents" className="focus-visible:outline-none">
+            <TabsContent value="documents" className="focus-visible:outline-none animate-fade-in">
               <DocumentsTab
                 documents={documents}
                 onUpload={onUpload}
