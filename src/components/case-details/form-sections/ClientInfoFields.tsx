@@ -26,11 +26,11 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         name="client"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">اسم العميل</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">اسم العميل</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل اسم العميل"
               />
             </FormControl>
@@ -44,11 +44,11 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         name="clientPhone"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">رقم الهاتف</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">رقم الهاتف</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل رقم الهاتف"
               />
             </FormControl>
@@ -62,11 +62,11 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         name="clientEmail"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">البريد الإلكتروني</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">البريد الإلكتروني</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل البريد الإلكتروني"
               />
             </FormControl>
@@ -80,11 +80,11 @@ export function ClientInfoFields({ form }: ClientInfoFieldsProps) {
         name="clientAddress"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">العنوان</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">العنوان</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل العنوان"
               />
             </FormControl>

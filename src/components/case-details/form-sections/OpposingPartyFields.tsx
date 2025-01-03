@@ -24,11 +24,11 @@ export function OpposingPartyFields({ form }: OpposingPartyFieldsProps) {
         name="opposingParty"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">الطرف المقابل</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">الطرف المقابل</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل اسم الطرف المقابل"
               />
             </FormControl>
@@ -42,11 +42,11 @@ export function OpposingPartyFields({ form }: OpposingPartyFieldsProps) {
         name="opposingLawyer"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">محامي الطرف المقابل</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">محامي الطرف المقابل</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل اسم محامي الطرف المقابل"
               />
             </FormControl>

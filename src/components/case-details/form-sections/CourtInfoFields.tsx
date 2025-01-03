@@ -26,10 +26,10 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         name="court"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">المحكمة</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">المحكمة</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-right">
+                <SelectTrigger className="bg-white/5 border-white/10 text-right text-[#4CD6B4]">
                   <SelectValue placeholder="اختر المحكمة" />
                 </SelectTrigger>
               </FormControl>
@@ -50,10 +50,10 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         name="caseType"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">نوع القضية</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">نوع القضية</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-right">
+                <SelectTrigger className="bg-white/5 border-white/10 text-right text-[#4CD6B4]">
                   <SelectValue placeholder="اختر نوع القضية" />
                 </SelectTrigger>
               </FormControl>
@@ -74,12 +74,12 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         name="filingDate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">تاريخ التقديم</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">تاريخ التقديم</FormLabel>
             <FormControl>
               <Input 
                 type="date" 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
               />
             </FormControl>
             <FormMessage />

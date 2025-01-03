@@ -27,11 +27,11 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">العنوان</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">العنوان</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل عنوان القضية"
               />
             </FormControl>
@@ -45,11 +45,11 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
         name="caseNumber"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">رقم القضية</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">رقم القضية</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
                 placeholder="أدخل رقم القضية"
               />
             </FormControl>
@@ -63,10 +63,10 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">الحالة</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">الحالة</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-right">
+                <SelectTrigger className="bg-white/5 border-white/10 text-right text-[#4CD6B4]">
                   <SelectValue placeholder="اختر الحالة" />
                 </SelectTrigger>
               </FormControl>
@@ -86,12 +86,12 @@ export function BasicCaseInfoFields({ form }: BasicCaseInfoFieldsProps) {
         name="nextHearing"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-gray-300">الجلسة القادمة</FormLabel>
+            <FormLabel className="text-[#4CD6B4]">الجلسة القادمة</FormLabel>
             <FormControl>
               <Input 
                 type="date" 
                 {...field} 
-                className="bg-white/5 border-white/10 text-right"
+                className="bg-white/5 border-white/10 text-right text-[#4CD6B4]"
               />
             </FormControl>
             <FormMessage />
