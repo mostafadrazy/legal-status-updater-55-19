@@ -9,6 +9,7 @@ const formSchema = z.object({
   court: z.string().min(1, { message: "المحكمة مطلوبة" }),
   caseType: z.string().min(1, { message: "نوع القضية مطلوب" }),
   opposingParty: z.string().min(2, { message: "اسم الطرف المقابل مطلوب" }),
+  opposingLawyer: z.string().optional(),
   filingDate: z.string().min(1, { message: "تاريخ التقديم مطلوب" }),
   hearingDate: z.string().optional(),
 });
@@ -18,8 +19,6 @@ type CaseDetailsFieldsProps = {
 };
 
 export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
-  console.log('Current form values:', form.getValues());
-  
   return (
     <>
       <FormField
@@ -92,6 +91,20 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
             <FormLabel className="text-gray-300">الطرف المقابل</FormLabel>
             <FormControl>
               <Input placeholder="أدخل اسم الطرف المقابل" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="opposingLawyer"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-gray-300">محامي الطرف المقابل (اختياري)</FormLabel>
+            <FormControl>
+              <Input placeholder="أدخل اسم محامي الطرف المقابل" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
