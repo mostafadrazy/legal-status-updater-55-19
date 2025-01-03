@@ -68,48 +68,50 @@ export function CaseDetailsTab({
   }
 
   return (
-    <div className="space-y-8 py-4">
-      <div className="flex justify-end">
+    <div className="space-y-8">
+      <div className="flex justify-start">
         <Button
           variant="outline"
           size="sm"
-          className="text-[#4CD6B4] border-[#4CD6B4]"
+          className="text-[#4CD6B4] border-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-black transition-all duration-300"
           onClick={() => setIsEditing(true)}
         >
-          <Pencil className="w-4 h-4 mr-2" />
+          <Pencil className="w-4 h-4 ml-2" />
           تعديل
         </Button>
       </div>
 
-      <CaseHeaderSection
-        caseNumber={caseNumber}
-        title={title}
-        status={status}
-        court={court}
-        caseType={caseType}
-        filingDate={filingDate}
-      />
+      <div className="grid gap-8">
+        <CaseHeaderSection
+          caseNumber={caseNumber}
+          title={title}
+          status={status}
+          court={court}
+          caseType={caseType}
+          filingDate={filingDate}
+        />
 
-      <ClientInformationSection
-        client={client}
-        clientPhone={clientPhone}
-        clientEmail={clientEmail}
-        clientAddress={clientAddress}
-      />
+        <ClientInformationSection
+          client={client}
+          clientPhone={clientPhone}
+          clientEmail={clientEmail}
+          clientAddress={clientAddress}
+        />
 
-      <OpposingPartySection
-        opposingParty={opposingParty}
-        opposingLawyer={opposingLawyer}
-      />
+        <OpposingPartySection
+          opposingParty={opposingParty}
+          opposingLawyer={opposingLawyer}
+        />
 
-      <div className="flex justify-end pt-4">
-        <Button
-          variant="destructive"
-          onClick={onDelete}
-          className="bg-red-500 hover:bg-red-600"
-        >
-          حذف القضية
-        </Button>
+        <div className="flex justify-start pt-4">
+          <Button
+            variant="destructive"
+            onClick={onDelete}
+            className="bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300"
+          >
+            حذف القضية
+          </Button>
+        </div>
       </div>
     </div>
   );
