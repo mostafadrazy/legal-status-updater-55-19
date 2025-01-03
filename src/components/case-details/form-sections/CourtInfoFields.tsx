@@ -16,8 +16,8 @@ interface CourtInfoFieldsProps {
 
 export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
   return (
-    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10 rtl">
-      <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4 text-right">
+    <div className="space-y-4 p-6 rounded-lg bg-gradient-to-br from-white/5 to-transparent border border-white/10" dir="rtl">
+      <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
         معلومات المحكمة
       </h3>
 
@@ -25,11 +25,11 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         control={form.control}
         name="court"
         render={({ field }) => (
-          <FormItem className="text-right">
+          <FormItem>
             <FormLabel className="text-[#4CD6B4]">المحكمة</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4] text-right">
+                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4]">
                   <SelectValue placeholder="اختر المحكمة" />
                 </SelectTrigger>
               </FormControl>
@@ -40,7 +40,7 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
                 <SelectItem value="المحكمة الإدارية">المحكمة الإدارية</SelectItem>
               </SelectContent>
             </Select>
-            <FormMessage className="text-right" />
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -49,11 +49,11 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         control={form.control}
         name="caseType"
         render={({ field }) => (
-          <FormItem className="text-right">
+          <FormItem>
             <FormLabel className="text-[#4CD6B4]">نوع القضية</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4] text-right">
+                <SelectTrigger className="bg-white/5 border-white/10 text-[#4CD6B4]">
                   <SelectValue placeholder="اختر نوع القضية" />
                 </SelectTrigger>
               </FormControl>
@@ -64,7 +64,7 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
                 <SelectItem value="قضايا عمالية">قضايا عمالية</SelectItem>
               </SelectContent>
             </Select>
-            <FormMessage className="text-right" />
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -73,17 +73,16 @@ export function CourtInfoFields({ form }: CourtInfoFieldsProps) {
         control={form.control}
         name="filingDate"
         render={({ field }) => (
-          <FormItem className="text-right">
+          <FormItem>
             <FormLabel className="text-[#4CD6B4]">تاريخ التقديم</FormLabel>
             <FormControl>
               <Input 
                 type="date" 
                 {...field} 
-                className="bg-white/5 border-white/10 text-[#4CD6B4] text-right"
-                dir="rtl"
+                className="bg-white/5 border-white/10 text-[#4CD6B4]"
               />
             </FormControl>
-            <FormMessage className="text-right" />
+            <FormMessage />
           </FormItem>
         )}
       />
