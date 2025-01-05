@@ -45,7 +45,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
             إضافة جلسة جديدة
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-white">
             أدخل تفاصيل الجلسة الجديدة أدناه
           </DialogDescription>
         </DialogHeader>
@@ -53,63 +53,68 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="space-y-4">
             <div className="space-y-2 text-right">
-              <Label htmlFor="sessionDate" className="text-gray-200">تاريخ الجلسة</Label>
+              <Label htmlFor="sessionDate" className="text-white">تاريخ الجلسة</Label>
               <Input
                 id="sessionDate"
                 type="date"
                 value={sessionDate}
                 onChange={(e) => setSessionDate(e.target.value)}
                 required
-                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                dir="rtl"
               />
             </div>
 
             <div className="space-y-2 text-right">
-              <Label htmlFor="nextSessionDate" className="text-gray-200">تاريخ الجلسة القادمة</Label>
+              <Label htmlFor="nextSessionDate" className="text-white">تاريخ الجلسة القادمة</Label>
               <Input
                 id="nextSessionDate"
                 type="date"
                 value={nextSessionDate}
                 onChange={(e) => setNextSessionDate(e.target.value)}
-                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                dir="rtl"
               />
             </div>
 
             <div className="space-y-2 text-right">
-              <Label htmlFor="roomNumber" className="text-gray-200">رقم القاعة</Label>
+              <Label htmlFor="roomNumber" className="text-white">رقم القاعة</Label>
               <Input
                 id="roomNumber"
                 value={roomNumber}
                 onChange={(e) => setRoomNumber(e.target.value)}
                 placeholder="أدخل رقم القاعة"
-                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                dir="rtl"
               />
             </div>
 
             <div className="space-y-2 text-right">
-              <Label htmlFor="procedureType" className="text-gray-200">نوع الإجراء</Label>
+              <Label htmlFor="procedureType" className="text-white">نوع الإجراء</Label>
               <Input
                 id="procedureType"
                 value={procedureType}
                 onChange={(e) => setProcedureType(e.target.value)}
                 placeholder="أدخل نوع الإجراء"
-                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                dir="rtl"
               />
             </div>
 
             <div className="space-y-2 text-right">
-              <Label htmlFor="decision" className="text-gray-200">القرار</Label>
+              <Label htmlFor="decision" className="text-white">القرار</Label>
               <Textarea
                 id="decision"
                 value={decision}
                 onChange={(e) => setDecision(e.target.value)}
                 placeholder="أدخل القرار"
-                className="h-24 bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                className="h-24 bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
+                dir="rtl"
               />
             </div>
           </div>
 
-          <div className="flex justify-start gap-3">
+          <div className="flex justify-end gap-3">
             <Button
               type="submit"
               className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6"
@@ -120,7 +125,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-white/20 hover:bg-white/5 text-white"
+              className="border-white/30 hover:bg-white/10 text-white"
             >
               إلغاء
             </Button>
