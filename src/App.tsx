@@ -22,6 +22,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Dashboard route that requires authentication
+const DashboardRoute = () => {
+  const { session } = useAuth();
+  if (!session) {
+    return <Index />;
+  }
+  return <ProtectedRoute><Index /></ProtectedRoute>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -31,12 +40,12 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<DashboardRoute />} />
             <Route path="/case-tracking" element={<CaseTracking />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/callback" element={<Callback />} />
 
             {/* Protected routes */}
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
