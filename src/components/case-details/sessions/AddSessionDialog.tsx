@@ -60,13 +60,13 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
                 value={sessionDate}
                 onChange={(e) => setSessionDate(e.target.value)}
                 required
-                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right [&::-webkit-calendar-picker-indicator]:order-first [&::-webkit-calendar-picker-indicator]:ml-2 [&::-webkit-calendar-picker-indicator]:mr-auto"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right [&::-webkit-calendar-picker-indicator]:ml-2 [&::-webkit-calendar-picker-indicator]:mr-auto"
                 dir="ltr"
                 lang="en"
                 style={{
                   textAlign: 'right',
                   direction: 'ltr',
-                  unicodeBidi: 'plaintext'
+                  unicodeBidi: 'embed'
                 }}
               />
             </div>
@@ -78,13 +78,13 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
                 type="date"
                 value={nextSessionDate}
                 onChange={(e) => setNextSessionDate(e.target.value)}
-                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right [&::-webkit-calendar-picker-indicator]:order-first [&::-webkit-calendar-picker-indicator]:ml-2 [&::-webkit-calendar-picker-indicator]:mr-auto"
+                className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right [&::-webkit-calendar-picker-indicator]:ml-2 [&::-webkit-calendar-picker-indicator]:mr-auto"
                 dir="ltr"
                 lang="en"
                 style={{
                   textAlign: 'right',
                   direction: 'ltr',
-                  unicodeBidi: 'plaintext'
+                  unicodeBidi: 'embed'
                 }}
               />
             </div>
