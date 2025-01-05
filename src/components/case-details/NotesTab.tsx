@@ -19,6 +19,17 @@ export function NotesTab({ notes, onAddNote }: NotesTabProps) {
     setNewNote("");
   };
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+  };
+
   return (
     <div className="space-y-6" dir="rtl">
       <div className="p-4 rounded-lg bg-white/5 border border-white/10">
@@ -48,8 +59,8 @@ export function NotesTab({ notes, onAddNote }: NotesTabProps) {
               <MessageSquare className="w-5 h-5 text-[#4CD6B4] mt-1" />
               <div className="flex-1 text-right">
                 <p className="text-white whitespace-pre-wrap">{note.content}</p>
-                <p className="text-sm text-gray-400 mt-2">
-                  {new Date(note.created_at).toLocaleString('ar-SA')}
+                <p className="text-sm text-gray-400 mt-2" style={{ direction: 'ltr', textAlign: 'right' }}>
+                  {formatDate(note.created_at)}
                 </p>
               </div>
             </div>
