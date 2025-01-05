@@ -20,17 +20,18 @@ export function NotesTab({ notes, onAddNote }: NotesTabProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir="rtl">
       <div className="p-4 rounded-lg bg-white/5 border border-white/10">
         <Textarea
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
           placeholder="أضف ملاحظة جديدة..."
-          className="min-h-[100px] bg-transparent border-white/10 focus:border-[#4CD6B4] transition-colors"
+          className="min-h-[100px] bg-transparent border-white/10 focus:border-[#4CD6B4] transition-colors text-right"
+          dir="rtl"
         />
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-start">
           <Button onClick={handleAddNote} className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black">
-            <PlusCircle className="w-4 h-4 mr-2" />
+            <PlusCircle className="w-4 h-4 ml-2" />
             إضافة ملاحظة
           </Button>
         </div>
@@ -41,10 +42,11 @@ export function NotesTab({ notes, onAddNote }: NotesTabProps) {
           <div 
             key={note.id} 
             className="p-4 rounded-lg bg-white/5 border border-white/10 animate-fade-in"
+            dir="rtl"
           >
             <div className="flex items-start gap-3">
               <MessageSquare className="w-5 h-5 text-[#4CD6B4] mt-1" />
-              <div className="flex-1">
+              <div className="flex-1 text-right">
                 <p className="text-white whitespace-pre-wrap">{note.content}</p>
                 <p className="text-sm text-gray-400 mt-2">
                   {new Date(note.created_at).toLocaleString('ar-SA')}
