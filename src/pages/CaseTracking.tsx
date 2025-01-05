@@ -1,114 +1,123 @@
 import { useState } from "react";
-import { Sidebar } from "@/components/Sidebar";
-import { Search } from "@/components/Search";
-import { CaseCard } from "@/components/CaseCard";
-import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Plus } from "lucide-react";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import NewCaseForm from "@/components/NewCaseForm";
-import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Case {
-  id: string;
+  case_code: string;
   title: string;
-  case_number: string;
   status: string;
-  next_hearing: string;
-  client: string;
+  next_hearing: string | null;
+  court: string | null;
 }
 
 export default function CaseTracking() {
-  const { session } = useAuth();
-  const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
+  const [caseCode, setCaseCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [caseDetails, setCaseDetails] = useState<Case | null>(null);
+  const { toast } = useToast();
 
-  const { data: cases, isLoading } = useQuery({
-    queryKey: ["cases", session?.user?.id],
-    queryFn: async () => {
-      if (!session?.user?.id) return [];
-      
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!caseCode.trim()) return;
+
+    setIsLoading(true);
+    try {
       const { data, error } = await supabase
         .from("cases")
-        .select("*")
-        .eq('user_id', session.user.id)
-        .order("created_at", { ascending: false });
+        .select("case_code, title, status, next_hearing, court")
+        .eq("case_code", caseCode.toUpperCase())
+        .single();
 
       if (error) throw error;
-      return data as Case[];
-    },
-    enabled: !!session?.user?.id,
-  });
-
-  if (!session) {
-    return <Navigate to="/auth/login" replace />;
-  }
+      
+      if (data) {
+        setCaseDetails(data);
+      } else {
+        toast({
+          title: "لم يتم العثور على القضية",
+          description: "يرجى التأكد من رمز القضية والمحاولة مرة أخرى",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "حدث خطأ",
+        description: "يرجى المحاولة مرة أخرى لاحقاً",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex w-full bg-[#111]" dir="rtl">
+    <div className="min-h-screen bg-[#111]" dir="rtl">
       {/* Background gradients */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] 
-          bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
-        />
-        <div 
-          className="absolute bottom-0 right-1/4 w-[800px] h-[800px] 
-          bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10"
-        />
+        <div className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      <Sidebar />
-      
-      <main className="flex-1 p-8 relative animate-fade-in">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent">
-              القضايا
+      <div className="container mx-auto px-4 py-16 relative">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
+              تتبع القضية
             </h1>
-            <Button 
-              className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
-              onClick={() => setIsNewCaseDialogOpen(true)}
-            >
-              <Plus className="w-4 h-4 ml-2" />
-              إنشاء قضية
-            </Button>
+            <p className="text-gray-400">
+              أدخل رمز القضية للاطلاع على تفاصيلها وحالتها
+            </p>
           </div>
 
-          <div className="glass-card p-4 rounded-xl">
-            <Search />
-          </div>
+          <form onSubmit={handleSearch} className="space-y-4">
+            <div className="relative">
+              <Input
+                value={caseCode}
+                onChange={(e) => setCaseCode(e.target.value)}
+                placeholder="أدخل رمز القضية..."
+                className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+              />
+              <Button 
+                type="submit"
+                disabled={isLoading}
+                className="absolute left-0 top-0 h-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black"
+              >
+                <Search className="w-4 h-4" />
+              </Button>
+            </div>
+          </form>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading ? (
-              <div className="text-[#4CD6B4] animate-pulse">جاري التحميل...</div>
-            ) : cases?.length === 0 ? (
-              <div className="text-white/80">لا توجد قضايا</div>
-            ) : (
-              cases?.map((caseItem) => (
-                <div
-                  key={caseItem.id}
-                  className="transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  <CaseCard
-                    id={caseItem.id}
-                    caseNumber={caseItem.case_number}
-                    title={caseItem.title}
-                    status={caseItem.status}
-                    nextHearing={caseItem.next_hearing}
-                    client={caseItem.client}
-                  />
+          {caseDetails && (
+            <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-4 animate-fade-in">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-400">رمز القضية</p>
+                  <p className="text-white">{caseDetails.case_code}</p>
                 </div>
-              ))
-            )}
-          </div>
+                <div>
+                  <p className="text-sm text-gray-400">العنوان</p>
+                  <p className="text-white">{caseDetails.title}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">الحالة</p>
+                  <p className="text-white">{caseDetails.status}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">الجلسة القادمة</p>
+                  <p className="text-white">{caseDetails.next_hearing || "غير محدد"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">المحكمة</p>
+                  <p className="text-white">{caseDetails.court || "غير محدد"}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </main>
-
-      <NewCaseForm 
-        open={isNewCaseDialogOpen} 
-        onOpenChange={setIsNewCaseDialogOpen}
-      />
+      </div>
     </div>
   );
 }
