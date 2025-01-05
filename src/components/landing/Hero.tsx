@@ -53,6 +53,7 @@ const Hero = () => {
             >
               ابدأ الآن مجاناً
             </Button>
+          </div>
         </div>
       </div>
     </div>
