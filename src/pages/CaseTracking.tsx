@@ -4,15 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+import { CaseDetailsSection } from "@/components/case-tracking/CaseDetailsSection";
+import { CaseSessionsSection } from "@/components/case-tracking/CaseSessionsSection";
 
 interface Case {
   case_code: string;
   title: string;
   status: string;
-  next_hearing: string | null;
   court: string | null;
+  case_type: string | null;
+  filing_date: string | null;
   client: string;
   client_phone: string | null;
   client_email: string | null;
@@ -25,6 +26,13 @@ interface Case {
     full_name: string | null;
     phone_number: string | null;
   };
+  sessions: Array<{
+    session_date: string;
+    next_session_date: string | null;
+    room_number: string | null;
+    decision: string | null;
+    procedure_type: string | null;
+  }>;
 }
 
 export default function CaseTracking() {
@@ -39,27 +47,27 @@ export default function CaseTracking() {
 
     setIsLoading(true);
     try {
-      // Fetch case details with latest session and lawyer info
+      // Fetch case details
       const { data: caseData, error: caseError } = await supabase
         .from("cases")
         .select(`
           *,
           user_id,
-          latest_session:case_sessions(
+          sessions:case_sessions(
             session_date,
+            next_session_date,
+            room_number,
             decision,
-            next_session_date
+            procedure_type
           )
         `)
         .eq("case_code", caseCode.toUpperCase())
-        .order("session_date", { foreignTable: "case_sessions", ascending: false })
-        .limit(1, { foreignTable: "case_sessions" })
         .single();
 
       if (caseError) throw caseError;
       
       if (caseData) {
-        // Fetch lawyer (user) details
+        // Fetch lawyer details
         const { data: lawyerData } = await supabase
           .from("profiles")
           .select("full_name, phone_number")
@@ -69,7 +77,7 @@ export default function CaseTracking() {
         setCaseDetails({
           ...caseData,
           lawyer: lawyerData,
-          latest_session: caseData.latest_session?.[0]
+          sessions: caseData.sessions || []
         });
       } else {
         toast({
@@ -87,11 +95,6 @@ export default function CaseTracking() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const formatDate = (date: string | null) => {
-    if (!date) return "غير محدد";
-    return format(new Date(date), 'dd MMMM yyyy', { locale: ar });
   };
 
   return (
@@ -133,19 +136,14 @@ export default function CaseTracking() {
 
           {caseDetails && (
             <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-6 animate-fade-in">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-[#4CD6B4]">{caseDetails.title}</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-400">رمز القضية</p>
-                    <p className="text-white">{caseDetails.case_code}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">الحالة</p>
-                    <p className="text-white">{caseDetails.status}</p>
-                  </div>
-                </div>
-              </div>
+              <CaseDetailsSection 
+                title={caseDetails.title}
+                caseCode={caseDetails.case_code}
+                status={caseDetails.status}
+                court={caseDetails.court}
+                caseType={caseDetails.case_type}
+                filingDate={caseDetails.filing_date}
+              />
 
               <div className="border-t border-white/10 pt-4">
                 <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">معلومات العميل</h4>
@@ -185,27 +183,7 @@ export default function CaseTracking() {
                 </div>
               </div>
 
-              {caseDetails.latest_session && (
-                <div className="border-t border-white/10 pt-4">
-                  <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">آخر جلسة</h4>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm text-gray-400">تاريخ الجلسة</p>
-                      <p className="text-white">{formatDate(caseDetails.latest_session.session_date)}</p>
-                    </div>
-                    {caseDetails.latest_session.decision && (
-                      <div>
-                        <p className="text-sm text-gray-400">القرار</p>
-                        <p className="text-white">{caseDetails.latest_session.decision}</p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm text-gray-400">الجلسة القادمة</p>
-                      <p className="text-white">{formatDate(caseDetails.latest_session.next_session_date)}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <CaseSessionsSection sessions={caseDetails.sessions} />
             </div>
           )}
         </div>
