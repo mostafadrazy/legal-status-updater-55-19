@@ -4,7 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 
 const menuItems = [
   { icon: Home, label: "الرئيسية", path: "/" },
-  { icon: Folder, label: "القضايا", path: "/case-tracking" },
+  { icon: Folder, label: "القضايا", path: "/cases" },
   { icon: Settings, label: "الإعدادات", path: "/settings" },
 ];
 

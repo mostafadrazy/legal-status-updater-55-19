@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
 import CaseTracking from "./pages/CaseTracking";
+import Cases from "./pages/Cases";
 import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/auth/callback" element={<Callback />} />
 
             {/* Protected routes */}
+            <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
