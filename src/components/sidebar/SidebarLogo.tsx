@@ -7,8 +7,8 @@ export function SidebarLogo() {
     <div className="flex items-center justify-center cursor-pointer p-4" onClick={() => navigate("/")}>
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
-        width="64" 
-        height="64" 
+        width="128" 
+        height="128" 
         viewBox="0 0 1024 1024" 
         className="hover:scale-105 transition-transform duration-200"
       >
