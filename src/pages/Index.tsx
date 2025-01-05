@@ -9,7 +9,7 @@ import FAQ from "@/components/landing/FAQ";
 import ContactCTA from "@/components/landing/ContactCTA";
 import WhatWeDo from "@/components/landing/WhatWeDo";
 import { Button } from "@/components/ui/button";
-import { Plus, Search as SearchIcon, QrCode } from "lucide-react";
+import { Plus, Search as SearchIcon } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
@@ -91,6 +91,7 @@ const Index = () => {
               status={caseItem.status}
               nextHearing={caseItem.next_hearing}
               client={caseItem.client}
+              caseCode={caseItem.case_code}
             />
           </div>
         ))}
@@ -101,7 +102,6 @@ const Index = () => {
   if (session) {
     return (
       <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]">
-        {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
@@ -125,7 +125,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Search Section */}
             <div className="max-w-2xl mx-auto mb-12">
               <div className="relative">
                 <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -140,7 +139,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Search Results or Recent Cases */}
             {searchQuery ? (
               renderSearchResults()
             ) : (
@@ -158,6 +156,7 @@ const Index = () => {
                       status={caseItem.status}
                       nextHearing={caseItem.next_hearing}
                       client={caseItem.client}
+                      caseCode={caseItem.case_code}
                     />
                   </div>
                 ))}

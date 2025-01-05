@@ -13,9 +13,18 @@ interface CaseCardProps {
   status: string;
   nextHearing: string;
   client: string;
+  caseCode?: string;
 }
 
-export function CaseCard({ id, caseNumber, title, status, nextHearing, client }: CaseCardProps) {
+export function CaseCard({ 
+  id, 
+  caseNumber, 
+  title, 
+  status, 
+  nextHearing, 
+  client,
+  caseCode 
+}: CaseCardProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [caseDetails, setCaseDetails] = useState<any>(null);
   const [notes, setNotes] = useState<any[]>([]);
@@ -152,6 +161,7 @@ export function CaseCard({ id, caseNumber, title, status, nextHearing, client }:
         status={status}
         nextHearing={nextHearing}
         client={client}
+        caseCode={caseCode}
         onClick={() => {
           setShowDetails(true);
           fetchCaseDetails();
