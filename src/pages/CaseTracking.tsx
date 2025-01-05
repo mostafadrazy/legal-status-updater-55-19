@@ -47,26 +47,51 @@ export default function CaseTracking() {
 
     setIsLoading(true);
     try {
+      console.log("Setting case code for RLS policy...");
+      // First, set the case code for RLS policy
+      const { error: fnError } = await supabase.rpc('set_case_code', {
+        code: caseCode.toUpperCase()
+      });
+
+      if (fnError) {
+        console.error("Error setting case code:", fnError);
+        throw fnError;
+      }
+
+      console.log("Fetching case details...");
       // Fetch case details
       const { data: caseData, error: caseError } = await supabase
         .from("cases")
         .select(`
           *,
-          user_id,
-          sessions:case_sessions(
-            session_date,
-            next_session_date,
-            room_number,
-            decision,
-            procedure_type
-          )
+          user_id
         `)
         .eq("case_code", caseCode.toUpperCase())
         .single();
 
-      if (caseError) throw caseError;
+      if (caseError) {
+        console.error("Error fetching case:", caseError);
+        throw caseError;
+      }
       
       if (caseData) {
+        console.log("Case found:", caseData);
+        
+        // Fetch sessions for the case
+        console.log("Fetching sessions...");
+        const { data: sessionsData, error: sessionsError } = await supabase
+          .from("case_sessions")
+          .select("*")
+          .eq("case_id", caseData.id)
+          .order("session_date", { ascending: false });
+
+        if (sessionsError) {
+          console.error("Error fetching sessions:", sessionsError);
+          throw sessionsError;
+        }
+
+        console.log("Sessions found:", sessionsData);
+
         // Fetch lawyer details
         const { data: lawyerData } = await supabase
           .from("profiles")
@@ -77,7 +102,7 @@ export default function CaseTracking() {
         setCaseDetails({
           ...caseData,
           lawyer: lawyerData,
-          sessions: caseData.sessions || []
+          sessions: sessionsData || []
         });
       } else {
         toast({
@@ -87,6 +112,7 @@ export default function CaseTracking() {
         });
       }
     } catch (error) {
+      console.error("Error in handleSearch:", error);
       toast({
         title: "حدث خطأ",
         description: "يرجى المحاولة مرة أخرى لاحقاً",

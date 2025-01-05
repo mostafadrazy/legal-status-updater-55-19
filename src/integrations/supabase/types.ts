@@ -233,7 +233,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      set_case_code: {
+        Args: {
+          code: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
