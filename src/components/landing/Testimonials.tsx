@@ -26,8 +26,8 @@ export default function Testimonials() {
     <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">ماذا يقول عملاؤنا</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold gradient-text mb-4">ماذا يقول عملاؤنا</h2>
+          <p className="text-gray-300 max-w-2xl mx-auto">
             آراء عملائنا تعكس جودة خدماتنا وتميزنا في مجال إدارة القضايا القانونية
           </p>
         </div>
@@ -36,7 +36,8 @@ export default function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="p-6 rounded-xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300"
+              className="glass-card p-6 rounded-xl animate-fade-in"
+              style={{ animationDelay: `${index * 150}ms` }}
             >
               <div className="flex mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
