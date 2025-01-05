@@ -21,6 +21,11 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
     return format(new Date(date), 'dd MMMM yyyy', { locale: ar });
   };
 
+  // Sort sessions by date in descending order (most recent first)
+  const sortedSessions = [...sessions].sort((a, b) => {
+    return new Date(b.session_date).getTime() - new Date(a.session_date).getTime();
+  });
+
   if (sessions.length === 0) {
     return (
       <div className="text-center py-12 bg-white/5 rounded-lg border border-white/10">
@@ -39,7 +44,7 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
       </div>
 
       <div className="grid gap-4">
-        {sessions.map((session, index) => (
+        {sortedSessions.map((session, index) => (
           <div
             key={index}
             className="bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/10 transition-all duration-200"
