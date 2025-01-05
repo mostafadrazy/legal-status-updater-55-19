@@ -42,10 +42,10 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
         <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none" />
         
         <DialogHeader className="space-y-2 text-right">
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent text-right">
             إضافة جلسة جديدة
           </DialogTitle>
-          <DialogDescription className="text-white">
+          <DialogDescription className="text-white text-right">
             أدخل تفاصيل الجلسة الجديدة أدناه
           </DialogDescription>
         </DialogHeader>
@@ -62,6 +62,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
                 required
                 className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
                 dir="rtl"
+                style={{ textAlign: 'right' }}
               />
             </div>
 
@@ -74,6 +75,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
                 onChange={(e) => setNextSessionDate(e.target.value)}
                 className="bg-white/20 border-white/30 focus:border-[#4CD6B4] transition-colors text-white text-right"
                 dir="rtl"
+                style={{ textAlign: 'right' }}
               />
             </div>
 
@@ -125,7 +127,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-white/30 hover:bg-white/10 text-white"
+              className="bg-[#374151] hover:bg-[#4B5563] text-white border-[#4B5563]"
             >
               إلغاء
             </Button>
