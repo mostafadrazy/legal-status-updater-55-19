@@ -36,6 +36,7 @@ const Hero = () => {
             </svg>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-relaxed mb-6 animate-fade-in text-white drop-shadow-lg">
+            نظام متكامل
             <span className="block mt-2 bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent drop-shadow-lg leading-relaxed">
               لإدارة القضايا القانونية
             </span>
