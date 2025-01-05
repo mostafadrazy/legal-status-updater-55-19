@@ -17,15 +17,6 @@ interface Case {
   client: string;
   client_phone: string | null;
   client_email: string | null;
-  latest_session?: {
-    session_date: string;
-    decision: string | null;
-    next_session_date: string | null;
-  };
-  lawyer?: {
-    full_name: string | null;
-    phone_number: string | null;
-  };
   sessions: Array<{
     session_date: string;
     next_session_date: string | null;
@@ -47,12 +38,13 @@ export default function CaseTracking() {
 
     setIsLoading(true);
     try {
-      // Fetch case details
+      console.log("Fetching case details for code:", caseCode);
+      
+      // Fetch case details without requiring authentication
       const { data: caseData, error: caseError } = await supabase
         .from("cases")
         .select(`
           *,
-          user_id,
           sessions:case_sessions(
             session_date,
             next_session_date,
@@ -64,19 +56,14 @@ export default function CaseTracking() {
         .eq("case_code", caseCode.toUpperCase())
         .single();
 
+      console.log("Case data received:", caseData);
+      console.log("Case error if any:", caseError);
+
       if (caseError) throw caseError;
       
       if (caseData) {
-        // Fetch lawyer details
-        const { data: lawyerData } = await supabase
-          .from("profiles")
-          .select("full_name, phone_number")
-          .eq("id", caseData.user_id)
-          .single();
-
         setCaseDetails({
           ...caseData,
-          lawyer: lawyerData,
           sessions: caseData.sessions || []
         });
       } else {
@@ -87,6 +74,7 @@ export default function CaseTracking() {
         });
       }
     } catch (error) {
+      console.error("Error fetching case:", error);
       toast({
         title: "حدث خطأ",
         description: "يرجى المحاولة مرة أخرى لاحقاً",
@@ -144,44 +132,6 @@ export default function CaseTracking() {
                 caseType={caseDetails.case_type}
                 filingDate={caseDetails.filing_date}
               />
-
-              <div className="border-t border-white/10 pt-4">
-                <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">معلومات العميل</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-400">اسم العميل</p>
-                    <p className="text-white">{caseDetails.client}</p>
-                  </div>
-                  {caseDetails.client_phone && (
-                    <div>
-                      <p className="text-sm text-gray-400">رقم الهاتف</p>
-                      <p className="text-white">{caseDetails.client_phone}</p>
-                    </div>
-                  )}
-                  {caseDetails.client_email && (
-                    <div>
-                      <p className="text-sm text-gray-400">البريد الإلكتروني</p>
-                      <p className="text-white">{caseDetails.client_email}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="border-t border-white/10 pt-4">
-                <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">معلومات المحامي</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-400">اسم المحامي</p>
-                    <p className="text-white">{caseDetails.lawyer?.full_name || "غير محدد"}</p>
-                  </div>
-                  {caseDetails.lawyer?.phone_number && (
-                    <div>
-                      <p className="text-sm text-gray-400">رقم الهاتف</p>
-                      <p className="text-white">{caseDetails.lawyer.phone_number}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
 
               <CaseSessionsSection sessions={caseDetails.sessions} />
             </div>
