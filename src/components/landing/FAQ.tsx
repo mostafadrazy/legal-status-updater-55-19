@@ -29,8 +29,8 @@ export default function FAQ() {
     <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold gradient-text mb-4">الأسئلة الشائعة</h2>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-4">الأسئلة الشائعة</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
             إجابات على الأسئلة الأكثر شيوعاً حول نظام إدارة القضايا
           </p>
         </div>
@@ -41,8 +41,7 @@ export default function FAQ() {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="glass-card rounded-lg overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden hover:border-white/20 transition-all duration-300"
               >
                 <AccordionTrigger className="px-6 py-4 text-white hover:text-[#4CD6B4] transition-colors">
                   {faq.question}

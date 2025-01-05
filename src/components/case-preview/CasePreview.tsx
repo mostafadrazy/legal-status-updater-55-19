@@ -32,13 +32,13 @@ export function CasePreview({
   return (
     <div 
       onClick={onClick}
-      className="glass-card relative p-6 rounded-xl cursor-pointer group animate-fade-in"
+      className="relative p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 cursor-pointer"
     >
-      <div className="bg-gradient-overlay" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-xl" />
       <div className="relative">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-xl font-semibold text-white mb-2 group-hover:gradient-text transition-all duration-300">{title}</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
             <p className="text-[#4CD6B4] text-sm">رقم القضية: {caseNumber}</p>
             {caseCode && (
               <div className="flex items-center gap-2 mt-1">
@@ -68,7 +68,7 @@ export function CasePreview({
         </div>
         
         <button 
-          className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-black transition-all duration-300 group-hover:scale-105"
+          className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-black transition-all duration-300"
         >
           <Scale className="w-4 h-4" />
           <span>عرض التفاصيل</span>
