@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 
 interface Case {
   case_code: string;
@@ -11,6 +13,18 @@ interface Case {
   status: string;
   next_hearing: string | null;
   court: string | null;
+  client: string;
+  client_phone: string | null;
+  client_email: string | null;
+  latest_session?: {
+    session_date: string;
+    decision: string | null;
+    next_session_date: string | null;
+  };
+  lawyer?: {
+    full_name: string | null;
+    phone_number: string | null;
+  };
 }
 
 export default function CaseTracking() {
@@ -25,16 +39,38 @@ export default function CaseTracking() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch case details with latest session and lawyer info
+      const { data: caseData, error: caseError } = await supabase
         .from("cases")
-        .select("case_code, title, status, next_hearing, court")
+        .select(`
+          *,
+          user_id,
+          latest_session:case_sessions(
+            session_date,
+            decision,
+            next_session_date
+          )
+        `)
         .eq("case_code", caseCode.toUpperCase())
+        .order("session_date", { foreignTable: "case_sessions", ascending: false })
+        .limit(1, { foreignTable: "case_sessions" })
         .single();
 
-      if (error) throw error;
+      if (caseError) throw caseError;
       
-      if (data) {
-        setCaseDetails(data);
+      if (caseData) {
+        // Fetch lawyer (user) details
+        const { data: lawyerData } = await supabase
+          .from("profiles")
+          .select("full_name, phone_number")
+          .eq("id", caseData.user_id)
+          .single();
+
+        setCaseDetails({
+          ...caseData,
+          lawyer: lawyerData,
+          latest_session: caseData.latest_session?.[0]
+        });
       } else {
         toast({
           title: "لم يتم العثور على القضية",
@@ -51,6 +87,11 @@ export default function CaseTracking() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const formatDate = (date: string | null) => {
+    if (!date) return "غير محدد";
+    return format(new Date(date), 'dd MMMM yyyy', { locale: ar });
   };
 
   return (
@@ -91,29 +132,80 @@ export default function CaseTracking() {
           </form>
 
           {caseDetails && (
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-4 animate-fade-in">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-400">رمز القضية</p>
-                  <p className="text-white">{caseDetails.case_code}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">العنوان</p>
-                  <p className="text-white">{caseDetails.title}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">الحالة</p>
-                  <p className="text-white">{caseDetails.status}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">الجلسة القادمة</p>
-                  <p className="text-white">{caseDetails.next_hearing || "غير محدد"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">المحكمة</p>
-                  <p className="text-white">{caseDetails.court || "غير محدد"}</p>
+            <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-6 animate-fade-in">
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-[#4CD6B4]">{caseDetails.title}</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-400">رمز القضية</p>
+                    <p className="text-white">{caseDetails.case_code}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">الحالة</p>
+                    <p className="text-white">{caseDetails.status}</p>
+                  </div>
                 </div>
               </div>
+
+              <div className="border-t border-white/10 pt-4">
+                <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">معلومات العميل</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-400">اسم العميل</p>
+                    <p className="text-white">{caseDetails.client}</p>
+                  </div>
+                  {caseDetails.client_phone && (
+                    <div>
+                      <p className="text-sm text-gray-400">رقم الهاتف</p>
+                      <p className="text-white">{caseDetails.client_phone}</p>
+                    </div>
+                  )}
+                  {caseDetails.client_email && (
+                    <div>
+                      <p className="text-sm text-gray-400">البريد الإلكتروني</p>
+                      <p className="text-white">{caseDetails.client_email}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-4">
+                <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">معلومات المحامي</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-400">اسم المحامي</p>
+                    <p className="text-white">{caseDetails.lawyer?.full_name || "غير محدد"}</p>
+                  </div>
+                  {caseDetails.lawyer?.phone_number && (
+                    <div>
+                      <p className="text-sm text-gray-400">رقم الهاتف</p>
+                      <p className="text-white">{caseDetails.lawyer.phone_number}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {caseDetails.latest_session && (
+                <div className="border-t border-white/10 pt-4">
+                  <h4 className="text-lg font-medium text-[#4CD6B4] mb-3">آخر جلسة</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-400">تاريخ الجلسة</p>
+                      <p className="text-white">{formatDate(caseDetails.latest_session.session_date)}</p>
+                    </div>
+                    {caseDetails.latest_session.decision && (
+                      <div>
+                        <p className="text-sm text-gray-400">القرار</p>
+                        <p className="text-white">{caseDetails.latest_session.decision}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm text-gray-400">الجلسة القادمة</p>
+                      <p className="text-white">{formatDate(caseDetails.latest_session.next_session_date)}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
