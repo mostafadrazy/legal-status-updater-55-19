@@ -41,12 +41,12 @@ export default function FAQ() {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden"
+                className="bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden hover:border-white/20 transition-all duration-300"
               >
                 <AccordionTrigger className="px-6 py-4 text-white hover:text-[#4CD6B4] transition-colors">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4 text-gray-400">
+                <AccordionContent className="px-6 pb-4 text-gray-300">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

@@ -37,15 +37,15 @@ const Services = () => {
             return (
               <div
                 key={index}
-                className="p-8 rounded-xl glass-card border border-legal-200/10 hover:border-legal-200/20 transition-all duration-300 flex flex-col justify-between"
+                className="p-8 rounded-xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col justify-between"
                 style={{ minHeight: '400px' }}
               >
                 <div>
                   <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-3 rounded-lg w-fit mb-6">
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-legal-800 dark:text-legal-200">{service.title}</h3>
-                  <p className="text-gray-400 mb-8 leading-relaxed">{service.description}</p>
+                  <h3 className="text-2xl font-bold mb-4 text-white">{service.title}</h3>
+                  <p className="text-gray-300 mb-8 leading-relaxed">{service.description}</p>
                 </div>
                 <Button 
                   variant="outline"

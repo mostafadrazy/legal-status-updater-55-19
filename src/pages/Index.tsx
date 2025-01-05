@@ -131,7 +131,7 @@ const Index = () => {
                 <Input
                   type="text"
                   placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-                  className="w-full pl-4 pr-12 py-3 bg-white/5 border-white/10 text-white placeholder:text-gray-400 rounded-xl"
+                  className="w-full pl-4 pr-12 py-3 bg-[#8E9196]/10 backdrop-blur-sm border-white/10 text-white placeholder:text-gray-400 rounded-xl"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   dir="rtl"
@@ -177,7 +177,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <div className="container mx-auto px-4">
-        <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
+        <div className="rounded-3xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 p-12 space-y-20">
           <WhatWeDo />
           <Features />
           <Services />

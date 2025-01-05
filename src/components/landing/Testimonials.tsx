@@ -36,7 +36,7 @@ export default function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="p-6 rounded-xl bg-legal-800/80 backdrop-blur-sm border border-legal-700 hover:border-legal-600 transition-all duration-300"
+              className="p-6 rounded-xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300"
             >
               <div className="flex mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
