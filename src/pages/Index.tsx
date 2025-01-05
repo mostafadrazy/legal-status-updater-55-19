@@ -113,7 +113,7 @@ const Index = () => {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
-                  القضايا
+                  القضايا الحديثة
                 </h1>
                 <Button 
                   className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
