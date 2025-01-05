@@ -6,6 +6,7 @@ import { CaseSessionsSection } from "@/components/case-tracking/CaseSessionsSect
 import { SearchForm } from "@/components/case-tracking/SearchForm";
 import { ClientInformation } from "@/components/case-tracking/ClientInformation";
 import { LawyerInformation } from "@/components/case-tracking/LawyerInformation";
+import { Loader2 } from "lucide-react";
 
 interface Case {
   case_code: string;
@@ -111,45 +112,57 @@ export default function CaseTracking() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111]" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-b from-[#111] to-[#1A1A1A]" dir="rtl">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
         <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
       <div className="container mx-auto px-4 py-16 relative">
-        <div className="max-w-2xl mx-auto space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
               تتبع القضية
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-lg">
               أدخل رمز القضية للاطلاع على تفاصيلها وحالتها
             </p>
           </div>
 
           <SearchForm onSearch={handleSearch} isLoading={isLoading} />
 
-          {caseDetails && (
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-6 animate-fade-in">
-              <CaseDetailsSection 
-                title={caseDetails.title}
-                caseCode={caseDetails.case_code}
-                status={caseDetails.status}
-                court={caseDetails.court}
-                caseType={caseDetails.case_type}
-                filingDate={caseDetails.filing_date}
-              />
+          {isLoading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-[#4CD6B4] animate-spin" />
+            </div>
+          )}
 
-              <ClientInformation 
-                client={caseDetails.client}
-                clientPhone={caseDetails.client_phone}
-                clientEmail={caseDetails.client_email}
-              />
+          {!isLoading && caseDetails && (
+            <div className="space-y-8 animate-fade-in">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8 space-y-8">
+                <CaseDetailsSection 
+                  title={caseDetails.title}
+                  caseCode={caseDetails.case_code}
+                  status={caseDetails.status}
+                  court={caseDetails.court}
+                  caseType={caseDetails.case_type}
+                  filingDate={caseDetails.filing_date}
+                />
 
-              <LawyerInformation lawyer={caseDetails.lawyer} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <ClientInformation 
+                    client={caseDetails.client}
+                    clientPhone={caseDetails.client_phone}
+                    clientEmail={caseDetails.client_email}
+                  />
 
-              <CaseSessionsSection sessions={caseDetails.sessions} />
+                  <LawyerInformation lawyer={caseDetails.lawyer} />
+                </div>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+                <CaseSessionsSection sessions={caseDetails.sessions} />
+              </div>
             </div>
           )}
         </div>

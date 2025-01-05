@@ -28,7 +28,7 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
 
   if (sessions.length === 0) {
     return (
-      <div className="text-center py-12 bg-white/5 rounded-lg border border-white/10">
+      <div className="text-center py-12">
         <Calendar className="w-16 h-16 mx-auto mb-4 text-[#4CD6B4] opacity-50" />
         <h3 className="text-lg font-medium text-white mb-2">لا توجد جلسات</h3>
         <p className="text-gray-400">لم يتم تسجيل أي جلسات لهذه القضية بعد</p>
@@ -38,7 +38,7 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2">
         <Calendar className="w-5 h-5 text-[#4CD6B4]" />
         <h3 className="text-lg font-medium text-white">الجلسات المسجلة</h3>
       </div>
@@ -50,7 +50,6 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
             className="bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/10 transition-all duration-200"
           >
             <div className="flex flex-col space-y-4">
-              {/* Session Date */}
               <div className="flex items-center gap-3">
                 <Badge variant="secondary" className="bg-[#4CD6B4]/20 text-[#4CD6B4] hover:bg-[#4CD6B4]/30">
                   <Calendar className="w-4 h-4 ml-2" />
@@ -58,7 +57,6 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
                 </Badge>
               </div>
 
-              {/* Session Details */}
               <div className="grid gap-4 mt-2">
                 {session.room_number && (
                   <div className="flex items-start gap-3">
@@ -91,7 +89,7 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
                 )}
 
                 {session.next_session_date && (
-                  <div className="flex items-start gap-3 mt-2">
+                  <div className="flex items-start gap-3 mt-2 p-3 rounded bg-[#4CD6B4]/5">
                     <Clock className="w-4 h-4 text-[#4CD6B4] mt-1" />
                     <div>
                       <p className="text-sm text-[#4CD6B4]">الجلسة القادمة</p>
