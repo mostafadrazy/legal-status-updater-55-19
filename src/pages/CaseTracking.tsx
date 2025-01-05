@@ -65,8 +65,8 @@ export default function CaseTracking() {
       
       if (caseData) {
         console.log("Case found:", caseData);
+        console.log("Case ID for sessions query:", caseData.id);
         
-        console.log("Fetching sessions with case_id:", caseData.id);
         const { data: sessionsData, error: sessionsError } = await supabase
           .from("case_sessions")
           .select("*")
@@ -78,7 +78,7 @@ export default function CaseTracking() {
         }
 
         console.log("Sessions query result:", sessionsData);
-        console.log("SQL query details:", supabase.from("case_sessions").select("*").eq("case_id", caseData.id).toSQL());
+        console.log("Number of sessions found:", sessionsData ? sessionsData.length : 0);
 
         const { data: lawyerData } = await supabase
           .from("profiles")
