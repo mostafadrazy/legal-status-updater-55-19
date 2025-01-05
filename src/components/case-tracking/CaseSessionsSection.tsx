@@ -15,6 +15,11 @@ interface CaseSessionsSectionProps {
 }
 
 export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
+  const formatDate = (date: string | null) => {
+    if (!date) return "غير محدد";
+    return format(new Date(date), 'dd MMMM yyyy', { locale: ar });
+  };
+
   if (sessions.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400">
@@ -31,46 +36,40 @@ export function CaseSessionsSection({ sessions }: CaseSessionsSectionProps) {
         {sessions.map((session, index) => (
           <div 
             key={index}
-            className="p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-200"
+            className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3"
           >
             <div className="flex items-center gap-2 text-[#4CD6B4]">
               <Calendar className="w-4 h-4" />
-              <span className="font-semibold">
-                {format(new Date(session.session_date), 'dd MMMM yyyy', { locale: ar })}
-              </span>
+              <span>{formatDate(session.session_date)}</span>
             </div>
             
-            <div className="mt-4 space-y-3">
-              {session.room_number && (
-                <div>
-                  <p className="text-sm text-gray-400">رقم القاعة</p>
-                  <p className="text-white">{session.room_number}</p>
-                </div>
-              )}
+            {session.room_number && (
+              <div>
+                <p className="text-sm text-gray-400">رقم القاعة</p>
+                <p className="text-white">{session.room_number}</p>
+              </div>
+            )}
 
-              {session.procedure_type && (
-                <div>
-                  <p className="text-sm text-gray-400">نوع الإجراء</p>
-                  <p className="text-white">{session.procedure_type}</p>
-                </div>
-              )}
+            {session.procedure_type && (
+              <div>
+                <p className="text-sm text-gray-400">نوع الإجراء</p>
+                <p className="text-white">{session.procedure_type}</p>
+              </div>
+            )}
 
-              {session.decision && (
-                <div>
-                  <p className="text-sm text-gray-400">القرار</p>
-                  <p className="text-white whitespace-pre-wrap">{session.decision}</p>
-                </div>
-              )}
+            {session.decision && (
+              <div>
+                <p className="text-sm text-gray-400">القرار</p>
+                <p className="text-white">{session.decision}</p>
+              </div>
+            )}
 
-              {session.next_session_date && (
-                <div>
-                  <p className="text-sm text-gray-400">الجلسة القادمة</p>
-                  <p className="text-white">
-                    {format(new Date(session.next_session_date), 'dd MMMM yyyy', { locale: ar })}
-                  </p>
-                </div>
-              )}
-            </div>
+            {session.next_session_date && (
+              <div>
+                <p className="text-sm text-gray-400">الجلسة القادمة</p>
+                <p className="text-white">{formatDate(session.next_session_date)}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>
