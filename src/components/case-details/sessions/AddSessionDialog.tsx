@@ -41,70 +41,70 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
       <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 max-w-lg" dir="rtl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none" />
         
-        <DialogHeader className="space-y-2">
+        <DialogHeader className="space-y-2 text-right">
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
             إضافة جلسة جديدة
           </DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogDescription className="text-gray-300">
             أدخل تفاصيل الجلسة الجديدة أدناه
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="sessionDate">تاريخ الجلسة</Label>
+            <div className="space-y-2 text-right">
+              <Label htmlFor="sessionDate" className="text-gray-200">تاريخ الجلسة</Label>
               <Input
                 id="sessionDate"
                 type="date"
                 value={sessionDate}
                 onChange={(e) => setSessionDate(e.target.value)}
                 required
-                className="bg-white/5 border-white/10 focus:border-[#4CD6B4] transition-colors"
+                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="nextSessionDate">تاريخ الجلسة القادمة</Label>
+            <div className="space-y-2 text-right">
+              <Label htmlFor="nextSessionDate" className="text-gray-200">تاريخ الجلسة القادمة</Label>
               <Input
                 id="nextSessionDate"
                 type="date"
                 value={nextSessionDate}
                 onChange={(e) => setNextSessionDate(e.target.value)}
-                className="bg-white/5 border-white/10 focus:border-[#4CD6B4] transition-colors"
+                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="roomNumber">رقم القاعة</Label>
+            <div className="space-y-2 text-right">
+              <Label htmlFor="roomNumber" className="text-gray-200">رقم القاعة</Label>
               <Input
                 id="roomNumber"
                 value={roomNumber}
                 onChange={(e) => setRoomNumber(e.target.value)}
                 placeholder="أدخل رقم القاعة"
-                className="bg-white/5 border-white/10 focus:border-[#4CD6B4] transition-colors"
+                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="procedureType">نوع الإجراء</Label>
+            <div className="space-y-2 text-right">
+              <Label htmlFor="procedureType" className="text-gray-200">نوع الإجراء</Label>
               <Input
                 id="procedureType"
                 value={procedureType}
                 onChange={(e) => setProcedureType(e.target.value)}
                 placeholder="أدخل نوع الإجراء"
-                className="bg-white/5 border-white/10 focus:border-[#4CD6B4] transition-colors"
+                className="bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="decision">القرار</Label>
+            <div className="space-y-2 text-right">
+              <Label htmlFor="decision" className="text-gray-200">القرار</Label>
               <Textarea
                 id="decision"
                 value={decision}
                 onChange={(e) => setDecision(e.target.value)}
                 placeholder="أدخل القرار"
-                className="h-24 bg-white/5 border-white/10 focus:border-[#4CD6B4] transition-colors"
+                className="h-24 bg-white/10 border-white/20 focus:border-[#4CD6B4] transition-colors text-white text-right"
               />
             </div>
           </div>
@@ -120,7 +120,7 @@ export function AddSessionDialog({ open, onOpenChange, onSubmit }: AddSessionDia
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-white/10 hover:bg-white/5"
+              className="border-white/20 hover:bg-white/5 text-white"
             >
               إلغاء
             </Button>
