@@ -26,7 +26,6 @@ export function Calendar() {
   const { session: authSession } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  // Fetch sessions
   const { data: initialSessions } = useQuery({
     queryKey: ['calendar-sessions'],
     queryFn: async () => {
@@ -41,14 +40,13 @@ export function Calendar() {
           case:cases(title, case_number)
         `)
         .eq('user_id', authSession?.user?.id);
-
+      
       if (error) throw error;
       return data as Session[];
     },
     enabled: !!authSession?.user?.id
   });
 
-  // Set up real-time subscription
   useEffect(() => {
     if (!authSession?.user?.id) return;
 
@@ -64,7 +62,6 @@ export function Calendar() {
         },
         (payload) => {
           console.log('Real-time update:', payload);
-          // Refresh the sessions data
           setSessions(prev => {
             if (payload.eventType === 'INSERT') {
               return [...prev, payload.new as Session];
@@ -132,7 +129,7 @@ export function Calendar() {
         className="rounded-md border border-white/10"
         components={{
           Day: ({ date: dayDate, ...props }) => (
-            <div className="relative h-9 w-9" {...props}>
+            <div className="relative h-9 w-9">
               {props.children}
               {getDayContent(dayDate)}
             </div>

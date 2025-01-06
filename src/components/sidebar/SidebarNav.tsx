@@ -1,10 +1,11 @@
-import { Home, Settings, Folder } from "lucide-react";
+import { Home, Settings, Folder, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation, Link } from "react-router-dom";
 
 const menuItems = [
   { icon: Home, label: "الرئيسية", path: "/" },
   { icon: Folder, label: "القضايا", path: "/cases" },
+  { icon: Calendar, label: "التقويم", path: "/calendar" },
   { icon: Settings, label: "الإعدادات", path: "/settings" },
 ];
 
