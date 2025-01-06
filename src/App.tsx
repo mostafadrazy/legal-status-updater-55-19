@@ -37,22 +37,24 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<DashboardRoute />} />
-            <Route path="/case-tracking" element={<CaseTracking />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/callback" element={<Callback />} />
+        <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]">
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<DashboardRoute />} />
+              <Route path="/case-tracking" element={<CaseTracking />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/callback" element={<Callback />} />
 
-            {/* Protected routes */}
-            <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-          </Routes>
-          <BackToTop />
-        </BrowserRouter>
+              {/* Protected routes */}
+              <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            </Routes>
+            <BackToTop />
+          </BrowserRouter>
+        </div>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
