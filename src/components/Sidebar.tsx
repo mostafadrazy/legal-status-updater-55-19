@@ -4,7 +4,7 @@ import { SidebarProfile } from "./sidebar/SidebarProfile";
 
 export function Sidebar() {
   return (
-    <aside className="w-64 glass-card border-l border-white/10 p-4 flex flex-col shadow-xl">
+    <aside className="fixed top-0 left-0 h-screen w-64 glass-card border-l border-white/10 p-4 flex flex-col shadow-xl">
       <SidebarLogo />
       <SidebarNav />
       <SidebarProfile />
