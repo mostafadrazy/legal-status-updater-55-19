@@ -54,6 +54,26 @@ const translations: Translations = {
   logout: {
     ar: 'تسجيل الخروج',
     en: 'Logout'
+  },
+  home: {
+    ar: 'الرئيسية',
+    en: 'Home'
+  },
+  newCase: {
+    ar: 'إنشاء قضية',
+    en: 'New Case'
+  },
+  search: {
+    ar: 'بحث',
+    en: 'Search'
+  },
+  caseTracking: {
+    ar: 'تتبع القضية',
+    en: 'Case Tracking'
+  },
+  login: {
+    ar: 'تسجيل الدخول',
+    en: 'Login'
   }
 };
 
