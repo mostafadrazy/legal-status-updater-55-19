@@ -1,8 +1,6 @@
-import { Calendar, User, Scale, QrCode, Copy } from "lucide-react";
-import { StatusBadge } from "../StatusBadge";
-import { toast } from "sonner";
-import { useEffect, useRef } from "react";
-import VanillaTilt from "vanilla-tilt";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, User } from "lucide-react";
+import { useTiltEffect } from "@/hooks/useTiltEffect";
 
 interface CasePreviewProps {
   title: string;
@@ -11,7 +9,7 @@ interface CasePreviewProps {
   nextHearing: string;
   client: string;
   caseCode?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export function CasePreview({
@@ -23,81 +21,60 @@ export function CasePreview({
   caseCode,
   onClick
 }: CasePreviewProps) {
-  const tiltRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const tiltNode = tiltRef.current;
-    if (tiltNode) {
-      VanillaTilt.init(tiltNode, {
-        max: 15,
-        speed: 400,
-        glare: true,
-        "max-glare": 0.3,
-        scale: 1.05,
-        perspective: 1000,
-      });
-    }
-    return () => {
-      if (tiltNode) {
-        (tiltNode as any)._vanilla?.destroy();
-      }
-    };
-  }, []);
-
-  const handleCopyCode = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (caseCode) {
-      navigator.clipboard.writeText(caseCode);
-      toast.success('تم نسخ رمز القضية');
-    }
-  };
+  const tiltRef = useTiltEffect({
+    max: 10,
+    scale: 1.02,
+    speed: 800,
+    glare: true,
+    "max-glare": 0.2
+  });
 
   return (
-    <div 
+    <div
       ref={tiltRef}
+      className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-6 shadow-lg transition-all duration-300 hover:border-white/20 hover:shadow-xl"
       onClick={onClick}
-      className="glass-card relative p-6 rounded-xl cursor-pointer group animate-fade-in transform-gpu"
+      style={{ transformStyle: 'preserve-3d' }}
     >
-      <div className="bg-gradient-overlay" />
-      <div className="relative">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h3 className="text-xl font-semibold text-white mb-2 group-hover:gradient-text transition-all duration-300">{title}</h3>
-            <p className="text-[#4CD6B4] text-sm">رقم القضية: {caseNumber}</p>
-            {caseCode && (
-              <div className="flex items-center gap-2 mt-1">
-                <QrCode className="w-4 h-4 text-[#4CD6B4]" />
-                <span className="text-sm text-gray-400">{caseCode}</span>
-                <button
-                  onClick={handleCopyCode}
-                  className="p-1 hover:bg-white/10 rounded-full transition-colors"
-                >
-                  <Copy className="w-3 h-3 text-[#4CD6B4]" />
-                </button>
-              </div>
-            )}
-          </div>
-          <StatusBadge status={status} />
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
+          {caseCode && (
+            <Badge variant="outline" className="border-white/20 text-[#4CD6B4]">
+              {caseCode}
+            </Badge>
+          )}
         </div>
-        
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 text-gray-300">
-            <Calendar className="w-4 h-4 text-[#4CD6B4]" />
-            <span className="text-sm">الجلسة القادمة: {nextHearing || "غير محدد"}</span>
+
+        <div className="space-y-2">
+          <p className="text-sm text-gray-400">رقم القضية: {caseNumber}</p>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Calendar className="h-4 w-4" />
+            <span>الجلسة القادمة: {nextHearing}</span>
           </div>
-          <div className="flex items-center gap-3 text-gray-300">
-            <User className="w-4 h-4 text-[#4CD6B4]" />
-            <span className="text-sm">العميل: {client}</span>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <User className="h-4 w-4" />
+            <span>العميل: {client}</span>
           </div>
         </div>
-        
-        <button 
-          className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4] hover:text-black transition-all duration-300 group-hover:scale-105"
-        >
-          <Scale className="w-4 h-4" />
-          <span>عرض التفاصيل</span>
-        </button>
+
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className={
+              status === "مغلقة"
+                ? "border-red-500/20 text-red-500"
+                : status === "معلقة"
+                ? "border-yellow-500/20 text-yellow-500"
+                : "border-green-500/20 text-green-500"
+            }
+          >
+            {status}
+          </Badge>
+        </div>
       </div>
+
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#4CD6B4]/0 via-[#4CD6B4]/5 to-[#4CD6B4]/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     </div>
   );
 }
