@@ -7,32 +7,61 @@ import { ClientInformationSection } from "./sections/ClientInformationSection";
 import { OpposingPartySection } from "./sections/OpposingPartySection";
 
 interface CaseDetailsTabProps {
-  caseDetails: {
-    id: string;
-    case_number: string;
-    title: string;
-    status: string;
-    next_hearing: string;
-    client: string;
-    client_phone?: string;
-    client_email?: string;
-    client_address?: string;
-    court?: string;
-    case_type?: string;
-    opposing_party?: string;
-    opposing_lawyer?: string;
-    filing_date?: string;
-  };
+  id: string;
+  caseNumber: string;
+  title: string;
+  status: string;
+  nextHearing: string;
+  client: string;
+  clientPhone?: string;
+  clientEmail?: string;
+  clientAddress?: string;
+  court?: string;
+  caseType?: string;
+  opposingParty?: string;
+  opposingLawyer?: string;
+  filingDate?: string;
   onDelete: () => Promise<void>;
 }
 
-export function CaseDetailsTab({ caseDetails, onDelete }: CaseDetailsTabProps) {
+export function CaseDetailsTab({ 
+  id,
+  caseNumber, 
+  title, 
+  status, 
+  nextHearing, 
+  client,
+  clientPhone,
+  clientEmail,
+  clientAddress,
+  court,
+  caseType,
+  opposingParty,
+  opposingLawyer,
+  filingDate,
+  onDelete 
+}: CaseDetailsTabProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
     return (
       <EditCaseForm
-        caseData={caseDetails}
+        caseData={{
+          id,
+          title,
+          case_number: caseNumber,
+          status,
+          next_hearing: nextHearing,
+          client,
+          client_phone: clientPhone,
+          client_email: clientEmail,
+          client_address: clientAddress,
+          court,
+          case_type: caseType,
+          opposing_party: opposingParty,
+          opposing_lawyer: opposingLawyer,
+          filing_date: filingDate,
+        }}
         onClose={() => setIsEditing(false)}
       />
     );
@@ -54,24 +83,24 @@ export function CaseDetailsTab({ caseDetails, onDelete }: CaseDetailsTabProps) {
 
       <div className="grid gap-8">
         <CaseHeaderSection
-          caseNumber={caseDetails.case_number}
-          title={caseDetails.title}
-          status={caseDetails.status}
-          court={caseDetails.court}
-          caseType={caseDetails.case_type}
-          filingDate={caseDetails.filing_date}
+          caseNumber={caseNumber}
+          title={title}
+          status={status}
+          court={court}
+          caseType={caseType}
+          filingDate={filingDate}
         />
 
         <ClientInformationSection
-          client={caseDetails.client}
-          clientPhone={caseDetails.client_phone}
-          clientEmail={caseDetails.client_email}
-          clientAddress={caseDetails.client_address}
+          client={client}
+          clientPhone={clientPhone}
+          clientEmail={clientEmail}
+          clientAddress={clientAddress}
         />
 
         <OpposingPartySection
-          opposingParty={caseDetails.opposing_party}
-          opposingLawyer={caseDetails.opposing_lawyer}
+          opposingParty={opposingParty}
+          opposingLawyer={opposingLawyer}
         />
 
         <div className="flex justify-start pt-4">

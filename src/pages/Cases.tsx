@@ -15,6 +15,40 @@ const Cases = () => {
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrollY, setScrollY] = useState(0);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; speed: number }>>([]);
+
+  // Initialize particles
+  useEffect(() => {
+    const generateParticles = () => {
+      return Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: Math.random() * 2 + 1,
+        speed: Math.random() * 0.5 + 0.2
+      }));
+    };
+
+    setParticles(generateParticles());
+
+    const animateParticles = () => {
+      setParticles(prevParticles => 
+        prevParticles.map(particle => ({
+          ...particle,
+          y: particle.y - particle.speed,
+          x: particle.x + Math.sin(particle.y * 0.02) * 0.5,
+          ...(particle.y < -10 && {
+            y: window.innerHeight + 10,
+            x: Math.random() * window.innerWidth
+          })
+        }))
+      );
+      requestAnimationFrame(animateParticles);
+    };
+
+    const animation = requestAnimationFrame(animateParticles);
+    return () => cancelAnimationFrame(animation);
+  }, []);
 
   // Handle parallax scroll effect
   useEffect(() => {
@@ -101,6 +135,24 @@ const Cases = () => {
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A] overflow-hidden">
+      {/* Particles */}
+      <div className="fixed inset-0 pointer-events-none">
+        {particles.map(particle => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full bg-[#4CD6B4]/10"
+            style={{
+              left: particle.x,
+              top: particle.y,
+              width: particle.size,
+              height: particle.size,
+              transform: `translateY(${scrollY * 0.1}px)`,
+              transition: 'transform 0.1s linear'
+            }}
+          />
+        ))}
+      </div>
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
