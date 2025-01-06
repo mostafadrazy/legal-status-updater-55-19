@@ -22,55 +22,11 @@ const Navbar = () => {
     <nav className="fixed w-full z-50 backdrop-blur-lg bg-black/20 border-b border-white/10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <div className="flex-1 md:flex-none">
-            <button
-              className="p-2 text-white md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
-              onClick={() => scrollToSection('features')}
-            >
-              المميزات
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
-              onClick={() => scrollToSection('services')}
-            >
-              الخدمات
-            </Button>
-            <Button 
-              variant="ghost"
-              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
-              onClick={() => navigate("/case-tracking")}
-            >
-              <Search className="w-4 h-4 ml-2" />
-              تتبع القضية
-            </Button>
-            <Button 
-              className="glass-button"
-              onClick={() => navigate("/auth/login")}
-            >
-              تسجيل الدخول
-            </Button>
-          </div>
-
-          <div className="flex items-center group cursor-pointer ml-auto" onClick={() => navigate("/")}>
+          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => navigate("/")}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="0 0 553.61 286.91"
-              className="w-20 md:w-24 transition-all duration-300 group-hover:scale-110"
+              className="w-12 md:w-16 group-hover:scale-110 transition-transform duration-300"
             >
               <path className="fill-white" d="M371.99,106.73c2.26-.12,4.4-.04,6.54.77.4.15.78.32,1.16.52.38.19.74.4,1.1.63s.7.48,1.03.74c.33.27.64.55.94.85.3.3.58.61.85.94.27.33.52.67.75,1.03.23.36.44.72.64,1.1.19.38.36.76.52,1.16.15.39.28.79.39,1.2.11.4.2.81.27,1.23.07.41.12.83.15,1.25.03.42.03.84.02,1.26-.01.42-.05.84-.11,1.25-.06.42-.14.83-.23,1.24-.1.41-.22.81-.36,1.21-.14.4-.3.78-.48,1.16-1.78,3.81-4.86,5.75-8.68,7.12-2.57.07-5.08.05-7.47-1.04-.36-.17-.71-.35-1.05-.55-.34-.2-.67-.41-.99-.65-.32-.23-.63-.48-.92-.74-.3-.26-.58-.54-.85-.83-.27-.29-.52-.59-.76-.91-.24-.31-.46-.64-.67-.98-.21-.34-.4-.68-.57-1.04-.17-.35-.33-.72-.47-1.09-.15-.39-.28-.79-.38-1.2-.11-.41-.19-.82-.26-1.23-.07-.42-.11-.83-.14-1.25-.02-.42-.03-.84,0-1.26.02-.42.06-.84.12-1.26.06-.42.14-.83.24-1.24.1-.41.22-.81.36-1.21s.3-.78.48-1.16c1.85-3.81,4.98-5.68,8.84-7.04Z"/>
               <path className="fill-[#3AC6A2]" d="M227.69,29.22h31.12c-4.18,13.82-9.18,27.52-13.95,41.16l-1.65,4.39-24.2-.12c2.02-15.18,6.22-30.26,8.68-45.43Z"/>
@@ -89,34 +45,76 @@ const Navbar = () => {
               <path className="fill-white" d="M43.66,96.86c9.32-.7,19.29,1.49,27.44,6.04.66.38,1.32.77,1.96,1.18.64.41,1.28.84,1.9,1.28.62.44,1.23.9,1.83,1.37.6.47,1.19.96,1.77,1.46.58.5,1.14,1.01,1.69,1.54s1.09,1.07,1.61,1.62c.52.55,1.04,1.12,1.53,1.7.5.58.98,1.17,1.45,1.77.47.6.92,1.22,1.36,1.84.44.63.86,1.26,1.26,1.91.41.65.8,1.3,1.17,1.97s.73,1.34,1.07,2.02c.34.68.66,1.37.97,2.07.31.7.6,1.41.87,2.12.27.71.53,1.43.76,2.16.24.73.46,1.46.66,2.19.26.98.49,1.97.68,2.97.2,1,.36,2,.49,3.01.13,1.01.23,2.02.3,3.03.07,1.01.11,2.03.11,3.04,0,1.02-.02,2.03-.08,3.05-.06,1.01-.15,2.02-.28,3.03-.12,1.01-.28,2.01-.47,3.01-.19,1-.41,1.99-.66,2.97-4.17,16.68-16.15,35.07-24.29,50.48-5.78,10.93-11.11,22.19-17.27,32.91-4.26.16-8.53.37-12.79.38-2.06,0-5.02.24-6.53-1.26l.62-1.83c7.78-14.84,15.42-29.75,22.95-44.72-14.2.09-26.75-.81-38.32-9.98-.59-.48-1.17-.97-1.73-1.47-.57-.5-1.12-1.02-1.66-1.55-.54-.53-1.07-1.07-1.58-1.63-.51-.56-1.01-1.12-1.5-1.7-.49-.58-.96-1.17-1.42-1.78-.46-.6-.9-1.22-1.33-1.84-.43-.62-.84-1.26-1.24-1.9-.4-.65-.78-1.3-1.14-1.96-.37-.66-.72-1.33-1.05-2.01-.33-.68-.65-1.37-.95-2.06-.3-.7-.58-1.4-.85-2.11-.27-.71-.51-1.42-.74-2.15-.23-.72-.44-1.45-.64-2.18-.2-.73-.37-1.47-.53-2.21-.16-.74-.3-1.48-.43-2.23-.12-.75-.23-1.5-.32-2.25-1.46-12.73,1.86-25.78,9.93-35.84,8.37-10.44,20.24-16.1,33.4-17.46ZM43.5,115.24c-8.73,1.83-15.83,5.19-20.9,12.95-.26.4-.51.81-.74,1.22-.24.41-.47.83-.68,1.26-.22.42-.43.85-.62,1.29-.2.43-.38.87-.56,1.32-.18.44-.34.89-.5,1.35-.15.45-.3.91-.43,1.37-.13.46-.25.92-.36,1.39-.11.46-.21.93-.3,1.4-.09.47-.16.94-.23,1.41s-.12.95-.16,1.42c-.04.48-.07.95-.09,1.43s-.03.95-.02,1.43c0,.48.02.96.05,1.43.03.48.07.95.12,1.43.05.48.11.95.19,1.42.07.47.16.94.25,1.41.1.48.22.95.35,1.42.13.47.27.94.42,1.4.15.46.31.92.49,1.38.17.46.36.91.56,1.35.2.45.4.89.62,1.32.22.44.45.87.69,1.29.24.42.49.84.75,1.25.26.41.53.82.82,1.22s.57.79.88,1.17c.3.38.61.76.93,1.13.32.37.65.73.99,1.08s.69.69,1.04,1.03c.36.33.72.66,1.09.97.37.32.75.62,1.14.92.39.3.78.58,1.18.86.4.28.81.54,1.23.8,6.21,3.81,12.68,4.58,19.79,4.32,8.58-1.92,15.53-4.99,20.46-12.81.27-.42.52-.84.77-1.28.24-.43.48-.87.7-1.31.22-.44.43-.89.64-1.35.2-.45.39-.91.57-1.38.18-.46.34-.93.5-1.4.15-.47.3-.95.43-1.43.13-.48.25-.96.36-1.44.11-.48.2-.97.28-1.46.08-.49.15-.98.21-1.47.06-.49.1-.99.14-1.48.03-.5.05-.99.06-1.49,0-.5,0-.99-.01-1.49-.02-.5-.04-.99-.08-1.49-.04-.49-.09-.99-.16-1.48-.06-.49-.14-.98-.23-1.47-.09-.49-.19-.97-.3-1.46-.11-.47-.23-.94-.36-1.4s-.28-.93-.43-1.38c-.16-.46-.32-.91-.5-1.36-.18-.45-.37-.89-.57-1.33-.2-.44-.41-.87-.64-1.3-.22-.43-.46-.85-.7-1.27-.24-.42-.5-.83-.76-1.23-.27-.4-.54-.8-.83-1.19-.29-.39-.58-.77-.88-1.15-.3-.37-.62-.74-.94-1.1s-.66-.71-1-1.05c-.34-.34-.69-.68-1.05-1-.36-.33-.72-.64-1.1-.95-.37-.31-.76-.6-1.14-.89-.39-.29-.78-.56-1.19-.83s-.81-.52-1.23-.77c-5.93-3.52-12.15-4.39-18.95-3.96Z"/>
             </svg>
           </div>
-        </div>
 
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 space-y-2 animate-fade-in">
+          <button
+            className="p-2 text-white md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+
+          <div className="hidden md:flex items-center gap-4">
             <Button 
               variant="ghost" 
-              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
+              className="text-white/80 hover:text-white transition-colors"
               onClick={() => scrollToSection('features')}
             >
               المميزات
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
+              className="text-white/80 hover:text-white transition-colors"
               onClick={() => scrollToSection('services')}
             >
               الخدمات
             </Button>
             <Button 
               variant="ghost"
-              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
+              className="text-white/80 hover:text-white transition-colors"
               onClick={() => navigate("/case-tracking")}
             >
               <Search className="w-4 h-4 ml-2" />
               تتبع القضية
             </Button>
             <Button 
-              className="w-full glass-button"
+              className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+              onClick={() => navigate("/auth/login")}
+            >
+              تسجيل الدخول
+            </Button>
+          </div>
+        </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 space-y-2 animate-fade-in">
+            <Button 
+              variant="ghost" 
+              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              onClick={() => scrollToSection('features')}
+            >
+              المميزات
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              onClick={() => scrollToSection('services')}
+            >
+              الخدمات
+            </Button>
+            <Button 
+              variant="ghost"
+              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              onClick={() => navigate("/case-tracking")}
+            >
+              <Search className="w-4 h-4 ml-2" />
+              تتبع القضية
+            </Button>
+            <Button 
+              className="w-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300"
               onClick={() => navigate("/auth/login")}
             >
               تسجيل الدخول

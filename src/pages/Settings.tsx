@@ -82,7 +82,8 @@ export default function Settings() {
           {isMobile && (
             <Button
               variant="ghost"
-              className="glass-button text-white self-start p-2 rounded-lg backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 mb-4"
+              size="icon"
+              className="mb-4"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
               <Menu className="h-6 w-6" />

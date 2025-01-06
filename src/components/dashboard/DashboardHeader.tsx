@@ -32,14 +32,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
           القضايا الحديثة
         </h1>
+        <Button 
+          className="glass-button text-black font-medium px-6 py-2 rounded-lg backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 w-full md:w-auto"
+          onClick={onNewCase}
+        >
+          <Plus className="w-4 h-4 ml-2" />
+          إنشاء قضية
+        </Button>
       </div>
-      <Button 
-        className="glass-button text-black font-medium px-6 py-2 rounded-lg backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 w-full md:w-auto"
-        onClick={onNewCase}
-      >
-        <Plus className="w-4 h-4 ml-2" />
-        إنشاء قضية
-      </Button>
     </div>
   );
 };
