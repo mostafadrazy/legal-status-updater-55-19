@@ -58,44 +58,52 @@ export function CaseDetailsDialog({
         </DialogHeader>
         
         <Tabs defaultValue="details" className="w-full mt-8 relative">
-          <TabsList className="flex items-center justify-between gap-2 mb-8 p-1 rounded-lg border border-white/10">
+          <TabsList className="flex items-center justify-between gap-4 p-1.5 rounded-lg border border-white/10 backdrop-blur-sm">
             <TabsTrigger 
               value="details"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997] 
-                data-[state=active]:text-white rounded-md py-3 px-4 transition-all duration-300 
-                hover:bg-white/15 text-gray-300 hover:text-white font-medium
-                shadow-sm data-[state=active]:shadow-lg data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98] flex-1"
+              className="flex-1 rounded-md py-3 px-4 text-gray-200
+                transition-all duration-300 ease-in-out
+                hover:bg-white/20 hover:text-white hover:shadow-lg
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
+                data-[state=active]:text-white data-[state=active]:shadow-lg
+                data-[state=active]:shadow-[0_0_15px_rgba(76,214,180,0.3)]
+                transform hover:scale-[1.02] active:scale-[0.98]"
             >
               التفاصيل
             </TabsTrigger>
             <TabsTrigger 
               value="sessions"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997] 
-                data-[state=active]:text-white rounded-md py-3 px-4 transition-all duration-300 
-                hover:bg-white/15 text-gray-300 hover:text-white font-medium
-                shadow-sm data-[state=active]:shadow-lg data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98] flex-1"
+              className="flex-1 rounded-md py-3 px-4 text-gray-200
+                transition-all duration-300 ease-in-out
+                hover:bg-white/20 hover:text-white hover:shadow-lg
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
+                data-[state=active]:text-white data-[state=active]:shadow-lg
+                data-[state=active]:shadow-[0_0_15px_rgba(76,214,180,0.3)]
+                transform hover:scale-[1.02] active:scale-[0.98]"
             >
               الجلسات
             </TabsTrigger>
             <TabsTrigger 
               value="notes"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997] 
-                data-[state=active]:text-white rounded-md py-3 px-4 transition-all duration-300 
-                hover:bg-white/15 text-gray-300 hover:text-white font-medium
-                shadow-sm data-[state=active]:shadow-lg data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98] flex-1"
+              className="flex-1 rounded-md py-3 px-4 text-gray-200
+                transition-all duration-300 ease-in-out
+                hover:bg-white/20 hover:text-white hover:shadow-lg
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
+                data-[state=active]:text-white data-[state=active]:shadow-lg
+                data-[state=active]:shadow-[0_0_15px_rgba(76,214,180,0.3)]
+                transform hover:scale-[1.02] active:scale-[0.98]"
             >
               الملاحظات
             </TabsTrigger>
             <TabsTrigger 
               value="documents"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997] 
-                data-[state=active]:text-white rounded-md py-3 px-4 transition-all duration-300 
-                hover:bg-white/15 text-gray-300 hover:text-white font-medium
-                shadow-sm data-[state=active]:shadow-lg data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98] flex-1"
+              className="flex-1 rounded-md py-3 px-4 text-gray-200
+                transition-all duration-300 ease-in-out
+                hover:bg-white/20 hover:text-white hover:shadow-lg
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
+                data-[state=active]:text-white data-[state=active]:shadow-lg
+                data-[state=active]:shadow-[0_0_15px_rgba(76,214,180,0.3)]
+                transform hover:scale-[1.02] active:scale-[0.98]"
             >
               المستندات
             </TabsTrigger>
