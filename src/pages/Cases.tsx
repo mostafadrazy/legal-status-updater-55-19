@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Plus, Search as SearchIcon } from "lucide-react";
@@ -14,6 +14,17 @@ const Cases = () => {
   const { session } = useAuth();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [scrollY, setScrollY] = useState(0);
+
+  // Handle parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const { data: cases, error } = useQuery({
     queryKey: ['cases'],
@@ -89,15 +100,24 @@ const Cases = () => {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]">
+    <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A] overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
-        <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
+        <div 
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
+          style={{ transform: `translate(-50%, ${scrollY * 0.2}px)` }}
+        />
+        <div 
+          className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10"
+          style={{ transform: `translate(0, ${scrollY * -0.1}px)` }}
+        />
       </div>
 
       <main className="flex-1 pr-64 overflow-auto">
         <div className="p-8 max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div 
+            className="flex items-center justify-between mb-8"
+            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+          >
             <div className="flex items-center gap-4">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
                 القضايا
@@ -112,7 +132,10 @@ const Cases = () => {
             </div>
           </div>
 
-          <div className="max-w-2xl mx-auto mb-12">
+          <div 
+            className="max-w-2xl mx-auto mb-12"
+            style={{ transform: `translateY(${scrollY * 0.05}px)` }}
+          >
             <div className="relative">
               <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
               <Input
@@ -129,12 +152,18 @@ const Cases = () => {
           {searchQuery ? (
             renderSearchResults()
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div 
+              className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+              style={{ transform: `translateY(${scrollY * 0.02}px)` }}
+            >
               {cases?.map((caseItem, index) => (
                 <div
                   key={caseItem.id}
                   className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-                  style={{ animationDelay: `${index * 150}ms` }}
+                  style={{ 
+                    animationDelay: `${index * 150}ms`,
+                    transform: `translateY(${scrollY * (0.02 + index * 0.005)}px)`
+                  }}
                 >
                   <CaseCard 
                     id={caseItem.id}
