@@ -65,7 +65,10 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
       // Update the avatar_url in the profiles table
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: data.publicUrl })
+        .update({ 
+          id: userId,
+          avatar_url: data.publicUrl 
+        })
         .eq('id', userId);
 
       if (updateError) throw updateError;

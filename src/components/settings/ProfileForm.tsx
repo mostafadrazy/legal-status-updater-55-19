@@ -27,7 +27,9 @@ export function ProfileForm({ userId, initialData, onUpdate }: ProfileFormProps)
     setIsLoading(true);
     try {
       // Create an object to store only the changed fields for profiles table
-      const changedProfileFields: Partial<ProfileFormData> = {};
+      const changedProfileFields: Partial<ProfileFormData> & { id: string } = {
+        id: userId
+      };
       
       // Compare each field with initial data and only include changed ones
       if (data.full_name !== initialData?.full_name) {
@@ -43,7 +45,7 @@ export function ProfileForm({ userId, initialData, onUpdate }: ProfileFormProps)
       let hasChanges = false;
 
       // Update profile if there are changes
-      if (Object.keys(changedProfileFields).length > 0) {
+      if (Object.keys(changedProfileFields).length > 1) { // > 1 because id is always included
         console.log('Updating profile fields:', changedProfileFields);
         
         const { error: profileError } = await supabase

@@ -42,11 +42,7 @@ export default function Tasks() {
             session_date,
             case_id,
             procedure_type,
-            room_number,
-            start_time,
-            end_time,
-            title,
-            participants
+            room_number
           `)
           .order('session_date', { ascending: true });
         
@@ -56,8 +52,17 @@ export default function Tasks() {
           throw error;
         }
         
-        console.log('Sessions fetched:', data);
-        return data as Session[];
+        // Transform the data to match the Session interface
+        const transformedData: Session[] = data.map(session => ({
+          ...session,
+          title: session.procedure_type || 'Untitled Session',
+          start_time: '09:00', // Default start time
+          end_time: '10:00',   // Default end time
+          participants: null
+        }));
+        
+        console.log('Sessions fetched:', transformedData);
+        return transformedData;
       } catch (error) {
         console.error('Error fetching sessions:', error);
         toast.error('Failed to load sessions');
