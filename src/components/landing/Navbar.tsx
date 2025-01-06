@@ -35,7 +35,38 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="flex items-center justify-center mx-auto group cursor-pointer" onClick={() => navigate("/")}>
+          <div className="hidden md:flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
+              onClick={() => scrollToSection('features')}
+            >
+              المميزات
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
+              onClick={() => scrollToSection('services')}
+            >
+              الخدمات
+            </Button>
+            <Button 
+              variant="ghost"
+              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
+              onClick={() => navigate("/case-tracking")}
+            >
+              <Search className="w-4 h-4 ml-2" />
+              تتبع القضية
+            </Button>
+            <Button 
+              className="glass-button"
+              onClick={() => navigate("/auth/login")}
+            >
+              تسجيل الدخول
+            </Button>
+          </div>
+
+          <div className="flex items-center mr-auto group cursor-pointer" onClick={() => navigate("/")}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="0 0 553.61 286.91"
@@ -58,58 +89,27 @@ const Navbar = () => {
               <path className="fill-white" d="M43.66,96.86c9.32-.7,19.29,1.49,27.44,6.04.66.38,1.32.77,1.96,1.18.64.41,1.28.84,1.9,1.28.62.44,1.23.9,1.83,1.37.6.47,1.19.96,1.77,1.46.58.5,1.14,1.01,1.69,1.54s1.09,1.07,1.61,1.62c.52.55,1.04,1.12,1.53,1.7.5.58.98,1.17,1.45,1.77.47.6.92,1.22,1.36,1.84.44.63.86,1.26,1.26,1.91.41.65.8,1.3,1.17,1.97s.73,1.34,1.07,2.02c.34.68.66,1.37.97,2.07.31.7.6,1.41.87,2.12.27.71.53,1.43.76,2.16.24.73.46,1.46.66,2.19.26.98.49,1.97.68,2.97.2,1,.36,2,.49,3.01.13,1.01.23,2.02.3,3.03.07,1.01.11,2.03.11,3.04,0,1.02-.02,2.03-.08,3.05-.06,1.01-.15,2.02-.28,3.03-.12,1.01-.28,2.01-.47,3.01-.19,1-.41,1.99-.66,2.97-4.17,16.68-16.15,35.07-24.29,50.48-5.78,10.93-11.11,22.19-17.27,32.91-4.26.16-8.53.37-12.79.38-2.06,0-5.02.24-6.53-1.26l.62-1.83c7.78-14.84,15.42-29.75,22.95-44.72-14.2.09-26.75-.81-38.32-9.98-.59-.48-1.17-.97-1.73-1.47-.57-.5-1.12-1.02-1.66-1.55-.54-.53-1.07-1.07-1.58-1.63-.51-.56-1.01-1.12-1.5-1.7-.49-.58-.96-1.17-1.42-1.78-.46-.6-.9-1.22-1.33-1.84-.43-.62-.84-1.26-1.24-1.9-.4-.65-.78-1.3-1.14-1.96-.37-.66-.72-1.33-1.05-2.01-.33-.68-.65-1.37-.95-2.06-.3-.7-.58-1.4-.85-2.11-.27-.71-.51-1.42-.74-2.15-.23-.72-.44-1.45-.64-2.18-.2-.73-.37-1.47-.53-2.21-.16-.74-.3-1.48-.43-2.23-.12-.75-.23-1.5-.32-2.25-1.46-12.73,1.86-25.78,9.93-35.84,8.37-10.44,20.24-16.1,33.4-17.46ZM43.5,115.24c-8.73,1.83-15.83,5.19-20.9,12.95-.26.4-.51.81-.74,1.22-.24.41-.47.83-.68,1.26-.22.42-.43.85-.62,1.29-.2.43-.38.87-.56,1.32-.18.44-.34.89-.5,1.35-.15.45-.3.91-.43,1.37-.13.46-.25.92-.36,1.39-.11.46-.21.93-.3,1.4-.09.47-.16.94-.23,1.41s-.12.95-.16,1.42c-.04.48-.07.95-.09,1.43s-.03.95-.02,1.43c0,.48.02.96.05,1.43.03.48.07.95.12,1.43.05.48.11.95.19,1.42.07.47.16.94.25,1.41.1.48.22.95.35,1.42.13.47.27.94.42,1.4.15.46.31.92.49,1.38.17.46.36.91.56,1.35.2.45.4.89.62,1.32.22.44.45.87.69,1.29.24.42.49.84.75,1.25.26.41.53.82.82,1.22s.57.79.88,1.17c.3.38.61.76.93,1.13.32.37.65.73.99,1.08s.69.69,1.04,1.03c.36.33.72.66,1.09.97.37.32.75.62,1.14.92.39.3.78.58,1.18.86.4.28.81.54,1.23.8,6.21,3.81,12.68,4.58,19.79,4.32,8.58-1.92,15.53-4.99,20.46-12.81.27-.42.52-.84.77-1.28.24-.43.48-.87.7-1.31.22-.44.43-.89.64-1.35.2-.45.39-.91.57-1.38.18-.46.34-.93.5-1.4.15-.47.3-.95.43-1.43.13-.48.25-.96.36-1.44.11-.48.2-.97.28-1.46.08-.49.15-.98.21-1.47.06-.49.1-.99.14-1.48.03-.5.05-.99.06-1.49,0-.5,0-.99-.01-1.49-.02-.5-.04-.99-.08-1.49-.04-.49-.09-.99-.16-1.48-.06-.49-.14-.98-.23-1.47-.09-.49-.19-.97-.3-1.46-.11-.47-.23-.94-.36-1.4s-.28-.93-.43-1.38c-.16-.46-.32-.91-.5-1.36-.18-.45-.37-.89-.57-1.33-.2-.44-.41-.87-.64-1.3-.22-.43-.46-.85-.7-1.27-.24-.42-.5-.83-.76-1.23-.27-.4-.54-.8-.83-1.19-.29-.39-.58-.77-.88-1.15-.3-.37-.62-.74-.94-1.1s-.66-.71-1-1.05c-.34-.34-.69-.68-1.05-1-.36-.33-.72-.64-1.1-.95-.37-.31-.76-.6-1.14-.89-.39-.29-.78-.56-1.19-.83s-.81-.52-1.23-.77c-5.93-3.52-12.15-4.39-18.95-3.96Z"/>
             </svg>
           </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-white transition-colors"
-              onClick={() => scrollToSection('features')}
-            >
-              المميزات
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-white transition-colors"
-              onClick={() => scrollToSection('services')}
-            >
-              الخدمات
-            </Button>
-            <Button 
-              variant="ghost"
-              className="text-white/80 hover:text-white transition-colors"
-              onClick={() => navigate("/case-tracking")}
-            >
-              <Search className="w-4 h-4 ml-2" />
-              تتبع القضية
-            </Button>
-            <Button 
-              className="glass-button"
-              onClick={() => navigate("/auth/login")}
-            >
-              تسجيل الدخول
-            </Button>
-          </div>
         </div>
 
         {isMenuOpen && (
           <div className="md:hidden mt-4 space-y-2 animate-fade-in">
             <Button 
               variant="ghost" 
-              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => scrollToSection('features')}
             >
               المميزات
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => scrollToSection('services')}
             >
               الخدمات
             </Button>
             <Button 
               variant="ghost"
-              className="w-full text-white/80 hover:text-white transition-colors justify-start"
+              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => navigate("/case-tracking")}
             >
               <Search className="w-4 h-4 ml-2" />
