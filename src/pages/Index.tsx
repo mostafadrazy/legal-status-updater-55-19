@@ -18,12 +18,15 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
   const { session } = useAuth();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const { data: cases, error } = useQuery({
     queryKey: ['cases'],
@@ -107,10 +110,30 @@ const Index = () => {
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
         </div>
 
-        <main className="flex-1 lg:pr-64 overflow-auto relative">
+        {isMobile && isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-30"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <main className={`flex-1 transition-all duration-300 ${isMobile ? 'w-full' : 'lg:pr-64'} relative`}>
           <div className="p-4 md:p-8 max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div className="flex flex-col md:flex-row md:items-center gap-4">
+                {isMobile && (
+                  <Button
+                    variant="ghost"
+                    className="text-white self-start"
+                    onClick={() => setIsSidebarOpen(true)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="3" y1="12" x2="21" y2="12"></line>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                  </Button>
+                )}
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
                   القضايا الحديثة
                 </h1>
@@ -163,7 +186,14 @@ const Index = () => {
             )}
           </div>
         </main>
-        <Sidebar />
+
+        <Sidebar 
+          className={`fixed transition-transform duration-300 ${
+            isMobile ? (isSidebarOpen ? 'translate-x-0' : 'translate-x-full') : ''
+          }`}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+
         <NewCaseForm 
           open={isNewCaseDialogOpen} 
           onOpenChange={setIsNewCaseDialogOpen}
