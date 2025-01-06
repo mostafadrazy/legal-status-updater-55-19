@@ -107,15 +107,15 @@ const Index = () => {
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
         </div>
 
-        <main className="flex-1 pr-64 overflow-auto relative">
-          <div className="p-8 max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+        <main className="flex-1 lg:pr-64 overflow-auto relative">
+          <div className="p-4 md:p-8 max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
                   القضايا الحديثة
                 </h1>
                 <Button 
-                  className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+                  className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 w-full md:w-auto"
                   onClick={() => setIsNewCaseDialogOpen(true)}
                 >
                   <Plus className="w-4 h-4 ml-2" />
@@ -141,7 +141,7 @@ const Index = () => {
             {searchQuery ? (
               renderSearchResults()
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {cases?.map((caseItem, index) => (
                   <div
                     key={caseItem.id}
@@ -177,7 +177,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <div className="container mx-auto px-4">
-        <div className="rounded-3xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 p-12 space-y-20">
+        <div className="rounded-3xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 p-4 md:p-12 space-y-12 md:space-y-20">
           <WhatWeDo />
           <Features />
           <Services />
