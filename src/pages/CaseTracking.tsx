@@ -6,10 +6,7 @@ import { CaseSessionsSection } from "@/components/case-tracking/CaseSessionsSect
 import { SearchForm } from "@/components/case-tracking/SearchForm";
 import { ClientInformation } from "@/components/case-tracking/ClientInformation";
 import { LawyerInformation } from "@/components/case-tracking/LawyerInformation";
-import { Loader2, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sidebar } from "@/components/Sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Loader2 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 
 interface Case {
@@ -38,9 +35,7 @@ interface Case {
 export default function CaseTracking() {
   const [isLoading, setIsLoading] = useState(false);
   const [caseDetails, setCaseDetails] = useState<Case | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
   const handleSearch = async (caseCode: string) => {
     setIsLoading(true);
@@ -126,19 +121,8 @@ export default function CaseTracking() {
 
       <Navbar />
 
-      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto pt-24`}>
+      <main className="flex-1 px-4 overflow-auto pt-24">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
-          {isMobile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="glass-button mb-4 !p-2 !min-w-0"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-          )}
-
           <div className="max-w-3xl mx-auto space-y-8">
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
@@ -188,8 +172,6 @@ export default function CaseTracking() {
           </div>
         </div>
       </main>
-      
-      {(isSidebarOpen || !isMobile) && <Sidebar onClose={() => setIsSidebarOpen(false)} />}
     </div>
   );
 }
