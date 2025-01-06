@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon } from "lucide-react";
+import { Settings as SettingsIcon, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,8 @@ import { ProfileTab } from "@/components/settings/tabs/ProfileTab";
 import { NotificationsTab } from "@/components/settings/tabs/NotificationsTab";
 import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab";
 import { SecurityTab } from "@/components/settings/tabs/SecurityTab";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProfileData {
   full_name: string | null;
@@ -21,6 +23,8 @@ export default function Settings() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -73,15 +77,26 @@ export default function Settings() {
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      <main className="flex-1 pr-64 overflow-auto">
-        <div className="p-8 max-w-4xl mx-auto">
+      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
+        <div className="p-4 md:p-8 max-w-4xl mx-auto">
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mb-4"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          )}
+
           <div className="flex items-center gap-3 mb-8">
-            <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
-            <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
+            <SettingsIcon className="w-6 h-6 md:w-8 md:h-8 text-[#4CD6B4]" />
+            <h1 className="text-2xl md:text-3xl font-bold text-white">الإعدادات</h1>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="bg-white/5 border border-white/10 w-full flex justify-start">
+            <TabsList className="bg-white/5 border border-white/10 w-full flex flex-wrap justify-start">
               <TabsTrigger value="profile" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
                 الملف الشخصي
               </TabsTrigger>
@@ -96,31 +111,34 @@ export default function Settings() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile">
-              <ProfileTab 
-                userId={user.id}
-                userEmail={user.email}
-                profileData={profileData}
-                avatarUrl={avatarUrl}
-                onUpdateProfile={setProfileData}
-              />
-            </TabsContent>
+            <div className="space-y-6">
+              <TabsContent value="profile">
+                <ProfileTab 
+                  userId={user.id}
+                  userEmail={user.email}
+                  profileData={profileData}
+                  avatarUrl={avatarUrl}
+                  onUpdateProfile={setProfileData}
+                />
+              </TabsContent>
 
-            <TabsContent value="notifications">
-              <NotificationsTab />
-            </TabsContent>
+              <TabsContent value="notifications">
+                <NotificationsTab />
+              </TabsContent>
 
-            <TabsContent value="appearance">
-              <AppearanceTab />
-            </TabsContent>
+              <TabsContent value="appearance">
+                <AppearanceTab />
+              </TabsContent>
 
-            <TabsContent value="security">
-              <SecurityTab />
-            </TabsContent>
+              <TabsContent value="security">
+                <SecurityTab />
+              </TabsContent>
+            </div>
           </Tabs>
         </div>
       </main>
-      <Sidebar />
+      
+      {(isSidebarOpen || !isMobile) && <Sidebar onClose={() => setIsSidebarOpen(false)} />}
     </div>
   );
 }

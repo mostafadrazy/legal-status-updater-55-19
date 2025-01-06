@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Search as SearchIcon } from "lucide-react";
+import { Plus, Search as SearchIcon, Menu } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Input } from "@/components/ui/input";
 import { CaseCard } from "@/components/CaseCard";
@@ -9,12 +9,15 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import NewCaseForm from "@/components/NewCaseForm";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Cases = () => {
   const { session } = useAuth();
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrollY, setScrollY] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Handle parallax scroll effect
   useEffect(() => {
@@ -112,30 +115,35 @@ const Cases = () => {
         />
       </div>
 
-      <main className="flex-1 pr-64 overflow-auto">
-        <div className="p-8 max-w-7xl mx-auto">
-          <div 
-            className="flex items-center justify-between mb-8"
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-          >
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mb-4"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          )}
+          
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+            <div className="w-full md:w-auto">
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
                 القضايا
               </h1>
-              <Button 
-                className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => setIsNewCaseDialogOpen(true)}
-              >
-                <Plus className="w-4 h-4 ml-2" />
-                إنشاء قضية
-              </Button>
             </div>
+            <Button 
+              className="w-full md:w-auto bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+              onClick={() => setIsNewCaseDialogOpen(true)}
+            >
+              <Plus className="w-4 h-4 ml-2" />
+              إنشاء قضية
+            </Button>
           </div>
 
-          <div 
-            className="max-w-2xl mx-auto mb-12"
-            style={{ transform: `translateY(${scrollY * 0.05}px)` }}
-          >
+          <div className="max-w-2xl mx-auto mb-12">
             <div className="relative">
               <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
               <Input
@@ -153,7 +161,7 @@ const Cases = () => {
             renderSearchResults()
           ) : (
             <div 
-              className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6"
               style={{ transform: `translateY(${scrollY * 0.02}px)` }}
             >
               {cases?.map((caseItem, index) => (
@@ -180,7 +188,9 @@ const Cases = () => {
           )}
         </div>
       </main>
-      <Sidebar />
+      
+      {(isSidebarOpen || !isMobile) && <Sidebar onClose={() => setIsSidebarOpen(false)} />}
+      
       <NewCaseForm 
         open={isNewCaseDialogOpen} 
         onOpenChange={setIsNewCaseDialogOpen}
