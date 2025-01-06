@@ -49,120 +49,89 @@ export function CaseDetailsDialog({
 
   return (
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
-      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 max-w-5xl max-h-[90vh] overflow-y-auto p-4 sm:p-6" dir="rtl">
+      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 sm:max-w-5xl h-[90vh] overflow-hidden p-0" dir="rtl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none" />
         
-        <DialogHeader className="relative space-y-2 pb-4 sm:pb-6 border-b border-white/10">
-          <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+        <DialogHeader className="relative p-4 sm:p-6 border-b border-white/10">
+          <DialogTitle className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
             تفاصيل القضية
           </DialogTitle>
-          <p className="text-[#4CD6B4] text-base sm:text-lg font-medium">{caseDetails?.case_number}</p>
+          <p className="text-[#4CD6B4] text-sm sm:text-lg font-medium">{caseDetails?.case_number}</p>
         </DialogHeader>
         
-        <Tabs defaultValue="details" className="w-full mt-4 sm:mt-8 relative">
-          <TabsList className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-2' : 'flex-row gap-6'} p-2 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl`}>
-            <TabsTrigger 
-              value="details"
-              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
-                transition-all duration-300 ease-out
-                hover:bg-white/10 hover:text-white
-                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
-                data-[state=active]:text-white data-[state=active]:shadow-lg
-                data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5`}
-            >
-              التفاصيل
-            </TabsTrigger>
-            <TabsTrigger 
-              value="sessions"
-              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
-                transition-all duration-300 ease-out
-                hover:bg-white/10 hover:text-white
-                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
-                data-[state=active]:text-white data-[state=active]:shadow-lg
-                data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5`}
-            >
-              الجلسات
-            </TabsTrigger>
-            <TabsTrigger 
-              value="notes"
-              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
-                transition-all duration-300 ease-out
-                hover:bg-white/10 hover:text-white
-                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
-                data-[state=active]:text-white data-[state=active]:shadow-lg
-                data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5`}
-            >
-              الملاحظات
-            </TabsTrigger>
-            <TabsTrigger 
-              value="documents"
-              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
-                transition-all duration-300 ease-out
-                hover:bg-white/10 hover:text-white
-                data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
-                data-[state=active]:text-white data-[state=active]:shadow-lg
-                data-[state=active]:shadow-[#4CD6B4]/20
-                transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5`}
-            >
-              المستندات
-            </TabsTrigger>
-          </TabsList>
+        <div className="flex flex-col h-full overflow-hidden">
+          <Tabs defaultValue="details" className="w-full h-full flex flex-col">
+            <div className="px-4 sm:px-6 py-2">
+              <TabsList className="w-full flex flex-wrap gap-2 p-1 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">
+                {['details', 'sessions', 'notes', 'documents'].map((tab) => (
+                  <TabsTrigger
+                    key={tab}
+                    value={tab}
+                    className="flex-1 min-w-[120px] rounded-lg py-2 px-3 text-sm sm:text-base text-gray-300 font-medium
+                      transition-all duration-300 ease-out
+                      hover:bg-white/10 hover:text-white
+                      data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
+                      data-[state=active]:text-white data-[state=active]:shadow-lg
+                      data-[state=active]:shadow-[#4CD6B4]/20"
+                  >
+                    {tab === 'details' && 'التفاصيل'}
+                    {tab === 'sessions' && 'الجلسات'}
+                    {tab === 'notes' && 'الملاحظات'}
+                    {tab === 'documents' && 'المستندات'}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
 
-          <div className="space-y-6 mt-6">
-            <TabsContent value="details" className="focus-visible:outline-none animate-fade-in">
-              {caseDetails && (
-                <CaseDetailsTab
-                  id={caseDetails.id}
-                  caseNumber={caseDetails.case_number}
-                  title={caseDetails.title}
-                  status={caseDetails.status}
-                  nextHearing={caseDetails.next_hearing}
-                  client={caseDetails.client}
-                  clientPhone={caseDetails.client_phone}
-                  clientEmail={caseDetails.client_email}
-                  court={caseDetails.court}
-                  caseType={caseDetails.case_type}
-                  opposingParty={caseDetails.opposing_party}
-                  opposingLawyer={caseDetails.opposing_lawyer}
-                  filingDate={caseDetails.filing_date}
-                  onDelete={onDelete}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
+              <TabsContent value="details" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
+                {caseDetails && (
+                  <CaseDetailsTab
+                    id={caseDetails.id}
+                    caseNumber={caseDetails.case_number}
+                    title={caseDetails.title}
+                    status={caseDetails.status}
+                    nextHearing={caseDetails.next_hearing}
+                    client={caseDetails.client}
+                    clientPhone={caseDetails.client_phone}
+                    clientEmail={caseDetails.client_email}
+                    court={caseDetails.court}
+                    caseType={caseDetails.case_type}
+                    opposingParty={caseDetails.opposing_party}
+                    opposingLawyer={caseDetails.opposing_lawyer}
+                    filingDate={caseDetails.filing_date}
+                    onDelete={onDelete}
+                  />
+                )}
+              </TabsContent>
+
+              <TabsContent value="sessions" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
+                {caseDetails && sessions && (
+                  <SessionsTab
+                    caseId={caseDetails.id}
+                    sessions={sessions}
+                    onSessionsChange={refetchSessions}
+                  />
+                )}
+              </TabsContent>
+
+              <TabsContent value="notes" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
+                <NotesTab
+                  notes={notes}
+                  onAddNote={onAddNote}
                 />
-              )}
-            </TabsContent>
+              </TabsContent>
 
-            <TabsContent value="sessions" className="focus-visible:outline-none animate-fade-in">
-              {caseDetails && sessions && (
-                <SessionsTab
-                  caseId={caseDetails.id}
-                  sessions={sessions}
-                  onSessionsChange={refetchSessions}
+              <TabsContent value="documents" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
+                <DocumentsTab
+                  documents={documents}
+                  onUpload={onUpload}
+                  onViewDocument={onViewDocument}
                 />
-              )}
-            </TabsContent>
-
-            <TabsContent value="notes" className="focus-visible:outline-none animate-fade-in">
-              <NotesTab
-                notes={notes}
-                onAddNote={onAddNote}
-              />
-            </TabsContent>
-
-            <TabsContent value="documents" className="focus-visible:outline-none animate-fade-in">
-              <DocumentsTab
-                documents={documents}
-                onUpload={onUpload}
-                onViewDocument={onViewDocument}
-              />
-            </TabsContent>
-          </div>
-        </Tabs>
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div>
       </DialogContent>
     </Dialog>
   );
