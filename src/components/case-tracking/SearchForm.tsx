@@ -1,49 +1,31 @@
-import { useState } from "react";
-import { Search, Loader2 } from "lucide-react";
+import React from "react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 interface SearchFormProps {
   onSearch: (caseCode: string) => void;
-  isLoading: boolean;
 }
 
-export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
-  const [caseCode, setCaseCode] = useState("");
+export function SearchForm({ onSearch }: SearchFormProps) {
+  const [caseCode, setCaseCode] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!caseCode.trim()) return;
     onSearch(caseCode);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative max-w-xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       <div className="relative">
+        <Search className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
         <Input
+          type="text"
+          placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
+          className="w-full pl-4 pr-12 py-3 bg-white/5 border-white/10 text-white placeholder:text-gray-400 rounded-xl"
           value={caseCode}
           onChange={(e) => setCaseCode(e.target.value)}
-          placeholder="أدخل رمز القضية..."
-          className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-14 pr-4 pl-24 text-lg"
-          disabled={isLoading}
+          dir="rtl"
         />
-        <Button 
-          type="submit"
-          disabled={isLoading}
-          className="absolute left-0 top-0 h-full bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black px-6 flex items-center gap-2"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              جاري البحث...
-            </>
-          ) : (
-            <>
-              <Search className="w-4 h-4" />
-              بحث
-            </>
-          )}
-        </Button>
       </div>
     </form>
   );
