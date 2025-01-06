@@ -22,6 +22,16 @@ const Navbar = () => {
     <nav className="fixed w-full z-50 backdrop-blur-lg bg-black/20 border-b border-white/10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
+          <div className="flex items-center group cursor-pointer order-last" onClick={() => navigate("/")}>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 553.61 286.91"
+              className="w-20 md:w-24 transition-all duration-300 group-hover:scale-110"
+            >
+              // ... keep existing code (SVG paths)
+            </svg>
+          </div>
+
           <div className="flex-1 md:flex-none">
             <button
               className="p-2 text-white md:hidden"
@@ -35,7 +45,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4 ml-auto">
             <Button 
               variant="ghost" 
               className="text-white/80 hover:text-[#4CD6B4] transition-colors"
@@ -65,8 +75,6 @@ const Navbar = () => {
               تسجيل الدخول
             </Button>
           </div>
-
-          <div className="flex items-center mr-auto group cursor-pointer" onClick={() => navigate("/")}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="0 0 553.61 286.91"
