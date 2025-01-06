@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Lock, Bell, Palette } from "lucide-react";
+import { Settings as SettingsIcon, User, Lock, Bell, Palette } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,10 +8,8 @@ import { ProfileForm } from "@/components/settings/ProfileForm";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { SettingsHeader } from "@/components/settings/SettingsHeader";
-import { NotificationsTab } from "@/components/settings/tabs/NotificationsTab";
-import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab";
-import { SecurityTab } from "@/components/settings/tabs/SecurityTab";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface ProfileData {
   full_name: string | null;
@@ -95,9 +93,12 @@ export default function Settings() {
 
       <Sidebar />
       
-      <main className="flex-1 pr-64 overflow-auto relative">
+      <main className="flex-1 overflow-auto relative">
         <div className="p-8 max-w-4xl mx-auto">
-          <SettingsHeader />
+          <div className="flex items-center gap-3 mb-8">
+            <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
+            <h1 className="text-3xl font-bold text-white">الإعدادات</h1>
+          </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
             <TabsList className="bg-white/5 border border-white/10">
@@ -119,7 +120,7 @@ export default function Settings() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile">
+            <TabsContent value="profile" className="space-y-6">
               <Card className="glass-card border-white/10 bg-white/5">
                 <CardContent className="p-6 space-y-8">
                   <AvatarUpload 
@@ -139,15 +140,89 @@ export default function Settings() {
             </TabsContent>
 
             <TabsContent value="notifications">
-              <NotificationsTab />
+              <Card className="glass-card border-white/10 bg-white/5">
+                <CardContent className="p-6 space-y-6">
+                  <h3 className="text-xl font-semibold text-white mb-4">إعدادات الإشعارات</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">إشعارات البريد الإلكتروني</Label>
+                        <p className="text-sm text-gray-400">استلام التحديثات عبر البريد الإلكتروني</p>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">إشعارات المتصفح</Label>
+                        <p className="text-sm text-gray-400">إظهار إشعارات على سطح المكتب</p>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">تحديثات القضايا</Label>
+                        <p className="text-sm text-gray-400">إشعارات عند تحديث حالة القضايا</p>
+                      </div>
+                      <Switch />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="appearance">
-              <AppearanceTab />
+              <Card className="glass-card border-white/10 bg-white/5">
+                <CardContent className="p-6 space-y-6">
+                  <h3 className="text-xl font-semibold text-white mb-4">تخصيص المظهر</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">الوضع الليلي</Label>
+                        <p className="text-sm text-gray-400">تفعيل المظهر الداكن</p>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">التأثيرات البصرية</Label>
+                        <p className="text-sm text-gray-400">تفعيل الرسوم المتحركة</p>
+                      </div>
+                      <Switch />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="security">
-              <SecurityTab />
+              <Card className="glass-card border-white/10 bg-white/5">
+                <CardContent className="p-6 space-y-6">
+                  <h3 className="text-xl font-semibold text-white mb-4">إعدادات الأمان</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">المصادقة الثنائية</Label>
+                        <p className="text-sm text-gray-400">تفعيل طبقة حماية إضافية</p>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-white">تسجيل الدخول عبر البصمة</Label>
+                        <p className="text-sm text-gray-400">استخدام البصمة للدخول</p>
+                      </div>
+                      <Switch />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>

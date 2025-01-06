@@ -101,79 +101,69 @@ const Index = () => {
 
   if (session) {
     return (
-      <div className="min-h-screen flex w-full bg-[#111]">
-        {/* Background gradients */}
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
         </div>
 
         <Sidebar />
-        
-        <main className="flex-1 overflow-auto relative pl-64"> {/* Added pl-64 for sidebar space */}
+        <main className="flex-1 overflow-auto relative">
           <div className="p-8 max-w-7xl mx-auto">
-            {/* Header Section */}
-            <div className="glass-card border border-white/10 bg-white/5 p-6 rounded-xl mb-8 animate-fade-in">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
-                    القضايا الحديثة
-                  </h1>
-                  <Button 
-                    className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
-                    onClick={() => setIsNewCaseDialogOpen(true)}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+                  القضايا الحديثة
+                </h1>
+                <Button 
+                  className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+                  onClick={() => setIsNewCaseDialogOpen(true)}
+                >
+                  <Plus className="w-4 h-4 ml-2" />
+                  إنشاء قضية
+                </Button>
+              </div>
+            </div>
+
+            <div className="max-w-2xl mx-auto mb-12">
+              <div className="relative">
+                <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
+                  className="w-full pl-4 pr-12 py-3 bg-[#8E9196]/10 backdrop-blur-sm border-white/10 text-white placeholder:text-gray-400 rounded-xl"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  dir="rtl"
+                />
+              </div>
+            </div>
+
+            {searchQuery ? (
+              renderSearchResults()
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {cases?.map((caseItem, index) => (
+                  <div
+                    key={caseItem.id}
+                    className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: `${index * 150}ms` }}
                   >
-                    <Plus className="w-4 h-4 ml-2" />
-                    إنشاء قضية
-                  </Button>
-                </div>
+                    <CaseCard 
+                      id={caseItem.id}
+                      caseNumber={caseItem.case_number}
+                      title={caseItem.title}
+                      status={caseItem.status}
+                      nextHearing={caseItem.next_hearing}
+                      client={caseItem.client}
+                      caseCode={caseItem.case_code}
+                    />
+                  </div>
+                ))}
               </div>
-
-              {/* Search Section */}
-              <div className="mt-6 max-w-2xl">
-                <div className="relative">
-                  <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-                    className="w-full pl-4 pr-12 py-3 bg-white/5 backdrop-blur-sm border-white/10 text-white placeholder:text-gray-400 rounded-xl"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    dir="rtl"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Cases Grid */}
-            <div className="space-y-6">
-              {searchQuery ? (
-                renderSearchResults()
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {cases?.map((caseItem, index) => (
-                    <div
-                      key={caseItem.id}
-                      className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-                      style={{ animationDelay: `${index * 150}ms` }}
-                    >
-                      <CaseCard 
-                        id={caseItem.id}
-                        caseNumber={caseItem.case_number}
-                        title={caseItem.title}
-                        status={caseItem.status}
-                        nextHearing={caseItem.next_hearing}
-                        client={caseItem.client}
-                        caseCode={caseItem.case_code}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </main>
-
         <NewCaseForm 
           open={isNewCaseDialogOpen} 
           onOpenChange={setIsNewCaseDialogOpen}
@@ -187,7 +177,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <div className="container mx-auto px-4">
-        <div className="rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 space-y-20">
+        <div className="rounded-3xl bg-[#8E9196]/10 backdrop-blur-xl border border-white/10 p-12 space-y-20">
           <WhatWeDo />
           <Features />
           <Services />
