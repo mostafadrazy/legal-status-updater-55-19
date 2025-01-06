@@ -26,17 +26,17 @@ export function SearchForm({ onSearch, isLoading = false }: SearchFormProps) {
       <div className="group relative flex gap-2">
         <div className="relative flex-1">
           {isLoading ? (
-            <Loader2 className="absolute right-4 top-3.5 h-5 w-5 text-[#4CD6B4] animate-spin" />
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#4CD6B4] animate-spin" />
           ) : (
-            <Search className="absolute right-4 top-3.5 h-5 w-5 text-[#4CD6B4] transition-all duration-300 group-hover:scale-110" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#4CD6B4] transition-all duration-300 group-hover:scale-110" />
           )}
           <Input
             type="text"
             placeholder="أدخل رقم القضية للبحث..."
             className="w-full pl-4 pr-12 py-3 glass-input rounded-xl 
-            focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
-            hover:bg-white/10 hover:border-[#4CD6B4]/20
-            transition-all duration-300"
+              focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
+              hover:bg-[#8E9196]/20 hover:border-[#4CD6B4]/20
+              transition-all duration-300"
             value={caseNumber}
             onChange={(e) => setCaseNumber(e.target.value)}
             disabled={isLoading}
@@ -47,11 +47,11 @@ export function SearchForm({ onSearch, isLoading = false }: SearchFormProps) {
         <Button 
           type="submit"
           disabled={isLoading}
-          className="glass-button px-8"
+          className="glass-button px-8 min-w-[120px]"
         >
           {isLoading ? (
             <>
-              <Loader2 className="animate-spin ml-2" />
+              <Loader2 className="animate-spin ml-2 h-5 w-5" />
               جاري البحث...
             </>
           ) : (
