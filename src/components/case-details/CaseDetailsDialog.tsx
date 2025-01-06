@@ -6,6 +6,7 @@ import { DocumentsTab } from "./DocumentsTab";
 import { SessionsTab } from "./sessions/SessionsTab";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CaseDetailsDialogProps {
   showDetails: boolean;
@@ -30,6 +31,7 @@ export function CaseDetailsDialog({
   onUpload,
   onViewDocument,
 }: CaseDetailsDialogProps) {
+  const isMobile = useIsMobile();
   const { data: sessions, refetch: refetchSessions } = useQuery({
     queryKey: ['case-sessions', caseDetails?.id],
     queryFn: async () => {
@@ -47,73 +49,73 @@ export function CaseDetailsDialog({
 
   return (
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
-      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 max-w-5xl max-h-[90vh] overflow-y-auto" dir="rtl">
+      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 max-w-5xl max-h-[90vh] overflow-y-auto p-4 sm:p-6" dir="rtl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none" />
         
-        <DialogHeader className="relative space-y-2 pb-6 border-b border-white/10">
-          <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+        <DialogHeader className="relative space-y-2 pb-4 sm:pb-6 border-b border-white/10">
+          <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
             تفاصيل القضية
           </DialogTitle>
-          <p className="text-[#4CD6B4] text-lg font-medium">{caseDetails?.case_number}</p>
+          <p className="text-[#4CD6B4] text-base sm:text-lg font-medium">{caseDetails?.case_number}</p>
         </DialogHeader>
         
-        <Tabs defaultValue="details" className="w-full mt-8 relative">
-          <TabsList className="flex items-center justify-between gap-6 p-2 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">
+        <Tabs defaultValue="details" className="w-full mt-4 sm:mt-8 relative">
+          <TabsList className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-2' : 'flex-row gap-6'} p-2 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl`}>
             <TabsTrigger 
               value="details"
-              className="flex-1 rounded-lg py-3.5 px-6 text-gray-300 font-medium
+              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
                 transition-all duration-300 ease-out
                 hover:bg-white/10 hover:text-white
                 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
                 data-[state=active]:text-white data-[state=active]:shadow-lg
                 data-[state=active]:shadow-[#4CD6B4]/20
                 transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5"
+                hover:shadow-lg hover:shadow-white/5`}
             >
               التفاصيل
             </TabsTrigger>
             <TabsTrigger 
               value="sessions"
-              className="flex-1 rounded-lg py-3.5 px-6 text-gray-300 font-medium
+              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
                 transition-all duration-300 ease-out
                 hover:bg-white/10 hover:text-white
                 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
                 data-[state=active]:text-white data-[state=active]:shadow-lg
                 data-[state=active]:shadow-[#4CD6B4]/20
                 transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5"
+                hover:shadow-lg hover:shadow-white/5`}
             >
               الجلسات
             </TabsTrigger>
             <TabsTrigger 
               value="notes"
-              className="flex-1 rounded-lg py-3.5 px-6 text-gray-300 font-medium
+              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
                 transition-all duration-300 ease-out
                 hover:bg-white/10 hover:text-white
                 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
                 data-[state=active]:text-white data-[state=active]:shadow-lg
                 data-[state=active]:shadow-[#4CD6B4]/20
                 transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5"
+                hover:shadow-lg hover:shadow-white/5`}
             >
               الملاحظات
             </TabsTrigger>
             <TabsTrigger 
               value="documents"
-              className="flex-1 rounded-lg py-3.5 px-6 text-gray-300 font-medium
+              className={`${isMobile ? 'w-full' : 'flex-1'} rounded-lg py-3 px-4 sm:py-3.5 sm:px-6 text-gray-300 font-medium
                 transition-all duration-300 ease-out
                 hover:bg-white/10 hover:text-white
                 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
                 data-[state=active]:text-white data-[state=active]:shadow-lg
                 data-[state=active]:shadow-[#4CD6B4]/20
                 transform hover:scale-[1.02] active:scale-[0.98]
-                hover:shadow-lg hover:shadow-white/5"
+                hover:shadow-lg hover:shadow-white/5`}
             >
               المستندات
             </TabsTrigger>
           </TabsList>
 
-          <div className="space-y-6">
+          <div className="space-y-6 mt-6">
             <TabsContent value="details" className="focus-visible:outline-none animate-fade-in">
               {caseDetails && (
                 <CaseDetailsTab
