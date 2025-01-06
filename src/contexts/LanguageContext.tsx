@@ -38,6 +38,22 @@ const translations: Translations = {
   switchedTo: {
     ar: 'تم التحويل إلى العربية',
     en: 'Switched to English'
+  },
+  dashboard: {
+    ar: 'لوحة التحكم',
+    en: 'Dashboard'
+  },
+  cases: {
+    ar: 'القضايا',
+    en: 'Cases'
+  },
+  profile: {
+    ar: 'الملف الشخصي',
+    en: 'Profile'
+  },
+  logout: {
+    ar: 'تسجيل الخروج',
+    en: 'Logout'
   }
 };
 
