@@ -3,9 +3,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 export function SidebarProfile() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState<{
     full_name?: string | null;
     avatar_url?: string | null;
@@ -50,6 +52,11 @@ export function SidebarProfile() {
     };
   }, [user?.id]);
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <div className="mt-auto glass-card rounded-lg p-4">
       <div className="flex items-center gap-3">
@@ -65,7 +72,7 @@ export function SidebarProfile() {
         </div>
       </div>
       <button
-        onClick={signOut}
+        onClick={handleSignOut}
         className="w-full flex items-center gap-3 px-3 py-2 mt-4 rounded-lg text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm hover:backdrop-blur-md"
       >
         <LogOut className="w-5 h-5" />
