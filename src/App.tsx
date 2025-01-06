@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { useAuth } from "./contexts/AuthContext";
 import { BackToTop } from "./components/BackToTop";
 import Index from "./pages/Index";
@@ -36,24 +37,26 @@ const DashboardRoute = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<DashboardRoute />} />
-            <Route path="/case-tracking" element={<CaseTracking />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/callback" element={<Callback />} />
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<DashboardRoute />} />
+              <Route path="/case-tracking" element={<CaseTracking />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/callback" element={<Callback />} />
 
-            {/* Protected routes */}
-            <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-          </Routes>
-          <BackToTop />
-        </BrowserRouter>
-      </TooltipProvider>
+              {/* Protected routes */}
+              <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            </Routes>
+            <BackToTop />
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

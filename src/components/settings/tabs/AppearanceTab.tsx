@@ -1,53 +1,45 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function AppearanceTab() {
-  const [currentLang, setCurrentLang] = useState('ar');
-  const { toast } = useToast();
+  const { language, setLanguage, t } = useLanguage();
 
   const handleLanguageChange = () => {
-    const newLang = currentLang === 'ar' ? 'en' : 'ar';
-    setCurrentLang(newLang);
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = newLang;
-    
-    toast({
-      title: newLang === 'ar' ? "تم تغيير اللغة" : "Language Changed",
-      description: newLang === 'ar' ? "تم التحويل إلى العربية" : "Switched to English",
-    });
+    setLanguage(language === 'ar' ? 'en' : 'ar');
   };
 
   return (
     <Card className="glass-card border-white/10 bg-white/5">
       <CardContent className="p-6 space-y-6">
-        <h3 className="text-xl font-semibold text-white mb-4">تخصيص المظهر</h3>
+        <h3 className="text-xl font-semibold text-white mb-4">{t('appearance')}</h3>
         
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="text-white">الوضع الليلي</Label>
-              <p className="text-sm text-gray-400">تفعيل المظهر الداكن</p>
+              <Label className="text-white">{t('darkMode')}</Label>
+              <p className="text-sm text-gray-400">{t('darkMode')}</p>
             </div>
             <Switch />
           </div>
           
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="text-white">التأثيرات البصرية</Label>
-              <p className="text-sm text-gray-400">تفعيل الرسوم المتحركة</p>
+              <Label className="text-white">{t('visualEffects')}</Label>
+              <p className="text-sm text-gray-400">{t('visualEffects')}</p>
             </div>
             <Switch />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="text-white">تغيير اللغة</Label>
-              <p className="text-sm text-gray-400">التبديل بين العربية والإنجليزية</p>
+              <Label className="text-white">{t('changeLanguage')}</Label>
+              <p className="text-sm text-gray-400">
+                {language === 'ar' ? 'التبديل بين العربية والإنجليزية' : 'Toggle between Arabic and English'}
+              </p>
             </div>
-            <Switch checked={currentLang === 'en'} onCheckedChange={handleLanguageChange} />
+            <Switch checked={language === 'en'} onCheckedChange={handleLanguageChange} />
           </div>
         </div>
       </CardContent>
