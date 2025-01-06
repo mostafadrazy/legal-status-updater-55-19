@@ -58,28 +58,28 @@ export function CaseDetailsDialog({
         </DialogHeader>
         
         <Tabs defaultValue="details" className="w-full mt-8 relative">
-          <TabsList className="flex justify-between mb-8">
+          <TabsList className="grid grid-cols-4 gap-2 bg-white/5 p-1 rounded-lg mb-8">
             <TabsTrigger 
               value="details"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-white px-6 py-2 rounded-lg transition-all"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md py-3 transition-all duration-300 hover:bg-white/10"
             >
               التفاصيل
             </TabsTrigger>
             <TabsTrigger 
               value="sessions"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-white px-6 py-2 rounded-lg transition-all"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md py-3 transition-all duration-300 hover:bg-white/10"
             >
               الجلسات
             </TabsTrigger>
             <TabsTrigger 
               value="notes"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-white px-6 py-2 rounded-lg transition-all"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md py-3 transition-all duration-300 hover:bg-white/10"
             >
               الملاحظات
             </TabsTrigger>
             <TabsTrigger 
               value="documents"
-              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-white px-6 py-2 rounded-lg transition-all"
+              className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black rounded-md py-3 transition-all duration-300 hover:bg-white/10"
             >
               المستندات
             </TabsTrigger>
