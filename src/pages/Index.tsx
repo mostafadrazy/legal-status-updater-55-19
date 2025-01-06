@@ -8,17 +8,15 @@ import Testimonials from "@/components/landing/Testimonials";
 import FAQ from "@/components/landing/FAQ";
 import ContactCTA from "@/components/landing/ContactCTA";
 import WhatWeDo from "@/components/landing/WhatWeDo";
-import { Button } from "@/components/ui/button";
-import { Plus, Search as SearchIcon } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
-import { Search } from "@/components/Search";
 import { CaseCard } from "@/components/CaseCard";
 import NewCaseForm from "@/components/NewCaseForm";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { SearchSection } from "@/components/dashboard/SearchSection";
 
 const Index = () => {
   const { session } = useAuth();
@@ -71,10 +69,6 @@ const Index = () => {
     enabled: searchQuery.length > 0
   });
 
-  if (error) {
-    console.error('Query error:', error);
-  }
-
   const renderSearchResults = () => {
     if (!searchQuery) return null;
     if (isSearchLoading) return <div className="text-center text-gray-400">جاري البحث...</div>;
@@ -83,20 +77,16 @@ const Index = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {searchResults.map((caseItem) => (
-          <div
+          <CaseCard
             key={caseItem.id}
-            className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-          >
-            <CaseCard
-              id={caseItem.id}
-              caseNumber={caseItem.case_number}
-              title={caseItem.title}
-              status={caseItem.status}
-              nextHearing={caseItem.next_hearing}
-              client={caseItem.client}
-              caseCode={caseItem.case_code}
-            />
-          </div>
+            id={caseItem.id}
+            caseNumber={caseItem.case_number}
+            title={caseItem.title}
+            status={caseItem.status}
+            nextHearing={caseItem.next_hearing}
+            client={caseItem.client}
+            caseCode={caseItem.case_code}
+          />
         ))}
       </div>
     );
@@ -112,54 +102,30 @@ const Index = () => {
 
         {isMobile && isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 z-30"
+            className="fixed inset-0 bg-black/50 z-30 backdrop-blur-sm"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
+        <Sidebar 
+          className={`fixed transition-transform duration-300 ${
+            isMobile ? (isSidebarOpen ? 'translate-x-0' : 'translate-x-full') : ''
+          }`}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+
         <main className={`flex-1 transition-all duration-300 ${isMobile ? 'w-full' : 'lg:pr-64'} relative`}>
           <div className="p-4 md:p-8 max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-              <div className="flex flex-col md:flex-row md:items-center gap-4">
-                {isMobile && (
-                  <Button
-                    variant="ghost"
-                    className="text-white self-start"
-                    onClick={() => setIsSidebarOpen(true)}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="3" y1="12" x2="21" y2="12"></line>
-                      <line x1="3" y1="6" x2="21" y2="6"></line>
-                      <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                  </Button>
-                )}
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
-                  القضايا الحديثة
-                </h1>
-                <Button 
-                  className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 w-full md:w-auto"
-                  onClick={() => setIsNewCaseDialogOpen(true)}
-                >
-                  <Plus className="w-4 h-4 ml-2" />
-                  إنشاء قضية
-                </Button>
-              </div>
-            </div>
+            <DashboardHeader
+              onNewCase={() => setIsNewCaseDialogOpen(true)}
+              onMenuClick={() => setIsSidebarOpen(true)}
+              isMobile={isMobile}
+            />
 
-            <div className="max-w-2xl mx-auto mb-12">
-              <div className="relative">
-                <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-                  className="w-full pl-4 pr-12 py-3 bg-[#8E9196]/10 backdrop-blur-sm border-white/10 text-white placeholder:text-gray-400 rounded-xl"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  dir="rtl"
-                />
-              </div>
-            </div>
+            <SearchSection
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+            />
 
             {searchQuery ? (
               renderSearchResults()
@@ -186,13 +152,6 @@ const Index = () => {
             )}
           </div>
         </main>
-
-        <Sidebar 
-          className={`fixed transition-transform duration-300 ${
-            isMobile ? (isSidebarOpen ? 'translate-x-0' : 'translate-x-full') : ''
-          }`}
-          onClose={() => setIsSidebarOpen(false)}
-        />
 
         <NewCaseForm 
           open={isNewCaseDialogOpen} 
