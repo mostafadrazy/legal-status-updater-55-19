@@ -33,21 +33,23 @@ export function SearchForm({ onSearch, isLoading = false }: SearchFormProps) {
           <Input
             type="text"
             placeholder="أدخل رقم القضية للبحث..."
-            className="w-full pl-4 pr-12 py-3 glass-input rounded-xl 
+            className="w-full pl-4 pr-12 py-3 bg-[#1E293B] border-[#334155] text-white 
+              placeholder:text-gray-400 rounded-xl 
               focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
-              hover:bg-[#8E9196]/20 hover:border-[#4CD6B4]/20
+              hover:bg-[#334155] hover:border-[#4CD6B4]/20
               transition-all duration-300"
             value={caseNumber}
             onChange={(e) => setCaseNumber(e.target.value)}
             disabled={isLoading}
             dir="rtl"
           />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#4CD6B4]/10 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
         </div>
         <Button 
           type="submit"
           disabled={isLoading}
-          className="glass-button px-8 min-w-[120px]"
+          className="bg-[#4CD6B4] hover:bg-[#3BC4A2] text-white font-medium px-8 
+            min-w-[120px] rounded-xl border-none shadow-lg shadow-[#4CD6B4]/10
+            transition-all duration-300 transform hover:scale-105"
         >
           {isLoading ? (
             <>
