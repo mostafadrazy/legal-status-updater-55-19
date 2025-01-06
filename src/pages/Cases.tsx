@@ -94,7 +94,7 @@ const Cases = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="mb-4"
+              className="glass-button mb-4 !p-2 !min-w-0"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
               <Menu className="h-6 w-6" />
@@ -108,7 +108,7 @@ const Cases = () => {
               </h1>
             </div>
             <Button 
-              className="glass-button w-full md:w-auto"
+              className="glass-button w-full md:w-auto px-8 py-6 rounded-full"
               onClick={() => setIsNewCaseDialogOpen(true)}
             >
               <Plus className="w-4 h-4 ml-2" />
