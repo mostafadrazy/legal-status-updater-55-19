@@ -107,8 +107,7 @@ const Index = () => {
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
         </div>
 
-        <Sidebar />
-        <main className="flex-1 pl-64 overflow-auto relative">
+        <main className="flex-1 pr-64 overflow-auto relative">
           <div className="p-8 max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
@@ -164,6 +163,7 @@ const Index = () => {
             )}
           </div>
         </main>
+        <Sidebar />
         <NewCaseForm 
           open={isNewCaseDialogOpen} 
           onOpenChange={setIsNewCaseDialogOpen}
