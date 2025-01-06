@@ -12,10 +12,10 @@ interface CaseDetailsDialogProps {
   caseDetails: any;
   notes: any[];
   documents: any[];
-  onDelete: () => void;
-  onAddNote: (content: string) => void;
-  onUpload: (file: File) => void;
-  onViewDocument: (doc: any) => void;
+  onDelete: () => Promise<void>;
+  onAddNote: (content: string) => Promise<void>;
+  onUpload: (file: File) => Promise<void>;
+  onViewDocument: (doc: any) => Promise<void>;
 }
 
 export function CaseDetailsDialog({
