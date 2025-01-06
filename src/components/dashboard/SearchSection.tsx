@@ -14,11 +14,11 @@ export function SearchSection({ searchQuery, onSearchChange }: SearchSectionProp
         <Input
           type="text"
           placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-          className="w-full pl-4 pr-12 py-3 bg-[#1E293B] border-[#334155] text-white 
+          className="w-full pl-4 pr-12 py-3 bg-[#4CD6B4]/10 border-[#4CD6B4]/20 text-white 
             placeholder:text-gray-400 rounded-xl 
             focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
-            hover:bg-[#334155] hover:border-[#4CD6B4]/20
-            transition-all duration-300"
+            hover:bg-[#4CD6B4]/20 hover:border-[#4CD6B4]/30
+            transition-all duration-300 transform hover:scale-[1.02]"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           dir="rtl"
