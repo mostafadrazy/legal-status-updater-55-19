@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
+import { BackToTop } from "./components/BackToTop";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
+          <BackToTop />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
