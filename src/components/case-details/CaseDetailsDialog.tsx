@@ -58,7 +58,7 @@ export function CaseDetailsDialog({
         </DialogHeader>
         
         <Tabs defaultValue="details" className="w-full mt-8 relative">
-          <TabsList className="grid grid-cols-4 gap-2 bg-white/5 p-1.5 rounded-lg mb-8">
+          <TabsList className="grid grid-cols-4 gap-2 mb-8">
             <TabsTrigger 
               value="details"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997] 
