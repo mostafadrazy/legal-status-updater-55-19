@@ -7,6 +7,7 @@ import { SearchForm } from "@/components/case-tracking/SearchForm";
 import { ClientInformation } from "@/components/case-tracking/ClientInformation";
 import { LawyerInformation } from "@/components/case-tracking/LawyerInformation";
 import { Loader2 } from "lucide-react";
+import { CaseTrackingNav } from "@/components/case-tracking/CaseTrackingNav";
 
 interface Case {
   case_code: string;
@@ -113,12 +114,14 @@ export default function CaseTracking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#111] to-[#1A1A1A]" dir="rtl">
+      <CaseTrackingNav />
+      
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
         <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      <div className="container mx-auto px-4 py-16 relative">
+      <div className="container mx-auto px-4 pt-24 pb-16 relative">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold bg-gradient-to-l from-white to-[#4CD6B4] bg-clip-text text-transparent mb-4">
@@ -139,7 +142,7 @@ export default function CaseTracking() {
 
           {!isLoading && caseDetails && (
             <div className="space-y-8 animate-fade-in">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8 space-y-8">
+              <div className="glass-card p-8 space-y-8">
                 <CaseDetailsSection 
                   title={caseDetails.title}
                   caseCode={caseDetails.case_code}
@@ -160,7 +163,7 @@ export default function CaseTracking() {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+              <div className="glass-card p-8">
                 <CaseSessionsSection sessions={caseDetails.sessions} />
               </div>
             </div>
