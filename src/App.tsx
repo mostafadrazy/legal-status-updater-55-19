@@ -13,7 +13,6 @@ import Callback from "./pages/auth/Callback";
 import CaseTracking from "./pages/CaseTracking";
 import Cases from "./pages/Cases";
 import Settings from "./pages/Settings";
-import { Calendar } from "./components/dashboard/Calendar";
 
 const queryClient = new QueryClient();
 
@@ -52,7 +51,6 @@ const App = () => (
 
               {/* Protected routes */}
               <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-              <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             </Routes>
             <BackToTop />
