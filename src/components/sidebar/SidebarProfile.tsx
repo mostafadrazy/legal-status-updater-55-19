@@ -4,12 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export function SidebarProfile() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { t } = useLanguage();
   const [profileData, setProfileData] = useState<{
     full_name?: string | null;
     avatar_url?: string | null;
@@ -69,8 +67,8 @@ export function SidebarProfile() {
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-white">{profileData.full_name || t('profile')}</span>
-          <span className="text-xs text-[#4CD6B4]">{t('lawyer')}</span>
+          <span className="text-sm font-medium text-white">{profileData.full_name || 'مستخدم'}</span>
+          <span className="text-xs text-[#4CD6B4]">محامي</span>
         </div>
       </div>
       <button
@@ -78,7 +76,7 @@ export function SidebarProfile() {
         className="w-full flex items-center gap-3 px-3 py-2 mt-4 rounded-lg text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm hover:backdrop-blur-md"
       >
         <LogOut className="w-5 h-5" />
-        <span>{t('logout')}</span>
+        <span>تسجيل الخروج</span>
       </button>
     </div>
   );
