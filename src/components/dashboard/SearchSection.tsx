@@ -14,7 +14,7 @@ export function SearchSection({ searchQuery, onSearchChange }: SearchSectionProp
         <Input
           type="text"
           placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-          className="w-full pl-4 pr-12 py-3 bg-gradient-to-r from-white/5 to-white/10 border-white/10 text-white placeholder:text-gray-400 rounded-xl 
+          className="w-full pl-4 pr-12 py-3 glass-input rounded-xl 
           focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
           hover:bg-white/10 hover:border-[#4CD6B4]/20
           transition-all duration-300"

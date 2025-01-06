@@ -33,7 +33,7 @@ export function SearchForm({ onSearch, isLoading = false }: SearchFormProps) {
           <Input
             type="text"
             placeholder="أدخل رقم القضية للبحث..."
-            className="w-full pl-4 pr-12 py-3 bg-gradient-to-r from-white/5 to-white/10 border-white/10 text-white placeholder:text-gray-400 rounded-xl 
+            className="w-full pl-4 pr-12 py-3 glass-input rounded-xl 
             focus:ring-2 focus:ring-[#4CD6B4]/50 focus:border-[#4CD6B4]/30
             hover:bg-white/10 hover:border-[#4CD6B4]/20
             transition-all duration-300"
@@ -47,11 +47,11 @@ export function SearchForm({ onSearch, isLoading = false }: SearchFormProps) {
         <Button 
           type="submit"
           disabled={isLoading}
-          className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-semibold px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#4CD6B4]/20"
+          className="glass-button px-8"
         >
           {isLoading ? (
             <>
-              <Loader2 className="animate-spin" />
+              <Loader2 className="animate-spin ml-2" />
               جاري البحث...
             </>
           ) : (
