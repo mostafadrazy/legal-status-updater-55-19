@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
+import { AvatarGroup } from "@/components/ui/avatar-group";
 
 interface CalendarEventProps {
   title: string;
@@ -19,43 +20,51 @@ export function CalendarEvent({
   roomNumber 
 }: CalendarEventProps) {
   const colorVariants = {
-    default: "bg-gray-100/10 border-white/10",
-    consultation: "bg-blue-100/10 border-blue-200/20",
-    project: "bg-green-100/10 border-green-200/20",
-    feedback: "bg-orange-100/10 border-orange-200/20"
+    default: "bg-gray-100/10 border-white/10 hover:bg-gray-100/20",
+    consultation: "bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20",
+    project: "bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20",
+    feedback: "bg-orange-500/10 border-orange-500/20 hover:bg-orange-500/20"
   };
 
   const textColorVariants = {
     default: "text-white",
     consultation: "text-blue-200",
-    project: "text-green-200",
+    project: "text-emerald-200",
     feedback: "text-orange-200"
   };
+
+  // Mock avatars for demonstration
+  const mockAvatars = participants ? Array(participants).fill({
+    src: "",
+    fallback: "U"
+  }) : [];
 
   return (
     <div 
       className={cn(
-        "rounded-lg p-3 border",
+        "rounded-lg p-3 border backdrop-blur-sm",
         colorVariants[type],
-        "hover:scale-[1.02] transition-transform"
+        "hover:scale-[1.02] transition-all duration-200 cursor-pointer"
       )}
     >
-      <h4 className={cn("font-medium mb-1", textColorVariants[type])}>{title}</h4>
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-gray-400">
+        <h4 className={cn("font-medium text-sm", textColorVariants[type])}>{title}</h4>
+        <p className="text-xs text-gray-400">
           {startTime} - {endTime}
         </p>
         <div className="flex items-center justify-between">
           {roomNumber && (
-            <div className="flex items-center gap-1 text-sm text-gray-400">
-              <MapPin className="w-4 h-4" />
-              <span>قاعة {roomNumber}</span>
+            <div className="flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-gray-400" />
+              <span className="text-xs text-gray-400">قاعة {roomNumber}</span>
             </div>
           )}
-          {participants && (
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400">+{participants}</span>
-            </div>
+          {participants && participants > 0 && (
+            <AvatarGroup
+              avatars={mockAvatars}
+              max={3}
+              className="scale-75 origin-right"
+            />
           )}
         </div>
       </div>
