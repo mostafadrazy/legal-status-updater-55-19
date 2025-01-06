@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { SearchSection } from "@/components/dashboard/SearchSection";
+import { Calendar } from "@/components/dashboard/Calendar";
 
 const Index = () => {
   const { session } = useAuth();
@@ -122,34 +123,42 @@ const Index = () => {
               isMobile={isMobile}
             />
 
-            <SearchSection
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div className="lg:col-span-2">
+                <SearchSection
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                />
 
-            {searchQuery ? (
-              renderSearchResults()
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {cases?.map((caseItem, index) => (
-                  <div
-                    key={caseItem.id}
-                    className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-                    style={{ animationDelay: `${index * 150}ms` }}
-                  >
-                    <CaseCard 
-                      id={caseItem.id}
-                      caseNumber={caseItem.case_number}
-                      title={caseItem.title}
-                      status={caseItem.status}
-                      nextHearing={caseItem.next_hearing}
-                      client={caseItem.client}
-                      caseCode={caseItem.case_code}
-                    />
+                {searchQuery ? (
+                  renderSearchResults()
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    {cases?.map((caseItem, index) => (
+                      <div
+                        key={caseItem.id}
+                        className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+                        style={{ animationDelay: `${index * 150}ms` }}
+                      >
+                        <CaseCard 
+                          id={caseItem.id}
+                          caseNumber={caseItem.case_number}
+                          title={caseItem.title}
+                          status={caseItem.status}
+                          nextHearing={caseItem.next_hearing}
+                          client={caseItem.client}
+                          caseCode={caseItem.case_code}
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
+              
+              <div className="lg:col-span-1">
+                <Calendar />
+              </div>
+            </div>
           </div>
         </main>
 
