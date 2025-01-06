@@ -90,15 +90,15 @@ export type Database = {
           case_id: string
           created_at: string
           decision: string | null
+          end_time: string | null
           id: string
           next_session_date: string | null
+          participants: number | null
           procedure_type: string | null
           room_number: string | null
           session_date: string
-          start_time: string
-          end_time: string
-          title: string
-          participants: number | null
+          start_time: string | null
+          title: string | null
           updated_at: string
           user_id: string
         }
@@ -106,15 +106,15 @@ export type Database = {
           case_id: string
           created_at?: string
           decision?: string | null
+          end_time?: string | null
           id?: string
           next_session_date?: string | null
+          participants?: number | null
           procedure_type?: string | null
           room_number?: string | null
           session_date: string
-          start_time: string
-          end_time: string
-          title: string
-          participants?: number | null
+          start_time?: string | null
+          title?: string | null
           updated_at?: string
           user_id: string
         }
@@ -122,15 +122,15 @@ export type Database = {
           case_id?: string
           created_at?: string
           decision?: string | null
+          end_time?: string | null
           id?: string
           next_session_date?: string | null
+          participants?: number | null
           procedure_type?: string | null
           room_number?: string | null
           session_date?: string
-          start_time?: string
-          end_time?: string
-          title?: string
-          participants?: number | null
+          start_time?: string | null
+          title?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -233,7 +233,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
-          id: string
+          id?: string
           phone_number?: string | null
           role?: string | null
           updated_at?: string
@@ -270,7 +270,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never,
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
