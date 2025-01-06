@@ -15,9 +15,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ className, onClose }) => {
       "fixed top-0 right-0 z-40 w-64 h-screen transition-transform bg-[#1A1A1A] border-l border-white/10",
       className
     )}>
-      <div className="h-full px-3 py-4 overflow-y-auto">
-        <div className="flex justify-between items-center">
-          <SidebarLogo />
+      <div className="h-full px-3 py-4 flex flex-col">
+        <div className="flex justify-between items-center mb-6">
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-white md:hidden"
@@ -28,8 +27,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ className, onClose }) => {
             </svg>
           </button>
         </div>
+        
+        <div className="flex justify-center mb-6">
+          <SidebarLogo />
+        </div>
+        
         <SidebarNav />
-        <SidebarProfile />
+        
+        <div className="mt-auto">
+          <SidebarProfile />
+        </div>
       </div>
     </aside>
   );
