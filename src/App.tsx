@@ -12,6 +12,7 @@ import Login from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
 import CaseTracking from "./pages/CaseTracking";
 import Cases from "./pages/Cases";
+import Tasks from "./pages/Tasks";
 import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
 
               {/* Protected routes */}
               <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+              <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             </Routes>
             <BackToTop />
