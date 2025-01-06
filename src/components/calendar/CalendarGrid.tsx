@@ -19,11 +19,12 @@ interface Session {
 interface CalendarGridProps {
   sessions: Session[];
   isLoading: boolean;
+  startDate: Date;
 }
 
-export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
-  // Get next 7 days
-  const days = Array.from({ length: 7 }, (_, i) => addDays(startOfDay(new Date()), i));
+export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridProps) {
+  // Get next 7 days starting from startDate
+  const days = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
   const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 8 PM
 
   const getSessionsForDayAndHour = (date: Date, hour: number) => {
@@ -35,13 +36,6 @@ export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
     });
   };
 
-  // Filter out past sessions
-  const today = startOfDay(new Date());
-  const upcomingSessions = sessions.filter(session => {
-    const sessionDate = new Date(session.session_date);
-    return isAfter(sessionDate, today) || isSameDay(sessionDate, today);
-  });
-
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -52,10 +46,10 @@ export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
     );
   }
 
-  if (upcomingSessions.length === 0) {
+  if (sessions.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-400">لا توجد جلسات قادمة</p>
+        <p className="text-gray-400">لا توجد جلسات في هذا الأسبوع</p>
       </div>
     );
   }

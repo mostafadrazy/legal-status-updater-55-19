@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ListCheck, Share2, Bell, Plus, Calendar, Trash2, Search, UserPlus } from "lucide-react";
+import { ListCheck, Share2, Bell, Plus, Calendar, Trash2, Search, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -11,19 +11,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { addDays, format, startOfWeek } from "date-fns";
+import { ar } from "date-fns/locale";
 
 export default function Tasks() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeView, setActiveView] = useState("weekly");
+  const [currentDate, setCurrentDate] = useState(new Date());
   const isMobile = useIsMobile();
   const { t } = useLanguage();
   const { session } = useAuth();
 
+  // Calculate the start and end dates for the current week
+  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
+  const endDate = addDays(startDate, 6);
+
   // Fetch all sessions with more details
   const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['sessions'],
+    queryKey: ['sessions', startDate, endDate],
     queryFn: async () => {
-      console.log('Fetching sessions...');
       try {
         const { data, error } = await supabase
           .from('case_sessions')
@@ -38,6 +44,8 @@ export default function Tasks() {
             title,
             participants
           `)
+          .gte('session_date', format(startDate, 'yyyy-MM-dd'))
+          .lte('session_date', format(endDate, 'yyyy-MM-dd'))
           .order('session_date', { ascending: true });
         
         if (error) {
@@ -46,7 +54,6 @@ export default function Tasks() {
           throw error;
         }
         
-        console.log('Sessions fetched:', data);
         return data || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
@@ -56,12 +63,16 @@ export default function Tasks() {
     }
   });
 
-  const currentDate = new Date();
-  const formattedDate = new Intl.DateTimeFormat('ar-EG', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  }).format(currentDate);
+  const navigateWeek = (direction: 'prev' | 'next') => {
+    setCurrentDate(prev => {
+      if (direction === 'prev') {
+        return addDays(prev, -7);
+      }
+      return addDays(prev, 7);
+    });
+  };
+
+  const formattedDateRange = `${format(startDate, 'd', { locale: ar })} - ${format(endDate, 'd MMMM yyyy', { locale: ar })}`;
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
@@ -89,7 +100,25 @@ export default function Tasks() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">التقويم الخاص بي</h1>
-                <p className="text-gray-400">{formattedDate}</p>
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => navigateWeek('prev')}
+                    className="hover:bg-white/10"
+                  >
+                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                  </Button>
+                  <p className="text-gray-400">{formattedDateRange}</p>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => navigateWeek('next')}
+                    className="hover:bg-white/10"
+                  >
+                    <ChevronLeft className="h-4 w-4 text-gray-400" />
+                  </Button>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" className="glass-button">
@@ -157,7 +186,11 @@ export default function Tasks() {
 
           {/* Calendar Grid */}
           <div className="glass-card p-6 rounded-xl">
-            <CalendarGrid sessions={sessions} isLoading={isLoading} />
+            <CalendarGrid 
+              sessions={sessions} 
+              isLoading={isLoading}
+              startDate={startDate}
+            />
           </div>
         </div>
       </main>
