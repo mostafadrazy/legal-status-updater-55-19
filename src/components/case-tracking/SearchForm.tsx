@@ -26,7 +26,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         <Input
           type="text"
           placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-          className="w-full pl-4 pr-12 py-3 bg-white/5 border-white/10 text-white placeholder:text-gray-400 rounded-xl"
+          className="glass-input rounded-xl"
           value={caseCode}
           onChange={(e) => setCaseCode(e.target.value)}
           disabled={isLoading}
