@@ -20,7 +20,7 @@ export default function Tasks() {
   const { session } = useAuth();
 
   // Fetch all sessions with more details
-  const { data: sessions = [], isLoading, error } = useQuery({
+  const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['sessions'],
     queryFn: async () => {
       console.log('Fetching sessions...');
@@ -42,6 +42,7 @@ export default function Tasks() {
         
         if (error) {
           console.error('Error fetching sessions:', error);
+          toast.error('فشل في تحميل الجلسات');
           throw error;
         }
         
@@ -49,12 +50,9 @@ export default function Tasks() {
         return data || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
+        toast.error('فشل في تحميل الجلسات');
         throw error;
       }
-    },
-    onError: (error) => {
-      toast.error('فشل في تحميل الجلسات');
-      console.error('Error in sessions query:', error);
     }
   });
 

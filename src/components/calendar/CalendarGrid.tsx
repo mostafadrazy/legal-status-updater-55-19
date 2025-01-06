@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, addDays, startOfDay, isAfter, isSameDay } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CalendarEvent } from "./CalendarEvent";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,15 +21,22 @@ interface CalendarGridProps {
 }
 
 export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
-  const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 8 PM
+  // Get next 7 days
+  const days = Array.from({ length: 7 }, (_, i) => addDays(startOfDay(new Date()), i));
 
-  const getSessionsForHour = (hour: number) => {
+  const getSessionsForDay = (date: Date) => {
     return sessions.filter(session => {
-      // Default to 9 AM if no start time is provided
-      const sessionStartTime = session.start_time ? new Date(session.start_time) : new Date(session.session_date + 'T09:00:00');
-      return sessionStartTime.getHours() === hour;
+      const sessionDate = new Date(session.session_date);
+      return isSameDay(sessionDate, date);
     });
   };
+
+  // Filter out past sessions
+  const today = startOfDay(new Date());
+  const upcomingSessions = sessions.filter(session => {
+    const sessionDate = new Date(session.session_date);
+    return isAfter(sessionDate, today) || isSameDay(sessionDate, today);
+  });
 
   if (isLoading) {
     return (
@@ -41,24 +48,35 @@ export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
     );
   }
 
+  if (upcomingSessions.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-400">لا توجد جلسات قادمة</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-[80px_1fr] gap-4">
-      {/* Time labels */}
+    <div className="grid grid-cols-[120px_1fr] gap-4">
+      {/* Day labels */}
       <div className="space-y-8">
-        {hours.map(hour => (
-          <div key={hour} className="text-sm text-gray-400 text-center">
-            {hour}:00
+        {days.map(day => (
+          <div key={day.toISOString()} className="text-sm text-gray-400 text-center">
+            {format(day, 'EEEE', { locale: ar })}
+            <div className="text-xs mt-1">
+              {format(day, 'd MMM', { locale: ar })}
+            </div>
           </div>
         ))}
       </div>
 
       {/* Events grid */}
       <div className="space-y-4">
-        {hours.map(hour => {
-          const hourSessions = getSessionsForHour(hour);
+        {days.map(day => {
+          const daySessions = getSessionsForDay(day);
           return (
-            <div key={hour} className="min-h-[60px] border-b border-white/5">
-              {hourSessions.map(session => (
+            <div key={day.toISOString()} className="min-h-[80px] border-b border-white/5">
+              {daySessions.map(session => (
                 <CalendarEvent
                   key={session.id}
                   title={session.title || session.procedure_type || 'جلسة غير معنونة'}
