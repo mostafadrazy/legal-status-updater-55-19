@@ -28,7 +28,6 @@ export function SidebarProfile() {
 
     fetchProfile();
 
-    // Subscribe to realtime changes
     const channel = supabase
       .channel('profile_changes')
       .on(
@@ -52,22 +51,22 @@ export function SidebarProfile() {
   }, [user?.id]);
 
   return (
-    <div className="mt-auto">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <Avatar className="w-8 h-8">
+    <div className="mt-auto glass-card rounded-lg p-4">
+      <div className="flex items-center gap-3">
+        <Avatar className="w-10 h-10 border-2 border-[#4CD6B4]/30">
           <AvatarImage src={profileData.avatar_url || undefined} className="object-cover" />
           <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4]">
             {profileData.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm text-white">{profileData.full_name || 'مستخدم'}</span>
+          <span className="text-sm font-medium text-white">{profileData.full_name || 'مستخدم'}</span>
           <span className="text-xs text-[#4CD6B4]">محامي</span>
         </div>
       </div>
       <button
         onClick={signOut}
-        className="w-full flex items-center gap-3 px-3 py-2 mt-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-gray-800/50 transition-all duration-300 backdrop-blur-sm hover:backdrop-blur-md"
+        className="w-full flex items-center gap-3 px-3 py-2 mt-4 rounded-lg text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm hover:backdrop-blur-md"
       >
         <LogOut className="w-5 h-5" />
         <span>تسجيل الخروج</span>
