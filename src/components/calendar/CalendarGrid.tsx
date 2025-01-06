@@ -1,17 +1,18 @@
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CalendarEvent } from "./CalendarEvent";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Session {
   id: string;
-  title: string;
-  start_time: string;
-  end_time: string;
+  title: string | null;
+  start_time: string | null;
+  end_time: string | null;
   session_date: string;
   case_id: string;
   procedure_type: string | null;
   room_number: string | null;
-  participants?: number;
+  participants?: number | null;
 }
 
 interface CalendarGridProps {
@@ -24,13 +25,20 @@ export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
 
   const getSessionsForHour = (hour: number) => {
     return sessions.filter(session => {
-      const sessionHour = new Date(session.start_time).getHours();
-      return sessionHour === hour;
+      // Default to 9 AM if no start time is provided
+      const sessionStartTime = session.start_time ? new Date(session.start_time) : new Date(session.session_date + 'T09:00:00');
+      return sessionStartTime.getHours() === hour;
     });
   };
 
   if (isLoading) {
-    return <div className="text-white/70 text-center py-8">جاري التحميل...</div>;
+    return (
+      <div className="space-y-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-20 w-full bg-white/5" />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -53,11 +61,16 @@ export function CalendarGrid({ sessions, isLoading }: CalendarGridProps) {
               {hourSessions.map(session => (
                 <CalendarEvent
                   key={session.id}
-                  title={session.title}
-                  startTime={format(new Date(session.start_time), 'HH:mm', { locale: ar })}
-                  endTime={format(new Date(session.end_time), 'HH:mm', { locale: ar })}
-                  type={session.procedure_type as any || 'default'}
-                  participants={session.participants}
+                  title={session.title || session.procedure_type || 'جلسة غير معنونة'}
+                  startTime={session.start_time ? 
+                    format(new Date(session.start_time), 'HH:mm', { locale: ar }) : 
+                    '09:00'}
+                  endTime={session.end_time ? 
+                    format(new Date(session.end_time), 'HH:mm', { locale: ar }) : 
+                    '10:00'}
+                  type={session.procedure_type ? 'consultation' : 'default'}
+                  participants={session.participants || undefined}
+                  roomNumber={session.room_number}
                 />
               ))}
             </div>

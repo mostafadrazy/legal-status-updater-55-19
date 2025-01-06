@@ -10,27 +10,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
 import { toast } from "sonner";
-
-interface Session {
-  id: string;
-  title: string;
-  start_time: string;
-  end_time: string;
-  session_date: string;
-  case_id: string;
-  procedure_type: string | null;
-  room_number: string | null;
-  participants?: number;
-}
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Tasks() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeView, setActiveView] = useState("weekly");
   const isMobile = useIsMobile();
   const { t } = useLanguage();
+  const { session } = useAuth();
 
   // Fetch all sessions with more details
-  const { data: sessions = [], isLoading } = useQuery({
+  const { data: sessions = [], isLoading, error } = useQuery({
     queryKey: ['sessions'],
     queryFn: async () => {
       console.log('Fetching sessions...');
@@ -42,32 +32,29 @@ export default function Tasks() {
             session_date,
             case_id,
             procedure_type,
-            room_number
+            room_number,
+            start_time,
+            end_time,
+            title,
+            participants
           `)
           .order('session_date', { ascending: true });
         
         if (error) {
           console.error('Error fetching sessions:', error);
-          toast.error('Failed to load sessions');
           throw error;
         }
         
-        // Transform the data to match the Session interface
-        const transformedData: Session[] = data.map(session => ({
-          ...session,
-          title: session.procedure_type || 'Untitled Session',
-          start_time: '09:00', // Default start time
-          end_time: '10:00',   // Default end time
-          participants: null
-        }));
-        
-        console.log('Sessions fetched:', transformedData);
-        return transformedData;
+        console.log('Sessions fetched:', data);
+        return data || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
-        toast.error('Failed to load sessions');
         throw error;
       }
+    },
+    onError: (error) => {
+      toast.error('فشل في تحميل الجلسات');
+      console.error('Error in sessions query:', error);
     }
   });
 
