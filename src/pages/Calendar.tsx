@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/Sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DayContent } from "react-day-picker";
+import { DayContent, DayContentProps } from "react-day-picker";
 
 interface Session {
   id: string;
@@ -28,7 +28,7 @@ interface Session {
   };
 }
 
-interface CustomDayProps extends React.HTMLAttributes<HTMLDivElement> {
+interface CustomDayProps extends DayContentProps {
   date: Date;
   displayMonth: Date;
 }
@@ -91,7 +91,7 @@ export default function CalendarPage() {
 
   const CustomDay = ({ date: dayDate, ...props }: CustomDayProps) => (
     <div className="relative h-9 w-9">
-      <DayContent {...props} />
+      <DayContent {...props} date={dayDate} />
       {getDayContent(dayDate)}
     </div>
   );
