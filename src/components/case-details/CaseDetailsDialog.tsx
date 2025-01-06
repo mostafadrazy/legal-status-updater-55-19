@@ -61,14 +61,14 @@ export function CaseDetailsDialog({
         
         <div className="flex flex-col h-full overflow-hidden">
           <Tabs defaultValue="details" className="w-full h-full flex flex-col">
-            <div className="px-4 sm:px-6 py-3 overflow-x-auto scrollbar-thin scrollbar-thumb-[#4CD6B4]/20 scrollbar-track-transparent">
-              <TabsList className="w-full sm:w-auto inline-flex gap-2 p-1.5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">
+            <div className="px-4 sm:px-6 py-2">
+              <TabsList className="w-full flex flex-wrap gap-2 p-1 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">
                 {['details', 'sessions', 'notes', 'documents'].map((tab) => (
                   <TabsTrigger
                     key={tab}
                     value={tab}
-                    className="min-w-[120px] rounded-lg py-2.5 px-4 text-sm sm:text-base text-gray-300 font-medium
-                      transition-all duration-300 ease-out whitespace-nowrap
+                    className="flex-1 min-w-[120px] rounded-lg py-2 px-3 text-sm sm:text-base text-gray-300 font-medium
+                      transition-all duration-300 ease-out
                       hover:bg-white/10 hover:text-white
                       data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4CD6B4] data-[state=active]:to-[#3BA997]
                       data-[state=active]:text-white data-[state=active]:shadow-lg
@@ -84,7 +84,7 @@ export function CaseDetailsDialog({
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
-              <TabsContent value="details" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="details" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
                 {caseDetails && (
                   <CaseDetailsTab
                     id={caseDetails.id}
@@ -105,7 +105,7 @@ export function CaseDetailsDialog({
                 )}
               </TabsContent>
 
-              <TabsContent value="sessions" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="sessions" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
                 {caseDetails && sessions && (
                   <SessionsTab
                     caseId={caseDetails.id}
@@ -115,14 +115,14 @@ export function CaseDetailsDialog({
                 )}
               </TabsContent>
 
-              <TabsContent value="notes" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="notes" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
                 <NotesTab
                   notes={notes}
                   onAddNote={onAddNote}
                 />
               </TabsContent>
 
-              <TabsContent value="documents" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="documents" className="mt-4 focus-visible:outline-none animate-fade-in h-full">
                 <DocumentsTab
                   documents={documents}
                   onUpload={onUpload}
