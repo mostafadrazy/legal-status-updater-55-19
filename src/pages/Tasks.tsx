@@ -3,23 +3,12 @@ import { ListCheck, Share2, Bell, Plus, Calendar, Trash2, Search, UserPlus } fro
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { ar } from "date-fns/locale";
-import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
-
-interface Session {
-  id: string;
-  session_date: string;
-  case_id: string;
-  procedure_type: string | null;
-  room_number: string | null;
-}
+import { CalendarGrid } from "@/components/calendar/CalendarGrid";
 
 export default function Tasks() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,14 +16,24 @@ export default function Tasks() {
   const isMobile = useIsMobile();
   const { t } = useLanguage();
 
-  // Fetch all sessions
+  // Fetch all sessions with more details
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['sessions'],
     queryFn: async () => {
       console.log('Fetching sessions...');
       const { data, error } = await supabase
         .from('case_sessions')
-        .select('*')
+        .select(`
+          id,
+          session_date,
+          case_id,
+          procedure_type,
+          room_number,
+          start_time,
+          end_time,
+          title,
+          participants
+        `)
         .order('session_date', { ascending: true });
       
       if (error) {
@@ -43,19 +42,9 @@ export default function Tasks() {
       }
       
       console.log('Sessions fetched:', data);
-      return data as Session[];
+      return data;
     }
   });
-
-  // Group sessions by date
-  const sessionsByDate = sessions.reduce((acc: Record<string, Session[]>, session) => {
-    const date = format(new Date(session.session_date), 'yyyy-MM-dd');
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(session);
-    return acc;
-  }, {});
 
   const currentDate = new Date();
   const formattedDate = new Intl.DateTimeFormat('ar-EG', { 
@@ -63,28 +52,6 @@ export default function Tasks() {
     month: 'long', 
     day: 'numeric' 
   }).format(currentDate);
-
-  // Custom day content for the calendar
-  const dayContent = (day: Date) => {
-    const dateStr = format(day, 'yyyy-MM-dd');
-    const daysSessions = sessionsByDate[dateStr] || [];
-    
-    if (daysSessions.length > 0) {
-      return (
-        <div className="relative w-full h-full">
-          <div>{format(day, 'd')}</div>
-          <Badge 
-            variant="secondary" 
-            className="absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2 bg-[#4CD6B4] text-xs"
-          >
-            {daysSessions.length}
-          </Badge>
-        </div>
-      );
-    }
-    
-    return <div>{format(day, 'd')}</div>;
-  };
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
@@ -180,31 +147,7 @@ export default function Tasks() {
 
           {/* Calendar Grid */}
           <div className="glass-card p-6 rounded-xl">
-            {isLoading ? (
-              <div className="text-white/70 text-center py-8">جاري التحميل...</div>
-            ) : (
-              <CalendarComponent
-                mode="single"
-                locale={ar}
-                showOutsideDays={true}
-                components={{
-                  DayContent: ({ date }) => dayContent(date)
-                }}
-                className="w-full text-white"
-                classNames={{
-                  months: "w-full",
-                  month: "w-full",
-                  table: "w-full",
-                  head_row: "flex w-full",
-                  head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] text-center flex-1",
-                  row: "flex w-full mt-2",
-                  cell: "text-center text-sm p-0 relative h-9 w-9 flex-1 flex items-center justify-center",
-                  day: "h-9 w-9 p-0 font-normal hover:bg-white/10 rounded-md transition-colors",
-                  day_selected: "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90",
-                  day_today: "bg-white/5 text-white",
-                }}
-              />
-            )}
+            <CalendarGrid sessions={sessions} isLoading={isLoading} />
           </div>
         </div>
       </main>
