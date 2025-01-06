@@ -9,6 +9,19 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
+import { toast } from "sonner";
+
+interface Session {
+  id: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  session_date: string;
+  case_id: string;
+  procedure_type: string | null;
+  room_number: string | null;
+  participants?: number;
+}
 
 export default function Tasks() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,28 +34,35 @@ export default function Tasks() {
     queryKey: ['sessions'],
     queryFn: async () => {
       console.log('Fetching sessions...');
-      const { data, error } = await supabase
-        .from('case_sessions')
-        .select(`
-          id,
-          session_date,
-          case_id,
-          procedure_type,
-          room_number,
-          start_time,
-          end_time,
-          title,
-          participants
-        `)
-        .order('session_date', { ascending: true });
-      
-      if (error) {
+      try {
+        const { data, error } = await supabase
+          .from('case_sessions')
+          .select(`
+            id,
+            session_date,
+            case_id,
+            procedure_type,
+            room_number,
+            start_time,
+            end_time,
+            title,
+            participants
+          `)
+          .order('session_date', { ascending: true });
+        
+        if (error) {
+          console.error('Error fetching sessions:', error);
+          toast.error('Failed to load sessions');
+          throw error;
+        }
+        
+        console.log('Sessions fetched:', data);
+        return data as Session[];
+      } catch (error) {
         console.error('Error fetching sessions:', error);
+        toast.error('Failed to load sessions');
         throw error;
       }
-      
-      console.log('Sessions fetched:', data);
-      return data;
     }
   });
 
