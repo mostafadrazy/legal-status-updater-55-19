@@ -74,7 +74,7 @@ export default function Features() {
                 <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-3 rounded-lg w-fit mb-4">
                   <Icon className="text-white h-5 w-5 flex-shrink-0" />
                 </div>
-                <h3 className="text-legal-800 dark:text-legal-200 text-lg font-semibold mb-2">
+                <h3 className="text-white text-lg font-semibold mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-gray-400 text-sm">
