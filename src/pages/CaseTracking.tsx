@@ -10,6 +10,7 @@ import { Loader2, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Navbar from "@/components/landing/Navbar";
 
 interface Case {
   case_code: string;
@@ -123,7 +124,9 @@ export default function CaseTracking() {
         <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
+      <Navbar />
+
+      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto pt-24`}>
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           {isMobile && (
             <Button
