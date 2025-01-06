@@ -1,6 +1,8 @@
 import { Calendar, User, Scale, QrCode, Copy } from "lucide-react";
 import { StatusBadge } from "../StatusBadge";
 import { toast } from "sonner";
+import { useEffect, useRef } from "react";
+import VanillaTilt from "vanilla-tilt";
 
 interface CasePreviewProps {
   title: string;
@@ -21,6 +23,27 @@ export function CasePreview({
   caseCode,
   onClick
 }: CasePreviewProps) {
+  const tiltRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const tiltNode = tiltRef.current;
+    if (tiltNode) {
+      VanillaTilt.init(tiltNode, {
+        max: 15,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.3,
+        scale: 1.05,
+        perspective: 1000,
+      });
+    }
+    return () => {
+      if (tiltNode) {
+        (tiltNode as any)._vanilla?.destroy();
+      }
+    };
+  }, []);
+
   const handleCopyCode = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (caseCode) {
@@ -31,8 +54,9 @@ export function CasePreview({
 
   return (
     <div 
+      ref={tiltRef}
       onClick={onClick}
-      className="glass-card relative p-6 rounded-xl cursor-pointer group animate-fade-in"
+      className="glass-card relative p-6 rounded-xl cursor-pointer group animate-fade-in transform-gpu"
     >
       <div className="bg-gradient-overlay" />
       <div className="relative">
