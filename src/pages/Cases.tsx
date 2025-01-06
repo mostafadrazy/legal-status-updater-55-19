@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Search as SearchIcon, Menu } from "lucide-react";
+import { Plus, Menu } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
-import { Input } from "@/components/ui/input";
 import { CaseCard } from "@/components/CaseCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import NewCaseForm from "@/components/NewCaseForm";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { SearchBar } from '@/components/cases/SearchBar';
+import { CasesList } from '@/components/cases/CasesList';
 
 const Cases = () => {
   const { session } = useAuth();
@@ -19,7 +20,6 @@ const Cases = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  // Handle parallax scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -75,33 +75,6 @@ const Cases = () => {
     console.error('Query error:', error);
   }
 
-  const renderSearchResults = () => {
-    if (!searchQuery) return null;
-    if (isSearchLoading) return <div className="text-center text-gray-400">جاري البحث...</div>;
-    if (!searchResults?.length) return <div className="text-center text-gray-400">لا توجد نتائج</div>;
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {searchResults.map((caseItem) => (
-          <div
-            key={caseItem.id}
-            className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-          >
-            <CaseCard
-              id={caseItem.id}
-              caseNumber={caseItem.case_number}
-              title={caseItem.title}
-              status={caseItem.status}
-              nextHearing={caseItem.next_hearing}
-              client={caseItem.client}
-              caseCode={caseItem.case_code}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A] overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -135,7 +108,7 @@ const Cases = () => {
               </h1>
             </div>
             <Button 
-              className="w-full md:w-auto bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black font-medium px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+              className="glass-button w-full md:w-auto"
               onClick={() => setIsNewCaseDialogOpen(true)}
             >
               <Plus className="w-4 h-4 ml-2" />
@@ -143,48 +116,16 @@ const Cases = () => {
             </Button>
           </div>
 
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <SearchIcon className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="ابحث برقم القضية، اسم العميل، أو رقم الكود..."
-                className="w-full pl-4 pr-12 py-3 bg-white/5 border-white/10 text-white placeholder:text-gray-400 rounded-xl"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                dir="rtl"
-              />
-            </div>
-          </div>
+          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
           {searchQuery ? (
-            renderSearchResults()
+            <CasesList 
+              cases={searchResults || []} 
+              scrollY={scrollY} 
+              isSearchResults={true} 
+            />
           ) : (
-            <div 
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6"
-              style={{ transform: `translateY(${scrollY * 0.02}px)` }}
-            >
-              {cases?.map((caseItem, index) => (
-                <div
-                  key={caseItem.id}
-                  className="transform hover:-translate-y-1 transition-all duration-300 animate-fade-in"
-                  style={{ 
-                    animationDelay: `${index * 150}ms`,
-                    transform: `translateY(${scrollY * (0.02 + index * 0.005)}px)`
-                  }}
-                >
-                  <CaseCard 
-                    id={caseItem.id}
-                    caseNumber={caseItem.case_number}
-                    title={caseItem.title}
-                    status={caseItem.status}
-                    nextHearing={caseItem.next_hearing}
-                    client={caseItem.client}
-                    caseCode={caseItem.case_code}
-                  />
-                </div>
-              ))}
-            </div>
+            <CasesList cases={cases || []} scrollY={scrollY} />
           )}
         </div>
       </main>
