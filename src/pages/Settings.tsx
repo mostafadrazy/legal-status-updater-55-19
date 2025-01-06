@@ -85,15 +85,12 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen flex w-full bg-[#111]">
-      {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
-      <Sidebar />
-      
-      <main className="flex-1 overflow-auto relative">
+      <main className="flex-1 pr-64 overflow-auto">
         <div className="p-8 max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <SettingsIcon className="w-8 h-8 text-[#4CD6B4]" />
@@ -227,6 +224,7 @@ export default function Settings() {
           </Tabs>
         </div>
       </main>
+      <Sidebar />
     </div>
   );
 }
