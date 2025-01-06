@@ -21,6 +21,11 @@ interface Session {
   };
 }
 
+interface DayProps {
+  date: Date;
+  children?: React.ReactNode;
+}
+
 export function Calendar() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { session: authSession } = useAuth();
@@ -128,9 +133,9 @@ export function Calendar() {
         showOutsideDays={true}
         className="rounded-md border border-white/10"
         components={{
-          Day: ({ date: dayDate, ...props }) => (
+          Day: ({ date: dayDate, children }: DayProps) => (
             <div className="relative h-9 w-9">
-              {props.children}
+              {children}
               {getDayContent(dayDate)}
             </div>
           ),
