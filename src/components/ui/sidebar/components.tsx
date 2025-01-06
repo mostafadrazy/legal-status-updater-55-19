@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useSidebar } from "./context"
 
-export const Sidebar = React.forwardRef<
+export const SidebarRoot = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
     side?: "left" | "right"
@@ -119,7 +119,7 @@ export const Sidebar = React.forwardRef<
     )
   }
 )
-Sidebar.displayName = "Sidebar"
+SidebarRoot.displayName = "SidebarRoot"
 
 const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
@@ -596,30 +596,3 @@ const SidebarMenuSubButton = React.forwardRef<
   )
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
-
-export {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInput,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSkeleton,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-  SidebarRail,
-  SidebarSeparator,
-  SidebarTrigger,
-  useSidebar,
-}
