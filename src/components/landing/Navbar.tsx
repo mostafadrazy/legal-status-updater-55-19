@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { t } = useLanguage();
   
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -67,14 +65,14 @@ const Navbar = () => {
               className="text-white/80 hover:text-[#4CD6B4] transition-colors"
               onClick={() => scrollToSection('features')}
             >
-              {t('features')}
+              المميزات
             </Button>
             <Button 
               variant="ghost" 
               className="text-white/80 hover:text-[#4CD6B4] transition-colors"
               onClick={() => scrollToSection('services')}
             >
-              {t('services')}
+              الخدمات
             </Button>
             <Button 
               variant="ghost"
@@ -82,13 +80,13 @@ const Navbar = () => {
               onClick={() => navigate("/case-tracking")}
             >
               <Search className="w-4 h-4 ml-2" />
-              {t('caseTracking')}
+              تتبع القضية
             </Button>
             <Button 
               className="glass-button"
               onClick={() => navigate("/auth/login")}
             >
-              {t('login')}
+              تسجيل الدخول
             </Button>
           </div>
         </div>
@@ -100,14 +98,14 @@ const Navbar = () => {
               className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => scrollToSection('features')}
             >
-              {t('features')}
+              المميزات
             </Button>
             <Button 
               variant="ghost" 
               className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => scrollToSection('services')}
             >
-              {t('services')}
+              الخدمات
             </Button>
             <Button 
               variant="ghost"
@@ -115,13 +113,13 @@ const Navbar = () => {
               onClick={() => navigate("/case-tracking")}
             >
               <Search className="w-4 h-4 ml-2" />
-              {t('caseTracking')}
+              تتبع القضية
             </Button>
             <Button 
               className="w-full glass-button"
               onClick={() => navigate("/auth/login")}
             >
-              {t('login')}
+              تسجيل الدخول
             </Button>
           </div>
         )}
