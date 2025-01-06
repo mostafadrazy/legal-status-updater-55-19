@@ -14,12 +14,12 @@ export function BasicInfoFields({ form }: BasicInfoFieldsProps) {
         control={form.control}
         name="full_name"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-white">الاسم الكامل</FormLabel>
             <FormControl>
               <Input
                 placeholder="أدخل اسمك الكامل"
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 text-right"
                 {...field}
               />
             </FormControl>
@@ -32,12 +32,12 @@ export function BasicInfoFields({ form }: BasicInfoFieldsProps) {
         control={form.control}
         name="phone_number"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="text-right">
             <FormLabel className="text-white">رقم الهاتف</FormLabel>
             <FormControl>
               <Input
                 placeholder="أدخل رقم هاتفك"
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 text-right"
                 {...field}
               />
             </FormControl>

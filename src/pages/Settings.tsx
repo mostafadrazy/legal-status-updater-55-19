@@ -81,17 +81,17 @@ export default function Settings() {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="bg-white/5 border border-white/10">
-              <TabsTrigger value="profile" className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
+            <TabsList className="bg-white/5 border border-white/10 w-full flex justify-start">
+              <TabsTrigger value="profile" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
                 الملف الشخصي
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
+              <TabsTrigger value="notifications" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
                 الإشعارات
               </TabsTrigger>
-              <TabsTrigger value="appearance" className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
+              <TabsTrigger value="appearance" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
                 المظهر
               </TabsTrigger>
-              <TabsTrigger value="security" className="data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
+              <TabsTrigger value="security" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
                 الأمان
               </TabsTrigger>
             </TabsList>
