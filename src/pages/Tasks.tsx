@@ -22,7 +22,6 @@ export default function Tasks() {
   const { t } = useLanguage();
   const { session } = useAuth();
 
-  // Fetch only the next upcoming session for each case
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['next-sessions', session?.user?.id],
     queryFn: async () => {
@@ -41,6 +40,7 @@ export default function Tasks() {
             start_time,
             end_time,
             participants,
+            next_session_date,
             cases!inner (
               id,
               user_id,
@@ -50,8 +50,7 @@ export default function Tasks() {
           `)
           .eq('cases.user_id', session.user.id)
           .gte('session_date', format(new Date(), 'yyyy-MM-dd'))
-          .order('session_date', { ascending: true })
-          .limit(1);
+          .order('session_date', { ascending: true });
         
         if (error) {
           console.error('Error fetching sessions:', error);
@@ -61,7 +60,7 @@ export default function Tasks() {
         
         return data?.map(session => ({
           ...session,
-          title: session.cases.client, // Use client name as title
+          title: session.cases.client,
         })) || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
@@ -72,11 +71,13 @@ export default function Tasks() {
     enabled: !!session?.user?.id
   });
 
-  // Update currentDate when sessions data is loaded
   useEffect(() => {
     if (sessions && sessions.length > 0) {
-      const nextSessionDate = parseISO(sessions[0].session_date);
-      setCurrentDate(nextSessionDate);
+      // Use next_session_date if available, otherwise fall back to session_date
+      const nextDate = sessions[0].next_session_date || sessions[0].session_date;
+      const nextSessionDate = parseISO(nextDate);
+      const weekStart = startOfWeek(nextSessionDate, { weekStartsOn: 0 });
+      setCurrentDate(weekStart);
     }
   }, [sessions]);
 
