@@ -20,9 +20,9 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event);
       
-      if (event === 'SIGNED_IN') {
-        if (rememberMe && session) {
-          // Set session persistence using the correct method
+      if (event === 'SIGNED_IN' && session) {
+        // Handle remember me first
+        if (rememberMe) {
           try {
             await supabase.auth.setSession({
               access_token: session.access_token,
@@ -34,11 +34,14 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
           }
         }
         
-        // Always navigate after sign in, regardless of remember me status
+        // Handle navigation based on view
         if (view === 'sign_up') {
           setShowProfileCompletion(true);
         } else {
-          navigate('/');
+          // Force navigation after a brief delay to ensure session is set
+          setTimeout(() => {
+            navigate('/');
+          }, 100);
         }
       } else if (event === 'SIGNED_OUT') {
         navigate('/auth/login');
