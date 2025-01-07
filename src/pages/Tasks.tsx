@@ -42,6 +42,9 @@ export default function Tasks() {
             procedure_type,
             room_number,
             title,
+            start_time,
+            end_time,
+            participants,
             cases!inner (
               id,
               user_id,
