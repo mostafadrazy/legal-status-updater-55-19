@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Bell } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
-import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -9,13 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { CalendarHeader } from "@/components/calendar/CalendarHeader";
-import { CalendarControls } from "@/components/calendar/CalendarControls";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
-import { addDays, startOfWeek, subDays } from "date-fns";
+import { addDays, startOfWeek } from "date-fns";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NextSession() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState("weekly");
   const [startDate, setStartDate] = useState(() => {
     const today = new Date();
     return startOfWeek(today, { weekStartsOn: 1 }); // Start from Monday
@@ -50,7 +48,7 @@ export default function NextSession() {
               case_type
             )
           `)
-          .eq('user_id', session.user.id) // Filter by the current user's ID
+          .eq('user_id', session.user.id)
           .gte('next_session_date', startDate.toISOString())
           .lte('next_session_date', addDays(startDate, 6).toISOString())
           .order('next_session_date', { ascending: true });
@@ -103,25 +101,21 @@ export default function NextSession() {
               className="glass-button text-white self-start p-2 rounded-lg mb-4"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
-              <Bell className="h-6 w-6" />
+              <Menu className="h-6 w-6" />
             </Button>
           )}
 
           {/* Header Section */}
           <div className="glass-card p-6 rounded-xl">
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">الجلسة القادمة</h1>
-            <p className="text-gray-400">عرض وإدارة الجلسات القادمة</p>
+            <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-2">الجلسات القادمة</h1>
+            <p className="text-gray-400">عرض وإدارة مواعيد الجلسات القادمة</p>
           </div>
 
-          {/* Calendar Controls */}
+          {/* Calendar Section */}
           <div className="glass-card p-6 rounded-xl space-y-6">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
-            />
-            <CalendarControls
-              activeView={activeView}
-              onViewChange={setActiveView}
             />
           </div>
 
