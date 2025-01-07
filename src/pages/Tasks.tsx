@@ -26,11 +26,13 @@ export default function Tasks() {
   const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
   const endDate = addDays(startDate, 6);
 
-  // Fetch all sessions with more details
+  // Fetch only the user's sessions with more details
   const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['sessions', startDate, endDate],
+    queryKey: ['sessions', startDate, endDate, session?.user?.id],
     queryFn: async () => {
       try {
+        if (!session?.user?.id) return [];
+
         const { data, error } = await supabase
           .from('case_sessions')
           .select(`
@@ -42,10 +44,14 @@ export default function Tasks() {
             start_time,
             end_time,
             title,
-            participants
+            participants,
+            cases!inner (
+              user_id
+            )
           `)
           .gte('session_date', format(startDate, 'yyyy-MM-dd'))
           .lte('session_date', format(endDate, 'yyyy-MM-dd'))
+          .eq('cases.user_id', session.user.id)
           .order('session_date', { ascending: true });
         
         if (error) {
@@ -60,7 +66,8 @@ export default function Tasks() {
         toast.error('فشل في تحميل الجلسات');
         throw error;
       }
-    }
+    },
+    enabled: !!session?.user?.id
   });
 
   const navigateWeek = (direction: 'prev' | 'next') => {
