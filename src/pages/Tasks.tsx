@@ -76,12 +76,14 @@ export default function Tasks() {
   useEffect(() => {
     if (sessions && sessions.length > 0) {
       const nextSessionDate = parseISO(sessions[0].session_date);
-      setCurrentDate(nextSessionDate);
+      // Find the start of the week containing the next session
+      const weekStart = startOfWeek(nextSessionDate, { weekStartsOn: 0 });
+      setCurrentDate(weekStart);
     }
   }, [sessions]);
 
-  // Calculate the start and end dates for the current week
-  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
+  // Calculate the start date for the current week
+  const startDate = currentDate;
   const endDate = addDays(startDate, 6);
 
   const navigateWeek = (direction: 'prev' | 'next') => {
