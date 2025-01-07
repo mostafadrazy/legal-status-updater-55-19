@@ -22,10 +22,10 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       
       if (event === 'SIGNED_IN') {
         if (rememberMe) {
-          // Set session persistence to 'local' for remembered sessions
-          await supabase.auth.updateSession({
-            refresh_token: session?.refresh_token,
-            access_token: session?.access_token,
+          // Set session persistence using the correct method
+          await supabase.auth.setSession({
+            access_token: session?.access_token || '',
+            refresh_token: session?.refresh_token || ''
           });
         }
         
