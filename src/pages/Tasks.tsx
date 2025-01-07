@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ListCheck } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { CalendarHeader } from "@/components/calendar/CalendarHeader";
 import { CalendarControls } from "@/components/calendar/CalendarControls";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { addDays, startOfWeek } from "date-fns";
+import { addDays, startOfWeek, parseISO } from "date-fns";
 import { format } from "date-fns";
 
 export default function Tasks() {
@@ -21,10 +21,6 @@ export default function Tasks() {
   const isMobile = useIsMobile();
   const { t } = useLanguage();
   const { session } = useAuth();
-
-  // Calculate the start and end dates for the current week
-  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
-  const endDate = addDays(startDate, 6);
 
   // Fetch only the next upcoming session for each case
   const { data: sessions = [], isLoading } = useQuery({
@@ -75,6 +71,18 @@ export default function Tasks() {
     },
     enabled: !!session?.user?.id
   });
+
+  // Update currentDate when sessions data is loaded
+  useEffect(() => {
+    if (sessions && sessions.length > 0) {
+      const nextSessionDate = parseISO(sessions[0].session_date);
+      setCurrentDate(nextSessionDate);
+    }
+  }, [sessions]);
+
+  // Calculate the start and end dates for the current week
+  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
+  const endDate = addDays(startDate, 6);
 
   const navigateWeek = (direction: 'prev' | 'next') => {
     setCurrentDate(prev => {
