@@ -43,10 +43,10 @@ export function CalendarEvent({
         </h4>
         <div className="space-y-1">
           <p className="text-xs text-gray-400">
-            المحكمة: {court || "غير محدد"}
+            المحكمة: {court}
           </p>
           <p className="text-xs text-gray-400">
-            نوع القضية: {caseType || "غير محدد"}
+            نوع القضية: {caseType}
           </p>
         </div>
       </div>
