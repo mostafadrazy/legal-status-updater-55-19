@@ -14,6 +14,9 @@ interface Session {
   procedure_type: string | null;
   room_number: string | null;
   participants?: number | null;
+  cases?: {
+    client: string;
+  };
 }
 
 interface CalendarGridProps {
@@ -71,12 +74,7 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
               <CalendarEvent
                 key={session.id}
                 title={session.title || session.procedure_type || 'جلسة غير معنونة'}
-                startTime={session.start_time ? 
-                  format(parseISO(session.start_time), 'HH:mm', { locale: ar }) : 
-                  '09:00'}
-                endTime={session.end_time ? 
-                  format(parseISO(session.end_time), 'HH:mm', { locale: ar }) : 
-                  '10:00'}
+                client={session.cases?.client || 'عميل غير معروف'}
                 type={session.procedure_type ? 'consultation' : 'default'}
                 participants={session.participants || undefined}
                 roomNumber={session.room_number}

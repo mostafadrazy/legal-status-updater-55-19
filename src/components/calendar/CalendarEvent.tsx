@@ -4,8 +4,7 @@ import { AvatarGroup } from "@/components/ui/avatar-group";
 
 interface CalendarEventProps {
   title: string;
-  startTime: string;
-  endTime: string;
+  client: string;
   type?: 'default' | 'consultation' | 'project' | 'feedback';
   participants?: number;
   roomNumber?: string | null;
@@ -13,8 +12,7 @@ interface CalendarEventProps {
 
 export function CalendarEvent({ 
   title, 
-  startTime, 
-  endTime, 
+  client,
   type = 'default', 
   participants,
   roomNumber 
@@ -50,7 +48,7 @@ export function CalendarEvent({
       <div className="flex flex-col gap-2">
         <h4 className={cn("font-medium text-sm", textColorVariants[type])}>{title}</h4>
         <p className="text-xs text-gray-400">
-          {startTime} - {endTime}
+          {client}
         </p>
         <div className="flex items-center justify-between">
           {roomNumber && (
