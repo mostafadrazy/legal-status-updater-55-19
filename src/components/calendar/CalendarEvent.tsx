@@ -3,7 +3,6 @@ import { MapPin } from "lucide-react";
 import { AvatarGroup } from "@/components/ui/avatar-group";
 
 interface CalendarEventProps {
-  title: string;
   client: string;
   court?: string | null;
   caseType?: string | null;
