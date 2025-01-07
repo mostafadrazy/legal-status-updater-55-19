@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileTab } from "@/components/settings/tabs/ProfileTab";
