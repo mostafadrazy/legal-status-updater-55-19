@@ -50,7 +50,7 @@ export default function NextSession() {
               case_type
             )
           `)
-          .eq('cases.user_id', session.user.id)
+          .eq('user_id', session.user.id) // Filter by the current user's ID
           .gte('next_session_date', startDate.toISOString())
           .lte('next_session_date', addDays(startDate, 6).toISOString())
           .order('next_session_date', { ascending: true });
