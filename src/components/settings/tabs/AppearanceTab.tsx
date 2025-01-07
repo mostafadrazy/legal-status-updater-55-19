@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEffect } from "react";
 
 export function AppearanceTab() {
   const { language, setLanguage, t } = useLanguage();
@@ -9,6 +10,11 @@ export function AppearanceTab() {
   const handleLanguageChange = () => {
     setLanguage(language === 'ar' ? 'en' : 'ar');
   };
+
+  // Update document direction when language changes
+  useEffect(() => {
+    document.dir = language === 'ar' ? 'rtl' : 'ltr';
+  }, [language]);
 
   return (
     <Card className="glass-card border-white/10 bg-white/5">
@@ -39,7 +45,11 @@ export function AppearanceTab() {
                 {language === 'ar' ? 'التبديل بين العربية والإنجليزية' : 'Toggle between Arabic and English'}
               </p>
             </div>
-            <Switch checked={language === 'en'} onCheckedChange={handleLanguageChange} />
+            <Switch 
+              checked={language === 'en'} 
+              onCheckedChange={handleLanguageChange}
+              className="data-[state=checked]:bg-[#4CD6B4]"
+            />
           </div>
         </div>
       </CardContent>
