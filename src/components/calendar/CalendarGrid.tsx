@@ -19,6 +19,8 @@ interface Session {
     court?: string | null;
     case_type?: string | null;
   };
+  court?: string | null;
+  case_type?: string | null;
 }
 
 interface CalendarGridProps {
@@ -76,8 +78,8 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
               <CalendarEvent
                 key={session.id}
                 client={session.cases?.client || 'عميل غير معروف'}
-                court={session.cases?.court || 'غير محدد'}
-                caseType={session.cases?.case_type || 'غير محدد'}
+                court={session.court || 'غير محدد'}
+                caseType={session.case_type || 'غير محدد'}
                 type={session.procedure_type ? 'consultation' : 'default'}
               />
             ))}
