@@ -20,28 +20,19 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event);
       
-      if (event === 'SIGNED_IN' && session) {
-        // Handle remember me first
+      if (event === 'SIGNED_IN') {
         if (rememberMe) {
-          try {
-            await supabase.auth.setSession({
-              access_token: session.access_token,
-              refresh_token: session.refresh_token
-            });
-            console.log('Session persisted successfully');
-          } catch (error) {
-            console.error('Error persisting session:', error);
-          }
+          // Set session persistence using the correct method
+          await supabase.auth.setSession({
+            access_token: session?.access_token || '',
+            refresh_token: session?.refresh_token || ''
+          });
         }
         
-        // Handle navigation based on view
         if (view === 'sign_up') {
           setShowProfileCompletion(true);
         } else {
-          // Force navigation after a brief delay to ensure session is set
-          setTimeout(() => {
-            navigate('/');
-          }, 100);
+          navigate('/');
         }
       } else if (event === 'SIGNED_OUT') {
         navigate('/auth/login');
