@@ -1,28 +1,21 @@
-import { useState, useEffect } from "react";
-import { ListCheck, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Bell } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CalendarGrid } from "@/components/calendar/CalendarGrid";
-import { CalendarHeader } from "@/components/calendar/CalendarHeader";
-import { CalendarControls } from "@/components/calendar/CalendarControls";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { addDays, startOfWeek, parseISO } from "date-fns";
-import { format } from "date-fns";
 
 export default function NextSession() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState("weekly");
-  const [currentDate, setCurrentDate] = useState(new Date());
   const isMobile = useIsMobile();
   const { t } = useLanguage();
   const { session } = useAuth();
 
-  const { data: sessions = [], isLoading } = useQuery({
+  const { data: nextSessions = [], isLoading } = useQuery({
     queryKey: ['next-sessions', session?.user?.id],
     queryFn: async () => {
       try {
@@ -49,7 +42,7 @@ export default function NextSession() {
             )
           `)
           .eq('cases.user_id', session.user.id)
-          .gte('session_date', format(new Date(), 'yyyy-MM-dd'))
+          .gte('session_date', new Date().toISOString())
           .order('session_date', { ascending: true });
         
         if (error) {
@@ -58,10 +51,7 @@ export default function NextSession() {
           throw error;
         }
         
-        return data?.map(session => ({
-          ...session,
-          title: session.cases.client,
-        })) || [];
+        return data || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
         toast.error('فشل في تحميل الجلسات');
@@ -70,26 +60,6 @@ export default function NextSession() {
     },
     enabled: !!session?.user?.id
   });
-
-  useEffect(() => {
-    if (sessions && sessions.length > 0) {
-      const nextDate = sessions[0].next_session_date || sessions[0].session_date;
-      const nextSessionDate = parseISO(nextDate);
-      const weekStart = startOfWeek(nextSessionDate, { weekStartsOn: 0 });
-      setCurrentDate(weekStart);
-    }
-  }, [sessions]);
-
-  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
-
-  const navigateWeek = (direction: 'prev' | 'next') => {
-    setCurrentDate(prev => {
-      if (direction === 'prev') {
-        return addDays(prev, -7);
-      }
-      return addDays(prev, 7);
-    });
-  };
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
@@ -108,30 +78,34 @@ export default function NextSession() {
               className="glass-button text-white self-start p-2 rounded-lg mb-4"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
-              <Calendar className="h-6 w-6" />
+              <Bell className="h-6 w-6" />
             </Button>
           )}
 
           {/* Header Section */}
           <div className="glass-card p-6 rounded-xl mb-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">الجلسة القادمة</h1>
-                <CalendarHeader startDate={startDate} onNavigateWeek={navigateWeek} />
-              </div>
-            </div>
-
-            {/* Calendar Controls */}
-            <CalendarControls activeView={activeView} onViewChange={setActiveView} />
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">الجلسة القادمة</h1>
+            <p className="text-gray-400">عرض وإدارة الجلسات القادمة</p>
           </div>
 
-          {/* Calendar Grid */}
+          {/* Content Section */}
           <div className="glass-card p-6 rounded-xl">
-            <CalendarGrid 
-              sessions={sessions} 
-              isLoading={isLoading}
-              startDate={startDate}
-            />
+            {isLoading ? (
+              <div className="text-center py-12">
+                <p className="text-gray-400">جاري التحميل...</p>
+              </div>
+            ) : nextSessions.length === 0 ? (
+              <div className="text-center py-12">
+                <Bell className="w-16 h-16 mx-auto mb-4 text-[#4CD6B4] opacity-50" />
+                <h3 className="text-lg font-medium text-white mb-2">لا توجد جلسات قادمة</h3>
+                <p className="text-gray-400">لم يتم تسجيل أي جلسات قادمة بعد</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* We'll implement the sessions list UI here in the next iteration */}
+                <p className="text-white">تم العثور على {nextSessions.length} جلسات قادمة</p>
+              </div>
+            )}
           </div>
         </div>
       </main>
