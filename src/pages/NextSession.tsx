@@ -44,11 +44,10 @@ export default function NextSession() {
             start_time,
             end_time,
             participants,
-            cases!inner (
-              id,
-              user_id,
+            cases (
               client,
-              title
+              court,
+              case_type
             )
           `)
           .eq('cases.user_id', session.user.id)
@@ -61,8 +60,16 @@ export default function NextSession() {
           toast.error('فشل في تحميل الجلسات');
           throw error;
         }
+
+        // Transform the data to include court and case_type at the root level
+        const transformedData = data?.map(session => ({
+          ...session,
+          court: session.cases?.court,
+          case_type: session.cases?.case_type,
+          client: session.cases?.client
+        }));
         
-        return data || [];
+        return transformedData || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
         toast.error('فشل في تحميل الجلسات');
