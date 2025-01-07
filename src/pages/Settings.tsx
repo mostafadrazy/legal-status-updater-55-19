@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
+import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileTab } from "@/components/settings/tabs/ProfileTab";
 import { NotificationsTab } from "@/components/settings/tabs/NotificationsTab";
@@ -19,9 +20,9 @@ interface ProfileData {
 
 export default function Settings() {
   const { user } = useAuth();
+  const { t, dir } = useLanguage();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -55,10 +56,8 @@ export default function Settings() {
         }
       } catch (error) {
         console.error("Error in profile management:", error);
-        toast({
-          variant: "destructive",
-          title: "خطأ غير متوقع",
-          description: "يرجى المحاولة مرة أخرى لاحقاً",
+        toast.error(t('error'), {
+          description: t('tryAgainLater'),
         });
       } finally {
         setIsLoading(false);
@@ -66,12 +65,12 @@ export default function Settings() {
     };
 
     fetchProfile();
-  }, [user, toast]);
+  }, [user, t]);
 
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex w-full bg-[#111]" dir="rtl">
+    <div className="min-h-screen flex w-full bg-[#111]" dir={dir()}>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
@@ -91,22 +90,22 @@ export default function Settings() {
 
           <div className="flex items-center gap-3 mb-8">
             <SettingsIcon className="w-6 h-6 md:w-8 md:h-8 text-[#4CD6B4]" />
-            <h1 className="text-2xl md:text-3xl font-bold text-white">الإعدادات</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white">{t('settings')}</h1>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
             <TabsList className="bg-white/5 border border-white/10 w-full flex flex-wrap justify-start">
               <TabsTrigger value="profile" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الملف الشخصي
+                {t('profile')}
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الإشعارات
+                {t('notifications')}
               </TabsTrigger>
               <TabsTrigger value="appearance" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                المظهر
+                {t('appearance')}
               </TabsTrigger>
               <TabsTrigger value="security" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الأمان
+                {t('security')}
               </TabsTrigger>
             </TabsList>
 

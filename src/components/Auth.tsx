@@ -4,8 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProfileCompletionForm } from "./auth/ProfileCompletionForm";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
@@ -13,7 +11,6 @@ interface AuthProps {
 
 export const Auth = ({ view = "sign_in" }: AuthProps) => {
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,14 +18,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       console.log('Auth state changed:', event);
       
       if (event === 'SIGNED_IN') {
-        if (rememberMe) {
-          // Set session persistence using the correct method
-          await supabase.auth.setSession({
-            access_token: session?.access_token || '',
-            refresh_token: session?.refresh_token || ''
-          });
-        }
-        
         if (view === 'sign_up') {
           setShowProfileCompletion(true);
         } else {
@@ -42,14 +31,14 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [view, navigate, rememberMe]);
+  }, [view, navigate]);
 
   if (showProfileCompletion) {
     return <ProfileCompletionForm />;
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full">
       <SupabaseAuth
         supabaseClient={supabase}
         appearance={{
@@ -117,23 +106,6 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         view={view}
         showLinks={false}
       />
-      
-      {view === "sign_in" && (
-        <div className="flex items-center space-x-2 rtl:space-x-reverse">
-          <Checkbox
-            id="rememberMe"
-            checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-            className="border-white/20 data-[state=checked]:bg-[#4CD6B4] data-[state=checked]:border-[#4CD6B4]"
-          />
-          <Label
-            htmlFor="rememberMe"
-            className="text-sm text-white cursor-pointer select-none"
-          >
-            تذكرني
-          </Label>
-        </div>
-      )}
     </div>
   );
 };
