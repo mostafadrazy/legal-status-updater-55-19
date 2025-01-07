@@ -26,9 +26,9 @@ export default function Tasks() {
   const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
   const endDate = addDays(startDate, 6);
 
-  // Fetch only the user's sessions with more details
+  // Fetch only the next upcoming session for each case
   const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['sessions', startDate, endDate, session?.user?.id],
+    queryKey: ['next-sessions', session?.user?.id],
     queryFn: async () => {
       try {
         if (!session?.user?.id) return [];
@@ -41,18 +41,18 @@ export default function Tasks() {
             case_id,
             procedure_type,
             room_number,
-            start_time,
-            end_time,
             title,
-            participants,
             cases!inner (
-              user_id
+              id,
+              user_id,
+              client,
+              title
             )
           `)
-          .gte('session_date', format(startDate, 'yyyy-MM-dd'))
-          .lte('session_date', format(endDate, 'yyyy-MM-dd'))
           .eq('cases.user_id', session.user.id)
-          .order('session_date', { ascending: true });
+          .gte('session_date', format(new Date(), 'yyyy-MM-dd'))
+          .order('session_date', { ascending: true })
+          .limit(1);
         
         if (error) {
           console.error('Error fetching sessions:', error);
@@ -60,7 +60,10 @@ export default function Tasks() {
           throw error;
         }
         
-        return data || [];
+        return data?.map(session => ({
+          ...session,
+          title: session.cases.client, // Use client name as title
+        })) || [];
       } catch (error) {
         console.error('Error fetching sessions:', error);
         toast.error('فشل في تحميل الجلسات');
@@ -104,7 +107,7 @@ export default function Tasks() {
           <div className="glass-card p-6 rounded-xl mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">التقويم الخاص بي</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">الجلسة القادمة</h1>
                 <CalendarHeader startDate={startDate} onNavigateWeek={navigateWeek} />
               </div>
             </div>
