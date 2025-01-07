@@ -1,8 +1,7 @@
-import { format, addDays, startOfDay, isAfter, isSameDay, parseISO, getHours } from "date-fns";
+import { format, addDays, isSameDay, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CalendarEvent } from "./CalendarEvent";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AvatarGroup } from "@/components/ui/avatar-group";
 
 interface Session {
   id: string;
@@ -25,14 +24,11 @@ interface CalendarGridProps {
 export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridProps) {
   // Get next 7 days starting from startDate
   const days = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
-  const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 8 PM
 
-  const getSessionsForDayAndHour = (date: Date, hour: number) => {
+  const getSessionsForDay = (date: Date) => {
     return sessions.filter(session => {
-      if (!session.start_time) return false;
       const sessionDate = new Date(session.session_date);
-      const sessionHour = getHours(parseISO(session.start_time));
-      return isSameDay(sessionDate, date) && sessionHour === hour;
+      return isSameDay(sessionDate, date);
     });
   };
 
@@ -55,65 +51,39 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
   }
 
   return (
-    <div className="relative">
-      {/* Timeline line */}
-      <div className="absolute left-[120px] top-0 bottom-0 w-px bg-white/10" />
-      
-      <div className="grid grid-cols-[120px_1fr] gap-4">
-        {/* Time labels */}
-        <div className="space-y-24 pt-8">
-          {hours.map(hour => (
-            <div key={hour} className="text-sm text-gray-400">
-              {hour}:00
+    <div className="grid grid-cols-7 gap-4">
+      {/* Day headers */}
+      {days.map(day => (
+        <div key={day.toISOString()} className="space-y-4">
+          <div className="text-sm text-gray-400 text-center">
+            <div className="font-medium">
+              {format(day, 'EEEE', { locale: ar })}
             </div>
-          ))}
-        </div>
-
-        {/* Days grid */}
-        <div className="grid grid-cols-7 gap-4">
-          {/* Day headers */}
-          <div className="col-span-7 grid grid-cols-7 gap-4 mb-4">
-            {days.map(day => (
-              <div key={day.toISOString()} className="text-sm text-gray-400 text-center">
-                <div className="font-medium">
-                  {format(day, 'EEEE', { locale: ar })}
-                </div>
-                <div className="text-xs mt-1">
-                  {format(day, 'd MMM', { locale: ar })}
-                </div>
-              </div>
+            <div className="text-xs mt-1">
+              {format(day, 'd MMM', { locale: ar })}
+            </div>
+          </div>
+          
+          {/* Sessions for this day */}
+          <div className="space-y-2">
+            {getSessionsForDay(day).map(session => (
+              <CalendarEvent
+                key={session.id}
+                title={session.title || session.procedure_type || 'جلسة غير معنونة'}
+                startTime={session.start_time ? 
+                  format(parseISO(session.start_time), 'HH:mm', { locale: ar }) : 
+                  '09:00'}
+                endTime={session.end_time ? 
+                  format(parseISO(session.end_time), 'HH:mm', { locale: ar }) : 
+                  '10:00'}
+                type={session.procedure_type ? 'consultation' : 'default'}
+                participants={session.participants || undefined}
+                roomNumber={session.room_number}
+              />
             ))}
           </div>
-
-          {/* Time slots */}
-          {hours.map(hour => (
-            <div key={hour} className="col-span-7 grid grid-cols-7 gap-4 min-h-24">
-              {days.map(day => {
-                const dayHourSessions = getSessionsForDayAndHour(day, hour);
-                return (
-                  <div key={`${day.toISOString()}-${hour}`} className="relative">
-                    {dayHourSessions.map(session => (
-                      <CalendarEvent
-                        key={session.id}
-                        title={session.title || session.procedure_type || 'جلسة غير معنونة'}
-                        startTime={session.start_time ? 
-                          format(new Date(session.start_time), 'HH:mm', { locale: ar }) : 
-                          '09:00'}
-                        endTime={session.end_time ? 
-                          format(new Date(session.end_time), 'HH:mm', { locale: ar }) : 
-                          '10:00'}
-                        type={session.procedure_type ? 'consultation' : 'default'}
-                        participants={session.participants || undefined}
-                        roomNumber={session.room_number}
-                      />
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
         </div>
-      </div>
+      ))}
     </div>
   );
 }

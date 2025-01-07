@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { ListCheck, Share2, Bell, Plus, Calendar, Trash2, Search, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import { ListCheck } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
+import { CalendarHeader } from "@/components/calendar/CalendarHeader";
+import { CalendarControls } from "@/components/calendar/CalendarControls";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { addDays, format, startOfWeek } from "date-fns";
-import { ar } from "date-fns/locale";
+import { addDays, startOfWeek } from "date-fns";
+import { format } from "date-fns";
 
 export default function Tasks() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -72,8 +72,6 @@ export default function Tasks() {
     });
   };
 
-  const formattedDateRange = `${format(startDate, 'd', { locale: ar })} - ${format(endDate, 'd MMMM yyyy', { locale: ar })}`;
-
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
       {/* Background gradients */}
@@ -100,88 +98,12 @@ export default function Tasks() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">التقويم الخاص بي</h1>
-                <div className="flex items-center gap-4">
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => navigateWeek('prev')}
-                    className="hover:bg-white/10"
-                  >
-                    <ChevronRight className="h-4 w-4 text-gray-400" />
-                  </Button>
-                  <p className="text-gray-400">{formattedDateRange}</p>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => navigateWeek('next')}
-                    className="hover:bg-white/10"
-                  >
-                    <ChevronLeft className="h-4 w-4 text-gray-400" />
-                  </Button>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="glass-button">
-                  <Share2 className="w-4 h-4 ml-2" />
-                  تصدير
-                </Button>
-                <Button variant="outline" className="glass-button">
-                  <Trash2 className="w-4 h-4 ml-2" />
-                  المحذوفة
-                </Button>
-                <Button className="glass-button">
-                  <UserPlus className="w-4 h-4 ml-2" />
-                  دعوة مستخدم
-                </Button>
+                <CalendarHeader startDate={startDate} onNavigateWeek={navigateWeek} />
               </div>
             </div>
 
-            {/* Calendar View Controls */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <Tabs defaultValue="weekly" className="w-full md:w-auto">
-                <TabsList className="bg-white/5 w-full md:w-auto">
-                  <TabsTrigger 
-                    value="weekly"
-                    onClick={() => setActiveView("weekly")}
-                    className="flex-1 md:flex-none data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black"
-                  >
-                    أسبوعي
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="monthly"
-                    onClick={() => setActiveView("monthly")}
-                    className="flex-1 md:flex-none data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black"
-                  >
-                    شهري
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="yearly"
-                    onClick={() => setActiveView("yearly")}
-                    className="flex-1 md:flex-none data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black"
-                  >
-                    سنوي
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-          </div>
-
-          {/* Search and Create Section */}
-          <div className="glass-card p-6 rounded-xl mb-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Input
-                  type="search"
-                  placeholder="البحث عن موعد..."
-                  className="glass-input w-full pl-10"
-                />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              </div>
-              <Button className="glass-button">
-                <Plus className="w-4 h-4 ml-2" />
-                إنشاء موعد
-              </Button>
-            </div>
+            {/* Calendar Controls */}
+            <CalendarControls activeView={activeView} onViewChange={setActiveView} />
           </div>
 
           {/* Calendar Grid */}
