@@ -9,6 +9,7 @@ interface Session {
   start_time: string | null;
   end_time: string | null;
   session_date: string;
+  next_session_date: string;
   case_id: string;
   procedure_type: string | null;
   room_number: string | null;
@@ -27,7 +28,7 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
 
   const getSessionsForDay = (date: Date) => {
     return sessions.filter(session => {
-      const sessionDate = new Date(session.session_date);
+      const sessionDate = new Date(session.next_session_date);
       return isSameDay(sessionDate, date);
     });
   };

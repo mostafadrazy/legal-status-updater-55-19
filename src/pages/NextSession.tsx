@@ -36,6 +36,7 @@ export default function NextSession() {
           .select(`
             id,
             session_date,
+            next_session_date,
             case_id,
             procedure_type,
             room_number,
@@ -43,7 +44,6 @@ export default function NextSession() {
             start_time,
             end_time,
             participants,
-            next_session_date,
             cases!inner (
               id,
               user_id,
@@ -52,9 +52,9 @@ export default function NextSession() {
             )
           `)
           .eq('cases.user_id', session.user.id)
-          .gte('session_date', startDate.toISOString())
-          .lte('session_date', addDays(startDate, 6).toISOString())
-          .order('session_date', { ascending: true });
+          .gte('next_session_date', startDate.toISOString())
+          .lte('next_session_date', addDays(startDate, 6).toISOString())
+          .order('next_session_date', { ascending: true });
         
         if (error) {
           console.error('Error fetching sessions:', error);
