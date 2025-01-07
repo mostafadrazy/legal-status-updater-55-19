@@ -16,6 +16,8 @@ interface Session {
   participants?: number | null;
   cases?: {
     client: string;
+    court?: string | null;
+    case_type?: string | null;
   };
 }
 
@@ -73,11 +75,10 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
             {getSessionsForDay(day).map(session => (
               <CalendarEvent
                 key={session.id}
-                title={session.title || session.procedure_type || 'جلسة غير معنونة'}
                 client={session.cases?.client || 'عميل غير معروف'}
+                court={session.cases?.court}
+                caseType={session.cases?.case_type}
                 type={session.procedure_type ? 'consultation' : 'default'}
-                participants={session.participants || undefined}
-                roomNumber={session.room_number}
               />
             ))}
           </div>

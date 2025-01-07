@@ -5,17 +5,16 @@ import { AvatarGroup } from "@/components/ui/avatar-group";
 interface CalendarEventProps {
   title: string;
   client: string;
+  court?: string | null;
+  caseType?: string | null;
   type?: 'default' | 'consultation' | 'project' | 'feedback';
-  participants?: number;
-  roomNumber?: string | null;
 }
 
 export function CalendarEvent({ 
-  title, 
   client,
-  type = 'default', 
-  participants,
-  roomNumber 
+  court,
+  caseType,
+  type = 'default'
 }: CalendarEventProps) {
   const colorVariants = {
     default: "bg-gray-100/10 border-white/10 hover:bg-gray-100/20",
@@ -31,12 +30,6 @@ export function CalendarEvent({
     feedback: "text-orange-200"
   };
 
-  // Mock avatars for demonstration
-  const mockAvatars = participants ? Array(participants).fill({
-    src: "",
-    fallback: "U"
-  }) : [];
-
   return (
     <div 
       className={cn(
@@ -46,24 +39,16 @@ export function CalendarEvent({
       )}
     >
       <div className="flex flex-col gap-2">
-        <h4 className={cn("font-medium text-sm", textColorVariants[type])}>{title}</h4>
-        <p className="text-xs text-gray-400">
+        <h4 className={cn("font-medium text-sm", textColorVariants[type])}>
           {client}
-        </p>
-        <div className="flex items-center justify-between">
-          {roomNumber && (
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3 text-gray-400" />
-              <span className="text-xs text-gray-400">قاعة {roomNumber}</span>
-            </div>
-          )}
-          {participants && participants > 0 && (
-            <AvatarGroup
-              avatars={mockAvatars}
-              max={3}
-              className="scale-75 origin-right"
-            />
-          )}
+        </h4>
+        <div className="space-y-1">
+          <p className="text-xs text-gray-400">
+            المحكمة: {court || "غير محدد"}
+          </p>
+          <p className="text-xs text-gray-400">
+            نوع القضية: {caseType || "غير محدد"}
+          </p>
         </div>
       </div>
     </div>
