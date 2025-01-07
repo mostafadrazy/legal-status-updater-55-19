@@ -21,14 +21,20 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       console.log('Auth state changed:', event);
       
       if (event === 'SIGNED_IN') {
-        if (rememberMe) {
+        if (rememberMe && session) {
           // Set session persistence using the correct method
-          await supabase.auth.setSession({
-            access_token: session?.access_token || '',
-            refresh_token: session?.refresh_token || ''
-          });
+          try {
+            await supabase.auth.setSession({
+              access_token: session.access_token,
+              refresh_token: session.refresh_token
+            });
+            console.log('Session persisted successfully');
+          } catch (error) {
+            console.error('Error persisting session:', error);
+          }
         }
         
+        // Always navigate after sign in, regardless of remember me status
         if (view === 'sign_up') {
           setShowProfileCompletion(true);
         } else {
