@@ -8,15 +8,25 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { CalendarHeader } from "@/components/calendar/CalendarHeader";
+import { CalendarControls } from "@/components/calendar/CalendarControls";
+import { CalendarGrid } from "@/components/calendar/CalendarGrid";
+import { addDays, startOfWeek, subDays } from "date-fns";
 
 export default function NextSession() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeView, setActiveView] = useState("weekly");
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    return startOfWeek(today, { weekStartsOn: 1 }); // Start from Monday
+  });
+  
   const isMobile = useIsMobile();
   const { t } = useLanguage();
   const { session } = useAuth();
 
-  const { data: nextSessions = [], isLoading } = useQuery({
-    queryKey: ['next-sessions', session?.user?.id],
+  const { data: sessions = [], isLoading } = useQuery({
+    queryKey: ['next-sessions', session?.user?.id, startDate],
     queryFn: async () => {
       try {
         if (!session?.user?.id) return [];
@@ -42,7 +52,8 @@ export default function NextSession() {
             )
           `)
           .eq('cases.user_id', session.user.id)
-          .gte('session_date', new Date().toISOString())
+          .gte('session_date', startDate.toISOString())
+          .lte('session_date', addDays(startDate, 6).toISOString())
           .order('session_date', { ascending: true });
         
         if (error) {
@@ -61,6 +72,13 @@ export default function NextSession() {
     enabled: !!session?.user?.id
   });
 
+  const handleNavigateWeek = (direction: 'prev' | 'next') => {
+    setStartDate(currentDate => {
+      const days = direction === 'prev' ? -7 : 7;
+      return addDays(currentDate, days);
+    });
+  };
+
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
       {/* Background gradients */}
@@ -70,7 +88,7 @@ export default function NextSession() {
       </div>
 
       <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
           {/* Mobile menu button */}
           {isMobile && (
             <Button
@@ -83,29 +101,30 @@ export default function NextSession() {
           )}
 
           {/* Header Section */}
-          <div className="glass-card p-6 rounded-xl mb-6">
+          <div className="glass-card p-6 rounded-xl">
             <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">الجلسة القادمة</h1>
             <p className="text-gray-400">عرض وإدارة الجلسات القادمة</p>
           </div>
 
-          {/* Content Section */}
+          {/* Calendar Controls */}
+          <div className="glass-card p-6 rounded-xl space-y-6">
+            <CalendarHeader 
+              startDate={startDate}
+              onNavigateWeek={handleNavigateWeek}
+            />
+            <CalendarControls
+              activeView={activeView}
+              onViewChange={setActiveView}
+            />
+          </div>
+
+          {/* Calendar Grid */}
           <div className="glass-card p-6 rounded-xl">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <p className="text-gray-400">جاري التحميل...</p>
-              </div>
-            ) : nextSessions.length === 0 ? (
-              <div className="text-center py-12">
-                <Bell className="w-16 h-16 mx-auto mb-4 text-[#4CD6B4] opacity-50" />
-                <h3 className="text-lg font-medium text-white mb-2">لا توجد جلسات قادمة</h3>
-                <p className="text-gray-400">لم يتم تسجيل أي جلسات قادمة بعد</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {/* We'll implement the sessions list UI here in the next iteration */}
-                <p className="text-white">تم العثور على {nextSessions.length} جلسات قادمة</p>
-              </div>
-            )}
+            <CalendarGrid
+              sessions={sessions}
+              isLoading={isLoading}
+              startDate={startDate}
+            />
           </div>
         </div>
       </main>
