@@ -84,13 +84,13 @@ export default function NextSession() {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
+    <div className="min-h-screen flex bg-[#111] relative" dir="rtl">
       <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
           {isMobile && (
             <Button
               variant="ghost"
-              className="glass-button text-white self-start p-2 rounded-lg mb-4 hover:bg-white/10 transition-all duration-300"
+              className="text-white self-start p-2 rounded-lg mb-4 hover:bg-white/10 transition-colors"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
               <Menu className="h-6 w-6" />
@@ -98,13 +98,13 @@ export default function NextSession() {
           )}
 
           {/* Header Section */}
-          <div className="glass-card p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
-            <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4">الجلسات القادمة</h1>
+          <div className="bg-black/40 p-8 rounded-2xl border border-white/10">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">الجلسات القادمة</h1>
             <p className="text-gray-400 text-lg">عرض وإدارة مواعيد الجلسات القادمة</p>
           </div>
 
-          {/* Calendar Section */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg">
+          {/* Calendar Controls */}
+          <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
@@ -112,7 +112,7 @@ export default function NextSession() {
           </div>
 
           {/* Calendar Grid */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg">
+          <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
             <CalendarGrid
               sessions={sessions}
               isLoading={isLoading}
