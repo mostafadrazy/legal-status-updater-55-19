@@ -32,20 +32,27 @@ export function CalendarEvent({
   return (
     <div 
       className={cn(
-        "rounded-lg p-3 border backdrop-blur-sm",
+        "rounded-xl p-4 border backdrop-blur-sm",
         colorVariants[type],
-        "hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+        "hover:scale-[1.02] transition-all duration-300 cursor-pointer shadow-lg",
+        "animate-fade-in"
       )}
     >
-      <div className="flex flex-col gap-2">
-        <h4 className={cn("font-medium text-sm", textColorVariants[type])}>
+      <div className="flex flex-col gap-3">
+        <h4 className={cn(
+          "font-medium text-sm",
+          textColorVariants[type],
+          "flex items-center gap-2"
+        )}>
           {client}
         </h4>
-        <div className="space-y-1">
-          <p className="text-xs text-gray-400">
+        <div className="space-y-2">
+          <p className="text-xs text-gray-400 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#4CD6B4]"></span>
             المحكمة: {court}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#4CD6B4]"></span>
             نوع القضية: {caseType}
           </p>
         </div>

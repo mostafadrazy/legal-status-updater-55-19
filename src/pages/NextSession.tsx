@@ -59,7 +59,6 @@ export default function NextSession() {
           throw error;
         }
 
-        // Transform the data to include court and case_type at the root level
         const transformedData = data?.map(session => ({
           ...session,
           court: session.cases?.court,
@@ -86,41 +85,41 @@ export default function NextSession() {
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
-      {/* Background gradients */}
+      {/* Enhanced background gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20 animate-pulse" />
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
       </div>
 
       <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
-          {/* Mobile menu button */}
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+          {/* Mobile menu button with enhanced styling */}
           {isMobile && (
             <Button
               variant="ghost"
-              className="glass-button text-white self-start p-2 rounded-lg mb-4"
+              className="glass-button text-white self-start p-2 rounded-lg mb-4 hover:bg-white/10 transition-all duration-300"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
               <Menu className="h-6 w-6" />
             </Button>
           )}
 
-          {/* Header Section */}
-          <div className="glass-card p-6 rounded-xl">
-            <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-2">الجلسات القادمة</h1>
-            <p className="text-gray-400">عرض وإدارة مواعيد الجلسات القادمة</p>
+          {/* Enhanced Header Section */}
+          <div className="glass-card p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4 animate-fade-in">الجلسات القادمة</h1>
+            <p className="text-gray-400 text-lg animate-fade-in delay-100">عرض وإدارة مواعيد الجلسات القادمة</p>
           </div>
 
-          {/* Calendar Section */}
-          <div className="glass-card p-6 rounded-xl space-y-6">
+          {/* Enhanced Calendar Section with glass effect */}
+          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg animate-fade-in delay-200">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
             />
           </div>
 
-          {/* Calendar Grid */}
-          <div className="glass-card p-6 rounded-xl">
+          {/* Enhanced Calendar Grid */}
+          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg animate-fade-in delay-300">
             <CalendarGrid
               sessions={sessions}
               isLoading={isLoading}
