@@ -85,15 +85,8 @@ export default function NextSession() {
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
-      {/* Enhanced background gradients */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20 animate-pulse" />
-        <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
-      </div>
-
       <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
         <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
-          {/* Mobile menu button with enhanced styling */}
           {isMobile && (
             <Button
               variant="ghost"
@@ -104,22 +97,22 @@ export default function NextSession() {
             </Button>
           )}
 
-          {/* Enhanced Header Section */}
+          {/* Header Section */}
           <div className="glass-card p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
-            <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4 animate-fade-in">الجلسات القادمة</h1>
-            <p className="text-gray-400 text-lg animate-fade-in delay-100">عرض وإدارة مواعيد الجلسات القادمة</p>
+            <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4">الجلسات القادمة</h1>
+            <p className="text-gray-400 text-lg">عرض وإدارة مواعيد الجلسات القادمة</p>
           </div>
 
-          {/* Enhanced Calendar Section with glass effect */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg animate-fade-in delay-200">
+          {/* Calendar Section */}
+          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
             />
           </div>
 
-          {/* Enhanced Calendar Grid */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg animate-fade-in delay-300">
+          {/* Calendar Grid */}
+          <div className="glass-card p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg">
             <CalendarGrid
               sessions={sessions}
               isLoading={isLoading}
