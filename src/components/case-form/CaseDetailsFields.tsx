@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
 
 const formSchema = z.object({
   caseNumber: z.string().min(1, { message: "رقم القضية مطلوب" }),
@@ -19,6 +20,9 @@ type CaseDetailsFieldsProps = {
 };
 
 export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
+  const [showCustomCourt, setShowCustomCourt] = useState(false);
+  const [showCustomCaseType, setShowCustomCaseType] = useState(false);
+
   return (
     <>
       <FormField
@@ -41,7 +45,13 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-gray-300">المحكمة</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select 
+              onValueChange={(value) => {
+                setShowCustomCourt(value === "أخرى");
+                field.onChange(value);
+              }} 
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="اختر المحكمة" />
@@ -52,8 +62,16 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
                 <SelectItem value="المحكمة الجنائية">المحكمة الجنائية</SelectItem>
                 <SelectItem value="المحكمة التجارية">المحكمة التجارية</SelectItem>
                 <SelectItem value="المحكمة الإدارية">المحكمة الإدارية</SelectItem>
+                <SelectItem value="أخرى">أخرى</SelectItem>
               </SelectContent>
             </Select>
+            {showCustomCourt && (
+              <Input
+                placeholder="أدخل اسم المحكمة"
+                className="mt-2"
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}
@@ -65,7 +83,13 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-gray-300">نوع القضية</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select 
+              onValueChange={(value) => {
+                setShowCustomCaseType(value === "أخرى");
+                field.onChange(value);
+              }} 
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="اختر نوع القضية" />
@@ -76,8 +100,16 @@ export const CaseDetailsFields = ({ form }: CaseDetailsFieldsProps) => {
                 <SelectItem value="نزاع عقاري">نزاع عقاري</SelectItem>
                 <SelectItem value="قضايا أسرية">قضايا أسرية</SelectItem>
                 <SelectItem value="قضايا عمالية">قضايا عمالية</SelectItem>
+                <SelectItem value="أخرى">أخرى</SelectItem>
               </SelectContent>
             </Select>
+            {showCustomCaseType && (
+              <Input
+                placeholder="أدخل نوع القضية"
+                className="mt-2"
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}
