@@ -85,7 +85,7 @@ export default function NextSession() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-[#111] via-[#1A1A1A] to-[#222] relative" dir="rtl">
+    <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative" dir="rtl">
       <main className={cn(
         "flex-1 transition-all duration-300 ease-in-out",
         isMobile ? 'px-4' : 'pr-64'
