@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { MapPin } from "lucide-react";
+import { MapPin, Clock, Users } from "lucide-react";
 import { AvatarGroup } from "@/components/ui/avatar-group";
 
 interface CalendarEventProps {
@@ -29,6 +29,13 @@ export function CalendarEvent({
     feedback: "text-orange-200"
   };
 
+  const iconColorVariants = {
+    default: "text-[#4CD6B4]",
+    consultation: "text-blue-300",
+    project: "text-emerald-300",
+    feedback: "text-orange-300"
+  };
+
   return (
     <div 
       className={cn(
@@ -44,17 +51,22 @@ export function CalendarEvent({
           textColorVariants[type],
           "flex items-center gap-2"
         )}>
+          <Users className={cn("w-4 h-4", iconColorVariants[type])} />
           {client}
         </h4>
         <div className="space-y-2">
-          <p className="text-xs text-gray-400 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#4CD6B4]"></span>
-            المحكمة: {court}
-          </p>
-          <p className="text-xs text-gray-400 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#4CD6B4]"></span>
-            نوع القضية: {caseType}
-          </p>
+          {court && (
+            <p className="text-xs text-gray-400 flex items-center gap-2">
+              <MapPin className={cn("w-3 h-3", iconColorVariants[type])} />
+              {court}
+            </p>
+          )}
+          {caseType && (
+            <p className="text-xs text-gray-400 flex items-center gap-2">
+              <Clock className={cn("w-3 h-3", iconColorVariants[type])} />
+              {caseType}
+            </p>
+          )}
         </div>
       </div>
     </div>

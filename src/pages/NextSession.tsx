@@ -9,8 +9,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CalendarHeader } from "@/components/calendar/CalendarHeader";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
 import { addDays, startOfWeek } from "date-fns";
-import { Menu } from "lucide-react";
+import { Menu, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function NextSession() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -84,9 +85,12 @@ export default function NextSession() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#111] relative" dir="rtl">
-      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen flex bg-gradient-to-br from-[#111] via-[#1A1A1A] to-[#222] relative" dir="rtl">
+      <main className={cn(
+        "flex-1 transition-all duration-300 ease-in-out",
+        isMobile ? 'px-4' : 'pr-64'
+      )}>
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
           {isMobile && (
             <Button
               variant="ghost"
@@ -98,13 +102,23 @@ export default function NextSession() {
           )}
 
           {/* Header Section */}
-          <div className="bg-black/40 p-8 rounded-2xl border border-white/10">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">الجلسات القادمة</h1>
-            <p className="text-gray-400 text-lg">عرض وإدارة مواعيد الجلسات القادمة</p>
+          <div className="relative overflow-hidden rounded-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#4CD6B4]/20 to-transparent opacity-50" />
+            <div className="relative bg-black/40 p-8 md:p-12 rounded-2xl border border-white/10 backdrop-blur-sm">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-[#4CD6B4]/20 rounded-xl">
+                  <CalendarIcon className="w-8 h-8 text-[#4CD6B4]" />
+                </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 gradient-text">الجلسات القادمة</h1>
+                  <p className="text-gray-400 text-lg">عرض وإدارة مواعيد الجلسات القادمة</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Calendar Controls */}
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
+          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
@@ -112,7 +126,7 @@ export default function NextSession() {
           </div>
 
           {/* Calendar Grid */}
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
+          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
             <CalendarGrid
               sessions={sessions}
               isLoading={isLoading}
