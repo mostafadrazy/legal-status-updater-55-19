@@ -88,37 +88,37 @@ export default function NextSession() {
     <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative" dir="rtl">
       <main className={cn(
         "flex-1 transition-all duration-300 ease-in-out",
-        isMobile ? 'px-4' : 'pr-64'
+        isMobile ? 'px-2 sm:px-4' : 'pr-64'
       )}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+        <div className="p-3 md:p-8 max-w-7xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
           {isMobile && (
             <Button
               variant="ghost"
-              className="text-white self-start p-2 rounded-lg mb-4 hover:bg-white/10 transition-colors"
+              className="text-white self-start p-2 rounded-lg mb-2 hover:bg-white/10 transition-colors"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             </Button>
           )}
 
           {/* Header Section */}
-          <div className="relative overflow-hidden rounded-2xl">
+          <div className="relative overflow-hidden rounded-xl md:rounded-2xl">
             <div className="absolute inset-0 bg-gradient-to-r from-[#4CD6B4]/20 to-transparent opacity-50" />
-            <div className="relative bg-black/40 p-8 md:p-12 rounded-2xl border border-white/10 backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-[#4CD6B4]/20 rounded-xl">
-                  <CalendarIcon className="w-8 h-8 text-[#4CD6B4]" />
+            <div className="relative bg-black/40 p-4 md:p-8 lg:p-12 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm">
+              <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                <div className="p-2 md:p-3 bg-[#4CD6B4]/20 rounded-lg md:rounded-xl">
+                  <CalendarIcon className="w-6 h-6 md:w-8 md:h-8 text-[#4CD6B4]" />
                 </div>
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 gradient-text">الجلسات القادمة</h1>
-                  <p className="text-gray-400 text-lg">عرض وإدارة مواعيد الجلسات القادمة</p>
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 md:mb-3 gradient-text">الجلسات القادمة</h1>
+                  <p className="text-sm md:text-base lg:text-lg text-gray-400">عرض وإدارة مواعيد الجلسات القادمة</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Calendar Controls */}
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
+          <div className="bg-black/40 p-3 md:p-6 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
             <CalendarHeader 
               startDate={startDate}
               onNavigateWeek={handleNavigateWeek}
@@ -126,7 +126,7 @@ export default function NextSession() {
           </div>
 
           {/* Calendar Grid */}
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
+          <div className="bg-black/40 p-3 md:p-6 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
             <CalendarGrid
               sessions={sessions}
               isLoading={isLoading}

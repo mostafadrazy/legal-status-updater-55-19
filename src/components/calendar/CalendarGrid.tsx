@@ -2,6 +2,7 @@ import { format, addDays, isSameDay, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CalendarEvent } from "./CalendarEvent";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Session {
   id: string;
@@ -30,7 +31,7 @@ interface CalendarGridProps {
 }
 
 export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridProps) {
-  // Get next 7 days starting from startDate
+  const isMobile = useIsMobile();
   const days = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   const getSessionsForDay = (date: Date) => {
@@ -42,9 +43,9 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full bg-white/5" />
+          <Skeleton key={i} className="h-16 md:h-20 w-full bg-white/5" />
         ))}
       </div>
     );
@@ -52,15 +53,50 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
 
   if (sessions.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-8 md:py-12">
         <p className="text-gray-400">لا توجد جلسات في هذا الأسبوع</p>
+      </div>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <div className="space-y-4">
+        {days.map(day => {
+          const daySessions = getSessionsForDay(day);
+          if (daySessions.length === 0) return null;
+
+          return (
+            <div key={day.toISOString()} className="space-y-3">
+              <div className="text-sm text-gray-400">
+                <div className="font-medium">
+                  {format(day, 'EEEE', { locale: ar })}
+                </div>
+                <div className="text-xs mt-1">
+                  {format(day, 'd MMM', { locale: ar })}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                {daySessions.map(session => (
+                  <CalendarEvent
+                    key={session.id}
+                    client={session.cases?.client || 'عميل غير معروف'}
+                    court={session.court || 'غير محدد'}
+                    caseType={session.case_type || 'غير محدد'}
+                    type={session.procedure_type ? 'consultation' : 'default'}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
 
   return (
     <div className="grid grid-cols-7 gap-4">
-      {/* Day headers */}
       {days.map(day => (
         <div key={day.toISOString()} className="space-y-4">
           <div className="text-sm text-gray-400 text-center">
@@ -72,7 +108,6 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
             </div>
           </div>
           
-          {/* Sessions for this day */}
           <div className="space-y-2">
             {getSessionsForDay(day).map(session => (
               <CalendarEvent
