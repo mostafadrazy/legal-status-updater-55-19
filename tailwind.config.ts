@@ -84,12 +84,20 @@ export default {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        "color-fill": {
+          "0%": { fill: "white" },
+          "50%": { fill: "#FBC638" },
+          "100%": { fill: "white" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "slide-in": "slide-in 0.3s ease-out",
+        "color-fill-1": "color-fill 1s infinite 0.6s",
+        "color-fill-2": "color-fill 1s infinite 0.4s",
+        "color-fill-3": "color-fill 1s infinite 0.2s",
       },
     },
   },
