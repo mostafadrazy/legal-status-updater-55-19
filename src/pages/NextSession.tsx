@@ -85,7 +85,11 @@ export default function NextSession() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative" dir="rtl">
+    <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative overflow-hidden" dir="rtl">
+      {/* Animated background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 via-transparent to-transparent animate-pulse" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#4CD6B4]/10 via-transparent to-transparent blur-3xl" />
+      
       <main className={cn(
         "flex-1 transition-all duration-300 ease-in-out relative z-10",
         isMobile ? 'px-2 sm:px-4' : 'pr-64'
