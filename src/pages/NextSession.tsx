@@ -87,7 +87,7 @@ export default function NextSession() {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative" dir="rtl">
       <main className={cn(
-        "flex-1 transition-all duration-300 ease-in-out",
+        "flex-1 transition-all duration-300 ease-in-out relative z-10",
         isMobile ? 'px-2 sm:px-4' : 'pr-64'
       )}>
         <div className="p-3 md:p-8 max-w-7xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
