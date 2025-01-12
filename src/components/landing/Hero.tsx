@@ -47,7 +47,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
             <a 
-              className="cta group flex items-center gap-2 px-8 py-4 text-lg font-bold text-white bg-[#6225E6] transition-all duration-500 transform hover:shadow-[10px_10px_0_#FBC638] shadow-[6px_6px_0_black] skew-x-[-15deg] hover:translate-x-1"
+              className="cta group flex items-center gap-2 px-8 py-4 text-lg font-bold text-white bg-[#4CD6B4] transition-all duration-500 transform hover:shadow-[10px_10px_0_#FBC638] shadow-[6px_6px_0_black] skew-x-[-15deg] hover:translate-x-1"
             >
               <span className="skew-x-[15deg]">ابدأ الآن مجاناً</span>
               <span className="skew-x-[15deg] relative top-[2px] transition-all duration-500 group-hover:mr-8">
