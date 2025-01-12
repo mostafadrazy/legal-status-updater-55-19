@@ -88,7 +88,7 @@ const Cases = () => {
         />
       </div>
 
-      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto`}>
+      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto relative z-10`}>
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           {isMobile && (
             <Button
