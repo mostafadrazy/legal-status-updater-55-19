@@ -14,12 +14,21 @@ import CaseTracking from "./pages/CaseTracking";
 import Cases from "./pages/Cases";
 import NextSession from "./pages/NextSession";
 import Settings from "./pages/Settings";
+import AboutUs from "./pages/AboutUs";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 // Protected route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuth();
+  
   if (!session) {
     return <Navigate to="/auth/login" replace />;
   }
@@ -46,6 +55,7 @@ const App = () => (
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<DashboardRoute />} />
+              <Route path="/about-us" element={<AboutUs />} />
               <Route path="/case-tracking" element={<CaseTracking />} />
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/callback" element={<Callback />} />

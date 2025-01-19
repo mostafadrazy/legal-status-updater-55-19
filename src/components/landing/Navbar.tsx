@@ -63,6 +63,13 @@ const Navbar = () => {
             <Button 
               variant="ghost" 
               className="text-white/80 hover:text-[#4CD6B4] transition-colors"
+              onClick={() => navigate("/about-us")}
+            >
+              من نحن
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
               onClick={() => scrollToSection('features')}
             >
               المميزات
@@ -93,6 +100,13 @@ const Navbar = () => {
 
         {isMenuOpen && (
           <div className="md:hidden mt-4 space-y-2 animate-fade-in">
+            <Button 
+              variant="ghost" 
+              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
+              onClick={() => navigate("/about-us")}
+            >
+              من نحن
+            </Button>
             <Button 
               variant="ghost" 
               className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
