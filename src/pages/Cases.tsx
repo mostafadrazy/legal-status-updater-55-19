@@ -76,7 +76,7 @@ const Cases = () => {
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A] overflow-hidden">
+    <div className="min-h-screen flex w-full bg-gradient-to-br from-[#111] to-[#1A1A1A] overflow-x-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20"
@@ -88,13 +88,13 @@ const Cases = () => {
         />
       </div>
 
-      <main className={`flex-1 ${isMobile ? 'px-4' : 'pr-64'} overflow-auto relative z-10`}>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">
+      <main className={`flex-1 ${isMobile ? 'px-4 pb-safe' : 'pr-64'} overflow-auto relative z-10`}>
+        <div className="p-4 md:p-8 max-w-7xl mx-auto safe-area-inset-bottom">
           {isMobile && (
             <Button
               variant="ghost"
               size="icon"
-              className="glass-button mb-4 !p-2 !min-w-0"
+              className="glass-button mb-4 !p-3 !min-w-0"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
               <Menu className="h-6 w-6" />
@@ -108,25 +108,27 @@ const Cases = () => {
               </h1>
             </div>
             <Button 
-              className="glass-button w-full md:w-auto px-8 py-6 rounded-full"
+              className="glass-button w-full md:w-auto px-6 py-5 md:px-8 md:py-6 rounded-full text-base"
               onClick={() => setIsNewCaseDialogOpen(true)}
             >
-              <Plus className="w-4 h-4 ml-2" />
+              <Plus className="w-5 h-5 ml-2" />
               إنشاء قضية
             </Button>
           </div>
 
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <div className="safe-area-inset-left safe-area-inset-right">
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
-          {searchQuery ? (
-            <CasesList 
-              cases={searchResults || []} 
-              scrollY={scrollY} 
-              isSearchResults={true} 
-            />
-          ) : (
-            <CasesList cases={cases || []} scrollY={scrollY} />
-          )}
+            {searchQuery ? (
+              <CasesList 
+                cases={searchResults || []} 
+                scrollY={scrollY} 
+                isSearchResults={true} 
+              />
+            ) : (
+              <CasesList cases={cases || []} scrollY={scrollY} />
+            )}
+          </div>
         </div>
       </main>
       

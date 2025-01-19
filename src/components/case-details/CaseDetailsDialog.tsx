@@ -49,20 +49,23 @@ export function CaseDetailsDialog({
 
   return (
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
-      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 sm:max-w-5xl h-[90vh] overflow-hidden p-0" dir="rtl">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none" />
+      <DialogContent className="bg-gradient-to-br from-[#111] to-[#1A1A1A] border-white/10 sm:max-w-5xl h-[90vh] overflow-hidden p-0 animate-in fade-in-0 zoom-in-95" dir="rtl">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-lg pointer-events-none opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4CD6B4]/10 via-transparent to-transparent pointer-events-none" />
         
-        <DialogHeader className="relative p-4 sm:p-6 border-b border-white/10">
+        <DialogHeader className="relative p-4 sm:p-6 border-b border-white/10 bg-white/5 backdrop-blur-sm">
           <DialogTitle className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
             تفاصيل القضية
           </DialogTitle>
-          <p className="text-[#4CD6B4] text-sm sm:text-lg font-medium">{caseDetails?.case_number}</p>
+          <p className="text-[#4CD6B4] text-sm sm:text-lg font-medium">
+            {caseDetails?.case_number}
+          </p>
         </DialogHeader>
         
         <div className="flex flex-col h-full overflow-hidden">
           <Tabs defaultValue="details" className="w-full h-full flex flex-col">
-            <div className="px-2 sm:px-6 py-2 overflow-x-auto">
-              <TabsList className="w-full flex gap-1 p-1 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl min-w-max">
+            <div className="px-2 sm:px-6 py-2 overflow-x-auto bg-white/5 backdrop-blur-sm border-b border-white/10">
+              <TabsList className="w-full flex gap-1 p-1 rounded-xl border border-white/10 bg-black/20 backdrop-blur-md shadow-xl min-w-max">
                 {['details', 'sessions', 'notes', 'documents'].map((tab) => (
                   <TabsTrigger
                     key={tab}
@@ -83,8 +86,8 @@ export function CaseDetailsDialog({
               </TabsList>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
-              <TabsContent value="details" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6 scrollbar-thin scrollbar-thumb-[#4CD6B4]/20 scrollbar-track-transparent">
+              <TabsContent value="details" className="mt-4 focus-visible:outline-none animate-in fade-in-50 slide-in-from-bottom-5 data-[state=inactive]:hidden">
                 {caseDetails && (
                   <CaseDetailsTab
                     id={caseDetails.id}
@@ -105,7 +108,7 @@ export function CaseDetailsDialog({
                 )}
               </TabsContent>
 
-              <TabsContent value="sessions" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="sessions" className="mt-4 focus-visible:outline-none animate-in fade-in-50 slide-in-from-bottom-5 data-[state=inactive]:hidden">
                 {caseDetails && sessions && (
                   <SessionsTab
                     caseId={caseDetails.id}
@@ -115,14 +118,14 @@ export function CaseDetailsDialog({
                 )}
               </TabsContent>
 
-              <TabsContent value="notes" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="notes" className="mt-4 focus-visible:outline-none animate-in fade-in-50 slide-in-from-bottom-5 data-[state=inactive]:hidden">
                 <NotesTab
                   notes={notes}
                   onAddNote={onAddNote}
                 />
               </TabsContent>
 
-              <TabsContent value="documents" className="mt-4 focus-visible:outline-none animate-fade-in h-full data-[state=inactive]:hidden">
+              <TabsContent value="documents" className="mt-4 focus-visible:outline-none animate-in fade-in-50 slide-in-from-bottom-5 data-[state=inactive]:hidden">
                 <DocumentsTab
                   documents={documents}
                   onUpload={onUpload}

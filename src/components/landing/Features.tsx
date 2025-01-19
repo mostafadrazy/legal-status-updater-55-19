@@ -54,30 +54,36 @@ const features = [
 
 export default function Features() {
   return (
-    <div className="py-20">
+    <div className="py-24">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">مميزات النظام</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold gradient-text mb-6">مميزات النظام</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             نظام متكامل لإدارة القضايا والعملاء يساعد المحامين على تنظيم عملهم بكفاءة عالية
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div 
                 key={index}
-                className="flex flex-col p-6 rounded-xl glass-card border border-legal-200/10 hover:border-legal-200/20 animate-fade-in"
+                className="group flex flex-col p-8 rounded-2xl glass-card border border-legal-200/10 hover:border-legal-200/20 animate-fade-in hover:scale-105 transition-all duration-300 relative overflow-hidden"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-3 rounded-lg w-fit mb-4">
-                  <Icon className="text-white h-5 w-5 flex-shrink-0" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* Icon */}
+                <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2C9A82] p-4 rounded-xl w-fit mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Icon className="text-white h-6 w-6 flex-shrink-0" />
                 </div>
-                <h3 className="text-white text-lg font-semibold mb-2">
+
+                {/* Content */}
+                <h3 className="text-white text-xl font-bold mb-3 relative z-10">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-base leading-relaxed relative z-10">
                   {feature.description}
                 </p>
               </div>

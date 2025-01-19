@@ -68,7 +68,7 @@ export function CaseDetailsTab({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in-50 slide-in-from-bottom-5">
       <div className="flex justify-start">
         <Button
           variant="outline"

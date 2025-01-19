@@ -41,14 +41,51 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     direction: rtl;
+    height: -webkit-fill-available;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-gradient-to-br from-[#111] to-[#1A1A1A] text-foreground antialiased font-sans min-h-screen;
+    @apply bg-gradient-to-br from-[#111] to-[#1A1A1A] text-foreground antialiased font-sans;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* iOS Safari specific styles */
+  @supports (-webkit-touch-callout: none) {
+    .min-h-screen {
+      min-height: -webkit-fill-available;
+    }
+    
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .safe-area-inset-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .safe-area-inset-top {
+      padding-top: env(safe-area-inset-top);
+    }
+    
+    .safe-area-inset-left {
+      padding-left: env(safe-area-inset-left);
+    }
+    
+    .safe-area-inset-right {
+      padding-right: env(safe-area-inset-right);
+    }
   }
 }
 

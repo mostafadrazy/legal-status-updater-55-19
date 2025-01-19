@@ -21,6 +21,12 @@ export default {
       fontFamily: {
         sans: ['Cairo', 'sans-serif'],
       },
+      spacing: {
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-left': 'env(safe-area-inset-left)',
+        'safe-right': 'env(safe-area-inset-right)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -86,7 +92,7 @@ export default {
         },
         "color-fill": {
           "0%": { fill: "white" },
-          "50%": { fill: "#FBC638" },
+          "50%": { fill: "#8E9196" },
           "100%": { fill: "white" },
         }
       },
