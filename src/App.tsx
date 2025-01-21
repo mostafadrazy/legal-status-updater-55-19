@@ -17,6 +17,7 @@ import NextSession from "./pages/NextSession";
 import Settings from "./pages/Settings";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
+import LegalAssistant from "./pages/LegalAssistant";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
               <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
             </Routes>
             <BackToTop />
           </BrowserRouter>

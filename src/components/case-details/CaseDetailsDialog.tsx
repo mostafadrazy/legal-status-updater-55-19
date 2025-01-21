@@ -54,12 +54,18 @@ export function CaseDetailsDialog({
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4CD6B4]/10 via-transparent to-transparent pointer-events-none" />
         
         <DialogHeader className="relative p-4 sm:p-6 border-b border-white/10 bg-white/5 backdrop-blur-sm">
-          <DialogTitle className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
-            تفاصيل القضية
-          </DialogTitle>
-          <p className="text-[#4CD6B4] text-sm sm:text-lg font-medium">
-            {caseDetails?.case_number}
-          </p>
+          <div className="flex justify-between items-center">
+            <div className="flex-1"></div>
+            <div className="text-center">
+              <DialogTitle className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+                تفاصيل القضية
+              </DialogTitle>
+              <p className="text-[#4CD6B4] text-sm sm:text-lg font-medium">
+                {caseDetails?.case_number}
+              </p>
+            </div>
+            <div className="flex-1"></div>
+          </div>
         </DialogHeader>
         
         <div className="flex flex-col h-full overflow-hidden">

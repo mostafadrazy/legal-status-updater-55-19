@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.168.0/",
+    "@google/generative-ai": "https://esm.sh/@google/generative-ai@0.1.3"
+  },
+  "tasks": {
+    "start": "deno run --allow-net --allow-env legal-assistant/index.ts"
+  }
+} 

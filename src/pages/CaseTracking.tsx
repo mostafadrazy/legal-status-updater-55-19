@@ -8,6 +8,7 @@ import { ClientInformation } from "@/components/case-tracking/ClientInformation"
 import { LawyerInformation } from "@/components/case-tracking/LawyerInformation";
 import { Loader2 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/Footer";
 
 interface Case {
   case_code: string;
@@ -113,7 +114,7 @@ export default function CaseTracking() {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-b from-[#111] to-[#1A1A1A]" dir="rtl">
+    <div className="min-h-screen flex flex-col w-full bg-gradient-to-b from-[#111] to-[#1A1A1A]" dir="rtl">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-1/2 translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-[#4CD6B4]/20 to-transparent rounded-full blur-3xl opacity-20" />
         <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-t from-[#4CD6B4]/10 to-transparent rounded-full blur-3xl opacity-10" />
@@ -172,6 +173,8 @@ export default function CaseTracking() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

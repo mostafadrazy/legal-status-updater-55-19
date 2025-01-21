@@ -9,7 +9,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold gradient-text">قضية</h3>
+            <Link to="/" className="block">
+              <img src="/logo.svg" alt="قضية" className="h-8 w-auto" />
+            </Link>
             <p className="text-gray-400 text-sm">
               منصة احترافية تساعد المحامين على إدارة القضايا وتنظيم الملفات ومتابعة المواعيد
             </p>

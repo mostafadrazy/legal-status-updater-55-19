@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface AvatarUploadProps {
   userId: string;
@@ -94,10 +95,17 @@ export function AvatarUpload({ userId, userEmail, fullName, initialAvatarUrl }: 
   return (
     <div className="flex flex-col items-center space-y-4">
       <Avatar className="w-24 h-24 border-4 border-[#4CD6B4]/20">
-        <AvatarImage src={avatarUrl || undefined} className="object-cover" />
-        <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4] text-xl">
-          {fullName?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
-        </AvatarFallback>
+        {avatarUrl ? (
+          <OptimizedImage
+            src={avatarUrl}
+            alt={fullName || "Profile picture"}
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4] text-xl">
+            {fullName?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
+          </AvatarFallback>
+        )}
       </Avatar>
       
       <div className="flex items-center gap-2">

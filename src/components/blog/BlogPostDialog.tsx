@@ -1,8 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BlogPost } from "@/types/blog";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface BlogPostDialogProps {
   post: BlogPost | null;
@@ -14,14 +15,18 @@ const BlogPostDialog = ({ post, onClose }: BlogPostDialogProps) => {
 
   return (
     <Dialog open={!!post} onOpenChange={onClose}>
-      <DialogContent className="glass-card max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="glass-card max-w-3xl max-h-[80vh] overflow-y-auto animate-fade-in">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-white mb-2 text-right">
             {post.title}
           </DialogTitle>
           <div className="flex items-center gap-3 mt-3">
             <Avatar className="w-12 h-12 border-2 border-[#4CD6B4]/20">
-              <AvatarImage src={post.author_image} />
+              <OptimizedImage
+                src={post.author_image}
+                alt={post.author}
+                className="w-full h-full rounded-full"
+              />
               <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4]">
                 {post.author[0]}
               </AvatarFallback>
@@ -37,7 +42,7 @@ const BlogPostDialog = ({ post, onClose }: BlogPostDialogProps) => {
         </DialogHeader>
         {post.image_url && (
           <div className="relative h-64 overflow-hidden rounded-lg mb-6">
-            <img
+            <OptimizedImage
               src={post.image_url}
               alt={post.title}
               className="w-full h-full object-cover"

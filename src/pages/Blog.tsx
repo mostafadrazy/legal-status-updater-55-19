@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/Footer";
 import BlogCard from "@/components/blog/BlogCard";
 import BlogPostDialog from "@/components/blog/BlogPostDialog";
 import { BlogPost } from "@/types/blog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BLOG_POSTS: BlogPost[] = [
   {
@@ -100,6 +101,19 @@ const BLOG_POSTS: BlogPost[] = [
 
 const Blog = () => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Scroll to top on component mount
+    window.scrollTo(0, 0);
+    
+    // Simulate loading delay for demonstration
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -107,13 +121,34 @@ const Blog = () => {
       <div className="container mx-auto px-4 py-8 min-h-screen">
         <h1 className="text-4xl font-bold mb-12 text-center gradient-text">مدونة قضية</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {BLOG_POSTS.map((post) => (
-            <BlogCard 
-              key={post.id} 
-              post={post}
-              onClick={() => setSelectedPost(post)}
-            />
-          ))}
+          {isLoading ? (
+            // Loading skeletons
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="space-y-4">
+                <Skeleton className="h-48 w-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <div className="flex items-center gap-3 mt-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              </div>
+            ))
+          ) : (
+            BLOG_POSTS.map((post) => (
+              <BlogCard 
+                key={post.id} 
+                post={post}
+                onClick={() => setSelectedPost(post)}
+              />
+            ))
+          )}
         </div>
         <BlogPostDialog 
           post={selectedPost} 
@@ -126,4 +161,3 @@ const Blog = () => {
 };
 
 export default Blog;
-

@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/Footer";
 import { motion, MotionConfig } from "framer-motion";
 import { LinkedinIcon, InstagramIcon, Globe } from "lucide-react";
 
@@ -212,6 +213,7 @@ const AboutUs = () => {
           </div>
         </div>
       </MotionConfig>
+      <Footer />
     </div>
   );
 };
