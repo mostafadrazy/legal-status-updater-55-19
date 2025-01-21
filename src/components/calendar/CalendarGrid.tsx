@@ -3,6 +3,8 @@ import { ar } from "date-fns/locale";
 import { CalendarEvent } from "./CalendarEvent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 interface Session {
   id: string;
@@ -28,9 +30,17 @@ interface CalendarGridProps {
   sessions: Session[];
   isLoading: boolean;
   startDate: Date;
+  error?: Error | null;
+  onRetry?: () => void;
 }
 
-export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridProps) {
+export function CalendarGrid({ 
+  sessions, 
+  isLoading, 
+  startDate,
+  error,
+  onRetry 
+}: CalendarGridProps) {
   const isMobile = useIsMobile();
   const days = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
@@ -40,6 +50,24 @@ export function CalendarGrid({ sessions, isLoading, startDate }: CalendarGridPro
       return isSameDay(sessionDate, date);
     });
   };
+
+  if (error) {
+    return (
+      <div className="text-center py-8 space-y-4">
+        <p className="text-red-400">حدث خطأ أثناء تحميل الجلسات</p>
+        {onRetry && (
+          <Button
+            onClick={onRetry}
+            variant="ghost"
+            className="text-[#4CD6B4] hover:text-[#4CD6B4] hover:bg-white/5 gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            إعادة المحاولة
+          </Button>
+        )}
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

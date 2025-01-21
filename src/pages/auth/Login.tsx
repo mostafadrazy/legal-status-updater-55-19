@@ -1,9 +1,11 @@
 import { Auth } from "@/components/Auth";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Login = () => {
-  const [view, setView] = useState<"sign_in" | "sign_up">("sign_in");
+interface LoginProps {
+  view?: "sign_in" | "sign_up";
+}
 
+const Login = ({ view = "sign_in" }: LoginProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#111] to-[#1A1A1A] flex items-center justify-center p-4">
       <div className="relative w-full max-w-md">
@@ -28,15 +30,15 @@ const Login = () => {
           </div>
           <Auth view={view} />
           <div className="mt-4 text-center">
-            <button
-              onClick={() => setView(view === "sign_in" ? "sign_up" : "sign_in")}
+            <Link
+              to={view === "sign_in" ? "/auth/signup" : "/auth/login"}
               className="text-[#4CD6B4] hover:text-[#3BC5A3] transition-colors"
             >
               {view === "sign_in"
                 ? "ليس لديك حساب؟ قم بإنشاء حساب جديد"
                 : "لديك حساب بالفعل؟ قم بتسجيل الدخول"
               }
-            </button>
+            </Link>
           </div>
         </div>
       </div>

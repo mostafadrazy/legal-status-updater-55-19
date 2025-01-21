@@ -9,12 +9,14 @@ import { useAuth } from "./contexts/AuthContext";
 import { BackToTop } from "./components/BackToTop";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Login";
 import Callback from "./pages/auth/Callback";
 import CaseTracking from "./pages/CaseTracking";
 import Cases from "./pages/Cases";
 import NextSession from "./pages/NextSession";
 import Settings from "./pages/Settings";
 import AboutUs from "./pages/AboutUs";
+import Blog from "./pages/Blog";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,7 +59,9 @@ const App = () => (
               <Route path="/" element={<DashboardRoute />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/case-tracking" element={<CaseTracking />} />
+              <Route path="/blog" element={<Blog />} />
               <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/signup" element={<Signup view="sign_up" />} />
               <Route path="/auth/callback" element={<Callback />} />
 
               {/* Protected routes */}

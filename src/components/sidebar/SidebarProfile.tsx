@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export function SidebarProfile() {
   const { user, signOut } = useAuth();
@@ -12,10 +14,17 @@ export function SidebarProfile() {
     full_name?: string | null;
     avatar_url?: string | null;
   }>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user?.id) return;
+  const fetchProfile = async () => {
+    if (!user?.id) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      console.log('Fetching profile for user:', user.id);
       
       const { data, error } = await supabase
         .from("profiles")
@@ -23,11 +32,26 @@ export function SidebarProfile() {
         .eq("id", user.id)
         .maybeSingle();
 
-      if (!error && data) {
+      if (error) {
+        console.error('Error fetching profile:', error);
+        setError("حدث خطأ أثناء تحميل الملف الشخصي");
+        throw error;
+      }
+
+      console.log('Fetched profile data:', data);
+
+      if (data) {
         setProfileData(data);
       }
-    };
+    } catch (error) {
+      console.error("Error in profile management:", error);
+      setError("حدث خطأ في تحميل البيانات");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProfile();
 
     const channel = supabase
@@ -56,6 +80,35 @@ export function SidebarProfile() {
     await signOut();
     navigate('/');
   };
+
+  if (error) {
+    return (
+      <div className="glass-card rounded-lg p-4">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-red-400">{error}</p>
+          <Button
+            onClick={fetchProfile}
+            variant="ghost"
+            size="sm"
+            className="w-full text-[#4CD6B4] hover:text-[#4CD6B4] hover:bg-white/5"
+          >
+            <RefreshCw className="w-4 h-4 ml-2" />
+            إعادة المحاولة
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="glass-card rounded-lg p-4">
+        <div className="flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-[#4CD6B4] border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-auto glass-card rounded-lg p-4">

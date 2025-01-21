@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
-import { Search, Menu, X } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Info, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
+  useEffect(() => {
+    if (location.state && location.state.scrollTo) {
+      const element = document.getElementById(location.state.scrollTo);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [location]);
+  
   const scrollToSection = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: sectionId } });
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ 
@@ -65,21 +84,8 @@ const Navbar = () => {
               className="text-white/80 hover:text-[#4CD6B4] transition-colors"
               onClick={() => navigate("/about-us")}
             >
+              <Info className="w-4 h-4 ml-2" />
               من نحن
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
-              onClick={() => scrollToSection('features')}
-            >
-              المميزات
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
-              onClick={() => scrollToSection('services')}
-            >
-              الخدمات
             </Button>
             <Button 
               variant="ghost"
@@ -88,6 +94,14 @@ const Navbar = () => {
             >
               <Search className="w-4 h-4 ml-2" />
               تتبع القضية
+            </Button>
+            <Button 
+              variant="ghost"
+              className="text-white/80 hover:text-[#4CD6B4] transition-colors"
+              onClick={() => navigate("/auth/signup")}
+            >
+              <UserPlus className="w-4 h-4 ml-2" />
+              إنشاء حساب
             </Button>
             <Button 
               className="glass-button"
@@ -105,21 +119,8 @@ const Navbar = () => {
               className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
               onClick={() => navigate("/about-us")}
             >
+              <Info className="w-4 h-4 ml-2" />
               من نحن
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
-              onClick={() => scrollToSection('features')}
-            >
-              المميزات
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
-              onClick={() => scrollToSection('services')}
-            >
-              الخدمات
             </Button>
             <Button 
               variant="ghost"
@@ -128,6 +129,14 @@ const Navbar = () => {
             >
               <Search className="w-4 h-4 ml-2" />
               تتبع القضية
+            </Button>
+            <Button 
+              variant="ghost"
+              className="w-full text-white/80 hover:text-[#4CD6B4] transition-colors justify-start"
+              onClick={() => navigate("/auth/signup")}
+            >
+              <UserPlus className="w-4 h-4 ml-2" />
+              إنشاء حساب
             </Button>
             <Button 
               className="w-full glass-button"

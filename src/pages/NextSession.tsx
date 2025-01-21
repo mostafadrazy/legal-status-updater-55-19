@@ -24,13 +24,20 @@ export default function NextSession() {
   const { t } = useLanguage();
   const { session } = useAuth();
 
-  const { data: sessions = [], isLoading } = useQuery({
+  const { data: sessions = [], isLoading, error, refetch } = useQuery({
     queryKey: ['next-sessions', session?.user?.id, startDate],
     queryFn: async () => {
       try {
-        if (!session?.user?.id) return [];
+        console.log('Fetching sessions for user:', session?.user?.id);
+        console.log('Start date:', startDate.toISOString());
+        console.log('End date:', addDays(startDate, 6).toISOString());
 
-        const { data, error } = await supabase
+        if (!session?.user?.id) {
+          console.log('No user ID found, returning empty array');
+          return [];
+        }
+
+        const { data, error: fetchError } = await supabase
           .from('case_sessions')
           .select(`
             id,
@@ -53,29 +60,40 @@ export default function NextSession() {
           .gte('next_session_date', startDate.toISOString())
           .lte('next_session_date', addDays(startDate, 6).toISOString())
           .order('next_session_date', { ascending: true });
-        
-        if (error) {
-          console.error('Error fetching sessions:', error);
-          toast.error('فشل في تحميل الجلسات');
-          throw error;
+
+        if (fetchError) {
+          console.error('Error fetching sessions:', fetchError);
+          throw new Error(fetchError.message);
         }
 
+        console.log('Fetched sessions:', data);
+        
         const transformedData = data?.map(session => ({
           ...session,
           court: session.cases?.court,
           case_type: session.cases?.case_type,
           client: session.cases?.client
-        }));
+        })) || [];
         
-        return transformedData || [];
+        return transformedData;
       } catch (error) {
-        console.error('Error fetching sessions:', error);
-        toast.error('فشل في تحميل الجلسات');
+        console.error('Error in query function:', error);
         throw error;
       }
     },
-    enabled: !!session?.user?.id
+    enabled: !!session?.user?.id,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    meta: {
+      errorMessage: 'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة مرة أخرى.'
+    },
+    gcTime: 0
   });
+
+  // Show error toast when query fails
+  if (error) {
+    toast.error('حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة مرة أخرى.');
+  }
 
   const handleNavigateWeek = (direction: 'prev' | 'next') => {
     setStartDate(currentDate => {
@@ -135,6 +153,8 @@ export default function NextSession() {
               sessions={sessions}
               isLoading={isLoading}
               startDate={startDate}
+              error={error as Error}
+              onRetry={() => refetch()}
             />
           </div>
         </div>

@@ -61,7 +61,7 @@ const AboutUs = () => {
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <h2 className="text-4xl font-bold bg-gradient-to-r from-[#4CD6B4] to-white bg-clip-text text-transparent">
+                    <h2 className="text-4xl font-bold gradient-text leading-relaxed py-1">
                       مصطفى الدرازي
                     </h2>
                     <p className="text-xl text-[#4CD6B4]">المؤسس والمطور الرئيسي</p>

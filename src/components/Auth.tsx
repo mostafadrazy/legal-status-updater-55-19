@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProfileCompletionForm } from "./auth/ProfileCompletionForm";
+import { toast } from "@/hooks/use-toast";
+import { AuthError } from "@supabase/supabase-js";
 
 interface AuthProps {
   view?: "sign_in" | "sign_up";
@@ -25,6 +27,11 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
         }
       } else if (event === 'SIGNED_OUT') {
         navigate('/auth/login');
+      } else if (event === 'USER_UPDATED') {
+        const { error } = await supabase.auth.getSession();
+        if (error) {
+          handleAuthError(error);
+        }
       }
     });
 
@@ -32,6 +39,23 @@ export const Auth = ({ view = "sign_in" }: AuthProps) => {
       subscription.unsubscribe();
     };
   }, [view, navigate]);
+
+  const handleAuthError = (error: AuthError) => {
+    console.error('Auth error:', error);
+    let message = 'حدث خطأ أثناء المصادقة. يرجى المحاولة مرة أخرى.';
+    
+    if (error.message.includes('user_already_exists')) {
+      message = 'البريد الإلكتروني مسجل مسبقاً. يرجى تسجيل الدخول.';
+    } else if (error.message.includes('invalid_credentials')) {
+      message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+    }
+    
+    toast({
+      variant: "destructive",
+      title: "خطأ",
+      description: message,
+    });
+  };
 
   if (showProfileCompletion) {
     return <ProfileCompletionForm />;

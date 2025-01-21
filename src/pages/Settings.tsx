@@ -4,11 +4,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileTab } from "@/components/settings/tabs/ProfileTab";
-import { NotificationsTab } from "@/components/settings/tabs/NotificationsTab";
-import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab";
-import { SecurityTab } from "@/components/settings/tabs/SecurityTab";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -25,26 +21,44 @@ export default function Settings() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
       
       try {
+        console.log('Fetching profile for user:', user.id);
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", user.id)
           .maybeSingle();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching profile:', error);
+          setError("حدث خطأ أثناء تحميل الملف الشخصي");
+          toast({
+            variant: "destructive",
+            title: "خطأ في تحميل البيانات",
+            description: "يرجى تحديث الصفحة والمحاولة مرة أخرى",
+          });
+          throw error;
+        }
+
+        console.log('Fetched profile data:', data);
 
         if (!data) {
+          console.log('No profile found, creating new profile');
           const { error: createError } = await supabase
             .from("profiles")
             .insert([{ id: user.id }]);
 
-          if (createError) throw createError;
+          if (createError) {
+            console.error('Error creating profile:', createError);
+            setError("حدث خطأ أثناء إنشاء الملف الشخصي");
+            throw createError;
+          }
 
           setProfileData({ full_name: null, phone_number: null });
         } else {
@@ -55,11 +69,7 @@ export default function Settings() {
         }
       } catch (error) {
         console.error("Error in profile management:", error);
-        toast({
-          variant: "destructive",
-          title: "خطأ غير متوقع",
-          description: "يرجى المحاولة مرة أخرى لاحقاً",
-        });
+        setError("حدث خطأ في إدارة الملف الشخصي");
       } finally {
         setIsLoading(false);
       }
@@ -69,6 +79,30 @@ export default function Settings() {
   }, [user, toast]);
 
   if (!user) return null;
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#111]">
+        <div className="text-center p-8">
+          <h2 className="text-xl text-red-500 mb-4">{error}</h2>
+          <Button 
+            onClick={() => window.location.reload()}
+            className="bg-[#4CD6B4] hover:bg-[#3BC4A2] text-white"
+          >
+            إعادة تحميل الصفحة
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#111]">
+        <div className="w-8 h-8 border-4 border-[#4CD6B4] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex w-full bg-[#111]" dir="rtl">
@@ -94,46 +128,15 @@ export default function Settings() {
             <h1 className="text-2xl md:text-3xl font-bold text-white">الإعدادات</h1>
           </div>
 
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="bg-white/5 border border-white/10 w-full flex flex-wrap justify-start">
-              <TabsTrigger value="profile" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الملف الشخصي
-              </TabsTrigger>
-              <TabsTrigger value="notifications" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الإشعارات
-              </TabsTrigger>
-              <TabsTrigger value="appearance" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                المظهر
-              </TabsTrigger>
-              <TabsTrigger value="security" className="flex-1 data-[state=active]:bg-[#4CD6B4] data-[state=active]:text-black">
-                الأمان
-              </TabsTrigger>
-            </TabsList>
-
-            <div className="space-y-6">
-              <TabsContent value="profile">
-                <ProfileTab 
-                  userId={user.id}
-                  userEmail={user.email}
-                  profileData={profileData}
-                  avatarUrl={avatarUrl}
-                  onUpdateProfile={setProfileData}
-                />
-              </TabsContent>
-
-              <TabsContent value="notifications">
-                <NotificationsTab />
-              </TabsContent>
-
-              <TabsContent value="appearance">
-                <AppearanceTab />
-              </TabsContent>
-
-              <TabsContent value="security">
-                <SecurityTab />
-              </TabsContent>
-            </div>
-          </Tabs>
+          <div className="space-y-6">
+            <ProfileTab 
+              userId={user.id}
+              userEmail={user.email}
+              profileData={profileData}
+              avatarUrl={avatarUrl}
+              onUpdateProfile={setProfileData}
+            />
+          </div>
         </div>
       </main>
       
