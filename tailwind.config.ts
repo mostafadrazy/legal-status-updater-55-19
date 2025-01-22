@@ -94,6 +94,10 @@ export default {
           "0%": { fill: "white" },
           "50%": { fill: "#8E9196" },
           "100%": { fill: "white" },
+        },
+        bounce: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-25%)" },
         }
       },
       animation: {
@@ -104,6 +108,12 @@ export default {
         "color-fill-1": "color-fill 1s infinite 0.6s",
         "color-fill-2": "color-fill 1s infinite 0.4s",
         "color-fill-3": "color-fill 1s infinite 0.2s",
+        "bounce": "bounce 1s infinite",
+      },
+      transitionDelay: {
+        '0': '0ms',
+        '150': '150ms',
+        '300': '300ms',
       },
     },
   },

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -54,25 +54,23 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<DashboardRoute />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/case-tracking" element={<CaseTracking />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/signup" element={<Signup view="sign_up" />} />
-              <Route path="/auth/callback" element={<Callback />} />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<DashboardRoute />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/case-tracking" element={<CaseTracking />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/signup" element={<Signup view="sign_up" />} />
+            <Route path="/auth/callback" element={<Callback />} />
 
-              {/* Protected routes */}
-              <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-              <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-              <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
-            </Routes>
-            <BackToTop />
-          </BrowserRouter>
+            {/* Protected routes */}
+            <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+            <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
+          </Routes>
+          <BackToTop />
         </TooltipProvider>
       </LanguageProvider>
     </AuthProvider>

@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Bot, Send, User, Clock } from "lucide-react";
+import { Bot } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
+import { supabase } from "@/integrations/supabase/client";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import TypingIndicator from "./TypingIndicator";
+import Message from "./Message";
+import ChatInput from "./ChatInput";
 
 interface Message {
   role: 'assistant' | 'user';
@@ -14,7 +17,11 @@ interface Message {
   timestamp?: string;
 }
 
-// Bearer token for n8n webhook authentication
+interface UserProfile {
+  full_name?: string | null;
+  avatar_url?: string | null;
+}
+
 const BEARER_TOKEN = "drazzzy0823";
 
 export function LegalAssistant() {
@@ -22,21 +29,85 @@ export function LegalAssistant() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState('');
-  const { session } = useAuth();
+  const { session, user } = useAuth();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
 
-  // Initialize session ID when component mounts
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+    }
+  }, [transcript]);
+
   useEffect(() => {
     setSessionId(uuidv4());
-  }, []);
+    
+    const fetchUserProfile = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url")
+          .eq("id", user.id)
+          .single();
+
+        if (error) throw error;
+        setUserProfile(data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user?.id]);
+
+  const handleMicClick = () => {
+    if (!browserSupportsSpeechRecognition) {
+      toast.error("عذراً، متصفحك لا يدعم خاصية التحدث");
+      return;
+    }
+
+    if (listening) {
+      SpeechRecognition.stopListening();
+      setIsListening(false);
+    } else {
+      resetTranscript();
+      setIsListening(true);
+      SpeechRecognition.startListening({ continuous: true, language: 'ar-MA' });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
+    if (listening) {
+      SpeechRecognition.stopListening();
+      setIsListening(false);
+    }
+
     const userMessage = input.trim();
     setInput('');
+    resetTranscript();
     
-    // Add user message to conversation
     const newUserMessage = { 
       role: 'user' as const, 
       content: userMessage,
@@ -45,17 +116,9 @@ export function LegalAssistant() {
     
     setMessages(prev => [...prev, newUserMessage]);
     setIsLoading(true);
+    setIsTyping(true);
 
     try {
-      // Create a new assistant message first
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: '',
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, assistantMessage]);
-
-      // Call n8n webhook with bearer token and session ID
       const response = await fetch('https://kadiya.app.n8n.cloud/webhook/legal-assistant', {
         method: 'POST',
         headers: {
@@ -74,95 +137,64 @@ export function LegalAssistant() {
 
       const data = await response.json();
       
-      // Update the assistant's message with the response
-      setMessages(prev => {
-        const updated = [...prev];
-        const lastMessage = updated[updated.length - 1];
-        if (lastMessage.role === 'assistant') {
-          lastMessage.content = data.response || data.output || 'No response received';
-        }
-        return updated;
-      });
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.response || data.output || 'No response received',
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
 
     } catch (error) {
       console.error('Error:', error);
-      toast.error('عذراً، حدث خطأ أثناء معالجة طلبك');
-      setMessages(prev => {
-        const updated = [...prev];
-        const lastMessage = updated[updated.length - 1];
-        if (lastMessage.role === 'assistant') {
-          lastMessage.content = 'عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.';
-        }
-        return updated;
+      toast.error('عذراً، حدث خطأ أثناء معالجة طلبك', {
+        id: 'error-toast',
       });
     } finally {
       setIsLoading(false);
+      setIsTyping(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-[80vh] max-w-4xl mx-auto p-4 space-y-4">
-      <Card className="flex-1 bg-gradient-to-br from-[#111] to-[#1A1A1A] border border-white/10 p-4">
-        <ScrollArea className="h-full pr-4">
-          <div className="space-y-4">
+    <div className="flex flex-col h-[calc(100vh-12rem)] max-w-5xl mx-auto space-y-4 px-4" dir="rtl">
+      <Card className="flex-1 bg-[#111]/90 border border-[#4CD6B4]/20 p-6 shadow-2xl backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col">
+        <ScrollArea className="flex-1 pl-4">
+          <div className="space-y-6 min-h-full">
             {messages.map((message, index) => (
-              <div
+              <Message
                 key={index}
-                className={`flex flex-col gap-3 ${
-                  message.role === 'assistant' ? 'bg-white/5' : 'bg-white/10'
-                } rounded-lg p-4`}
-              >
-                <div className="flex items-start gap-3">
-                  {message.role === 'assistant' ? (
-                    <Bot className="w-6 h-6 text-[#4CD6B4] mt-1 flex-shrink-0" />
-                  ) : (
-                    <User className="w-6 h-6 text-blue-400 mt-1 flex-shrink-0" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white/90 leading-relaxed whitespace-pre-wrap break-words">
-                      {message.content}
-                    </p>
-                    
-                    {message.timestamp && (
-                      <div className="flex items-center gap-1 text-xs text-white/40 mt-2">
-                        <Clock className="w-3 h-3" />
-                        {new Date(message.timestamp).toLocaleString('ar-MA')}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+                {...message}
+                userProfile={userProfile}
+              />
             ))}
             
+            {isTyping && <TypingIndicator />}
+            
             {messages.length === 0 && (
-              <div className="text-center py-8 text-white/60">
-                <Bot className="w-12 h-12 mx-auto mb-4 text-[#4CD6B4]" />
-                <h3 className="text-lg font-semibold mb-2">مرحباً بك في المستشار القانوني</h3>
-                <p className="text-sm">
+              <div className="text-center py-16 px-4">
+                <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2A9D8F] w-24 h-24 rounded-2xl mx-auto mb-8 flex items-center justify-center shadow-lg shadow-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/30 transition-all duration-300 transform hover:scale-105">
+                  <Bot className="w-12 h-12 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold mb-4 text-white">مرحباً بك في المستشار القانوني</h3>
+                <p className="text-base text-[#4CD6B4]/80 max-w-lg mx-auto">
                   يمكنني مساعدتك في الأمور القانونية المتعلقة بالقانون المغربي. كيف يمكنني مساعدتك اليوم؟
                 </p>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
       </Card>
 
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <Textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="اكتب سؤالك هنا..."
-          className="flex-1 bg-white/5 border border-white/10 text-white/90"
-          rows={3}
-        />
-        <Button 
-          type="submit" 
-          disabled={isLoading || !input.trim()}
-          className="bg-[#4CD6B4] hover:bg-[#3BC5A3] text-black self-end"
-        >
-          <Send className="w-4 h-4" />
-        </Button>
-      </form>
+      <ChatInput
+        input={input}
+        setInput={setInput}
+        handleSubmit={handleSubmit}
+        isLoading={isLoading}
+        isListening={isListening}
+        handleMicClick={handleMicClick}
+      />
     </div>
   );
-};
+}
