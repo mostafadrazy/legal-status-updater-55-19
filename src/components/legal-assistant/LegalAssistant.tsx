@@ -37,7 +37,20 @@ export function LegalAssistant() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [progress, setProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Simulate progress for long operations
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLoading) {
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 10, 90));
+      }, 300);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
   
   const {
     transcript,
@@ -163,9 +176,53 @@ export function LegalAssistant() {
   };
 
   return (
-    <Card className="w-full h-full bg-[#1a1a1a] border-0 flex flex-col">
-      <ScrollArea className="flex-1 px-4 py-6">
-        <div className="space-y-6 max-w-4xl mx-auto">
+    <Card
+      aria-label="المستشار القانوني"
+      role="region"
+      className="w-full h-full bg-gradient-to-br from-[#1a1a1a] via-[#0f0f0f] to-[#2a2a2a] border-0 flex flex-col overflow-hidden relative"
+      style={{ minHeight: 'calc(100vh - 4rem)' }}
+    >
+      {/* Animated background particles */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse" style={{ top: '15%', left: '20%' }} />
+        <div className="absolute w-1 h-1 bg-[#4CD6B4]/30 rounded-full animate-pulse" style={{ top: '30%', left: '70%' }} />
+      </div>
+
+      {/* Header Section */}
+      <div className="relative z-10 border-b border-white/10 bg-gradient-to-r from-[#1a1a1a]/80 to-[#2a2a2a]/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#4CD6B4] to-[#2A9D8F] flex items-center justify-center">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-[#4CD6B4] border-2 border-[#1a1a1a] flex items-center justify-center">
+                <span className="text-[8px] font-bold text-white">AI</span>
+              </div>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-white">المستشار القانوني</h2>
+              <p className="text-xs text-[#4CD6B4] flex items-center gap-1">
+                <span className="h-2 w-2 bg-[#4CD6B4] rounded-full animate-pulse"></span>
+                جاهز للمساعدة
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-white/60">
+              الجلسة: <span className="font-mono">#{sessionId.slice(0,6)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ScrollArea
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-atomic="false"
+        className="flex-1 px-6 py-8"
+      >
+        <div role="list" className="space-y-6 max-w-4xl mx-auto">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
               <div className="h-16 w-16 rounded-full bg-[#2A9D8F] flex items-center justify-center">
@@ -179,30 +236,65 @@ export function LegalAssistant() {
           )}
           
           {messages.map((message, index) => (
-            <Message
-              key={index}
-              role={message.role}
-              content={message.content}
-              timestamp={message.timestamp}
-              searchResults={message.searchResults}
-              userProfile={userProfile}
-              isTyping={isTyping && index === messages.length - 1}
-            />
+            <motion.div
+              role="listitem"
+              aria-posinset={index + 1}
+              aria-setsize={messages.length}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className={cn(
+                "w-full",
+                message.role === 'assistant' ? 'pr-10' : 'pl-10'
+              )}
+            >
+              <Message
+                key={index}
+                messageRole={message.role}
+                content={message.content}
+                timestamp={message.timestamp}
+                searchResults={message.searchResults}
+                userProfile={userProfile}
+                isTyping={isTyping && index === messages.length - 1}
+                className={cn(
+                  "px-4 py-3",
+                  message.role === 'assistant'
+                    ? 'text-gray-800'
+                    : 'text-gray-800'
+                )}
+              />
+            </motion.div>
           ))}
           <div ref={messagesEndRef} />
+          {isLoading && (
+            <div className="w-full max-w-4xl mx-auto mt-6">
+              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#4CD6B4] transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="mt-2 text-xs text-[#4CD6B4] text-center">
+                جاري معالجة طلبك...
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
-      <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-[#1a1a1a] p-4">
+      <div className="flex-shrink-0 border-t border-white/10 bg-gradient-to-r from-[#1a1a1a]/90 to-[#2a2a2a]/90 backdrop-blur-lg px-6 py-8">
         <div className="flex items-center justify-end mb-3 px-4">
           <button
             onClick={() => setSearchEnabled(!searchEnabled)}
             className={cn(
               "rounded-full transition-all flex items-center gap-2 px-3 py-2 border h-9",
               searchEnabled
-                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4]"
-                : "bg-white/5 border-transparent text-white/40 hover:text-white"
+                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/10 focus:ring-2 focus:ring-[#4CD6B4] focus:ring-offset-2 focus:ring-offset-[#1a1a1a]"
+                : "bg-white/5 border-transparent text-white/40 hover:text-white hover:bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#1a1a1a]",
+              "hover:shadow-md hover:scale-[1.02] active:scale-95 transition-transform duration-200 ease-in-out"
             )}
+            aria-label={searchEnabled ? "تعطيل البحث" : "تفعيل البحث"}
+            aria-pressed={searchEnabled}
           >
             <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
               <motion.div
@@ -260,6 +352,12 @@ export function LegalAssistant() {
           isLoading={isLoading}
           isListening={isListening}
           handleMicClick={handleMicClick}
+          className="bg-gradient-to-r from-[#1a1a1a]/90 to-[#2a2a2a]/90 backdrop-blur-lg border border-white/10 rounded-lg"
+          micButtonStyle={
+            isListening
+              ? 'animate-pulse bg-[#4CD6B4] text-white'
+              : 'bg-white/5 hover:bg-white/10'
+          }
         />
       </div>
     </Card>

@@ -11,15 +11,19 @@ interface ChatInputProps {
   isLoading: boolean;
   isListening: boolean;
   handleMicClick: () => void;
+  className?: string;
+  micButtonStyle?: string;
 }
 
-const ChatInput = ({ 
-  input, 
-  setInput, 
-  handleSubmit, 
-  isLoading, 
-  isListening, 
-  handleMicClick 
+const ChatInput = ({
+  input,
+  setInput,
+  handleSubmit,
+  isLoading,
+  isListening,
+  handleMicClick,
+  className,
+  micButtonStyle
 }: ChatInputProps) => {
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
     minHeight: 48,
@@ -27,7 +31,7 @@ const ChatInput = ({
   });
 
   return (
-    <form onSubmit={handleSubmit} className="w-full py-4">
+    <form onSubmit={handleSubmit} className={cn("w-full py-4", className)}>
       <div className="relative max-w-4xl w-full mx-auto">
         <div className="relative flex flex-col">
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#1A1A1A]/90 to-[#111]/90 backdrop-blur-md border border-white/10 shadow-lg" style={{ maxHeight: "164px" }}>
@@ -67,6 +71,7 @@ const ChatInput = ({
                 onClick={handleMicClick}
                 className={cn(
                   "rounded-xl p-2 transition-all duration-300 h-9 w-9",
+                  micButtonStyle,
                   isListening
                     ? "bg-red-500 text-white hover:bg-red-600 animate-pulse shadow-lg shadow-red-500/20"
                     : "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90 hover:scale-105 shadow-lg shadow-[#4CD6B4]/20"

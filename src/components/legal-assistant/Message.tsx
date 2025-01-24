@@ -4,9 +4,10 @@ import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface MessageProps {
-  role: 'assistant' | 'user';
+  messageRole: 'assistant' | 'user';
   content: string;
   timestamp?: string;
   searchResults?: any[];
@@ -15,6 +16,7 @@ interface MessageProps {
     avatar_url?: string | null;
   };
   isTyping?: boolean;
+  className?: string;
 }
 
 const hasRTLCharacters = (text: string) => {
@@ -22,11 +24,11 @@ const hasRTLCharacters = (text: string) => {
   return rtlRegex.test(text);
 };
 
-const Message = ({ role, content, timestamp, searchResults, userProfile, isTyping }: MessageProps) => {
+const Message = ({ messageRole, content, timestamp, searchResults, userProfile, isTyping, className }: MessageProps) => {
   let mainContent = content;
   let sourcesContent = '';
   
-  if (role === 'assistant' && content.includes('\n\nSources:')) {
+  if (messageRole === 'assistant' && content.includes('\n\nSources:')) {
     [mainContent, sourcesContent] = content.split('\n\nSources:');
   }
 
@@ -39,8 +41,8 @@ const Message = ({ role, content, timestamp, searchResults, userProfile, isTypin
 
   const isContentRTL = hasRTLCharacters(mainContent);
   const isSourcesRTL = hasRTLCharacters(sourcesContent);
-  const messageAlignment = role === 'assistant' ? 'items-start' : 'items-end';
-  const bubbleAlignment = role === 'assistant' ? 'mr-auto' : 'ml-auto';
+  const messageAlignment = messageRole === 'assistant' ? 'items-start' : 'items-end';
+  const bubbleAlignment = messageRole === 'assistant' ? 'mr-auto' : 'ml-auto';
   const textAlignment = isContentRTL ? 'text-right' : 'text-left';
   const flexDirection = isContentRTL ? 'flex-row-reverse' : 'flex-row';
 
@@ -57,24 +59,24 @@ const Message = ({ role, content, timestamp, searchResults, userProfile, isTypin
   };
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", className)}>
       <div className={`flex flex-col gap-4 ${messageAlignment}`}>
         <div className={`flex flex-col w-full max-w-3xl space-y-4 ${bubbleAlignment}`}>
           <div 
             className={`inline-block w-full rounded-lg px-4 sm:px-6 py-4 ${
-              role === 'assistant' 
-                ? 'bg-[#1a1a1a] text-white' 
+              messageRole === 'assistant'
+                ? 'bg-[#1a1a1a] text-white'
                 : 'bg-[#2A9D8F] text-white'
             }`}
             dir={isContentRTL ? 'rtl' : 'ltr'}
           >
-            {role === 'assistant' && isTyping ? (
+            {messageRole === 'assistant' && isTyping ? (
               <div className={`flex items-center gap-2 ${flexDirection}`}>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce [animation-delay:-0.3s]"></div>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce [animation-delay:-0.15s]"></div>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce"></div>
               </div>
-            ) : role === 'assistant' ? (
+            ) : messageRole === 'assistant' ? (
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 className={`prose prose-invert max-w-none break-words ${textAlignment}`}
@@ -95,7 +97,7 @@ const Message = ({ role, content, timestamp, searchResults, userProfile, isTypin
             )}
           </div>
 
-          {role === 'assistant' && searchResults && searchResults.length > 0 && (
+          {messageRole === 'assistant' && searchResults && searchResults.length > 0 && (
             <div className="space-y-2 bg-[#1a1a1a] rounded-lg p-4 border border-white/10">
               <div className={`flex items-center gap-2 text-[#4CD6B4] ${isSourcesRTL ? 'flex-row-reverse' : 'flex-row'} mb-3`}>
                 <Link2 className="h-4 w-4" />
@@ -158,7 +160,7 @@ const Message = ({ role, content, timestamp, searchResults, userProfile, isTypin
 
           {timestamp && (
             <div className={`flex items-center gap-1 text-xs text-gray-400 ${
-              role === 'assistant' ? 'justify-start' : 'justify-end'
+              messageRole === 'assistant' ? 'justify-start' : 'justify-end'
             }`}>
               <Clock className="h-3 w-3" />
               <span>{new Date(timestamp).toLocaleString(isContentRTL ? 'ar-MA' : 'en-US')}</span>
