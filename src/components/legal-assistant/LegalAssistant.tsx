@@ -3,18 +3,23 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Bot } from "lucide-react";
+import { Bot, Globe } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from "@/integrations/supabase/client";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import TypingIndicator from "./TypingIndicator";
 import Message from "./Message";
 import ChatInput from "./ChatInput";
+import { searchHandler } from "@/api/search";
+import { geminiHandler } from "@/api/gemini";
 
 interface Message {
   role: 'assistant' | 'user';
   content: string;
   timestamp?: string;
+  searchResults?: any[];
 }
 
 interface UserProfile {
@@ -22,13 +27,12 @@ interface UserProfile {
   avatar_url?: string | null;
 }
 
-const BEARER_TOKEN = "drazzzy0823";
-
 export function LegalAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState('');
+  const [searchEnabled, setSearchEnabled] = useState(false); // Search disabled by default
   const { session, user } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isListening, setIsListening] = useState(false);
@@ -119,36 +123,38 @@ export function LegalAssistant() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('https://kadiya.app.n8n.cloud/webhook/legal-assistant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${BEARER_TOKEN}`
-        },
-        body: JSON.stringify({
-          session_Id: sessionId,
-          chatInput: userMessage
-        })
-      });
+      // Get previous context if available
+      const previousMessage = messages.length >= 2 ? {
+        query: messages[messages.length - 2].content,
+        answer: messages[messages.length - 1].content
+      } : undefined;
 
-      if (!response.ok) {
-        throw new Error('Failed to get response from assistant');
-      }
+      let response;
+      const searchResults = searchEnabled ? await searchHandler(userMessage) : [];
+      response = await geminiHandler(userMessage, searchResults, previousMessage);
 
-      const data = await response.json();
-      
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response || data.output || 'No response received',
+        content: response,
+        timestamp: new Date().toISOString(),
+        searchResults: searchResults
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+      
+    } catch (error: any) {
+      console.error('Error in handleSubmit:', error);
+      
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: `عذراً، حدث خطأ: ${error.message}`,
         timestamp: new Date().toISOString()
       };
       
-      setMessages(prev => [...prev, assistantMessage]);
-
-    } catch (error) {
-      console.error('Error:', error);
+      setMessages(prev => [...prev, errorMessage]);
+      
       toast.error('عذراً، حدث خطأ أثناء معالجة طلبك', {
         id: 'error-toast',
+        description: error.message
       });
     } finally {
       setIsLoading(false);
@@ -157,44 +163,105 @@ export function LegalAssistant() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] max-w-5xl mx-auto space-y-4 px-4" dir="rtl">
-      <Card className="flex-1 bg-[#111]/90 border border-[#4CD6B4]/20 p-6 shadow-2xl backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col">
-        <ScrollArea className="flex-1 pl-4">
-          <div className="space-y-6 min-h-full">
-            {messages.map((message, index) => (
-              <Message
-                key={index}
-                {...message}
-                userProfile={userProfile}
-              />
-            ))}
-            
-            {isTyping && <TypingIndicator />}
-            
-            {messages.length === 0 && (
-              <div className="text-center py-16 px-4">
-                <div className="bg-gradient-to-br from-[#4CD6B4] to-[#2A9D8F] w-24 h-24 rounded-2xl mx-auto mb-8 flex items-center justify-center shadow-lg shadow-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/30 transition-all duration-300 transform hover:scale-105">
-                  <Bot className="w-12 h-12 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold mb-4 text-white">مرحباً بك في المستشار القانوني</h3>
-                <p className="text-base text-[#4CD6B4]/80 max-w-lg mx-auto">
-                  يمكنني مساعدتك في الأمور القانونية المتعلقة بالقانون المغربي. كيف يمكنني مساعدتك اليوم؟
-                </p>
+    <Card className="w-full h-full bg-[#1a1a1a] border-0 flex flex-col">
+      <ScrollArea className="flex-1 px-4 py-6">
+        <div className="space-y-6 max-w-4xl mx-auto">
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
+              <div className="h-16 w-16 rounded-full bg-[#2A9D8F] flex items-center justify-center">
+                <Bot className="h-8 w-8 text-white" />
               </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-      </Card>
+              <h3 className="text-xl font-semibold text-white">المستشار القانوني</h3>
+              <p className="text-sm text-gray-400 max-w-md">
+                مرحباً بك في المستشار القانوني. كيف يمكنني مساعدتك اليوم؟
+              </p>
+            </div>
+          )}
+          
+          {messages.map((message, index) => (
+            <Message
+              key={index}
+              role={message.role}
+              content={message.content}
+              timestamp={message.timestamp}
+              searchResults={message.searchResults}
+              userProfile={userProfile}
+              isTyping={isTyping && index === messages.length - 1}
+            />
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
 
-      <ChatInput
-        input={input}
-        setInput={setInput}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-        isListening={isListening}
-        handleMicClick={handleMicClick}
-      />
-    </div>
+      <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-[#1a1a1a] p-4">
+        <div className="flex items-center justify-end mb-3 px-4">
+          <button
+            onClick={() => setSearchEnabled(!searchEnabled)}
+            className={cn(
+              "rounded-full transition-all flex items-center gap-2 px-3 py-2 border h-9",
+              searchEnabled
+                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4]"
+                : "bg-white/5 border-transparent text-white/40 hover:text-white"
+            )}
+          >
+            <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+              <motion.div
+                animate={{
+                  rotate: searchEnabled ? 180 : 0,
+                  scale: searchEnabled ? 1.1 : 1,
+                }}
+                whileHover={{
+                  rotate: searchEnabled ? 180 : 15,
+                  scale: 1.1,
+                  transition: {
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 10,
+                  },
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 25,
+                }}
+              >
+                <Globe
+                  className={cn(
+                    "w-4 h-4",
+                    searchEnabled
+                      ? "text-[#4CD6B4]"
+                      : "text-inherit"
+                  )}
+                />
+              </motion.div>
+            </div>
+            <AnimatePresence>
+              {searchEnabled && (
+                <motion.span
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{
+                    width: "auto",
+                    opacity: 1,
+                  }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-sm overflow-hidden whitespace-nowrap text-[#4CD6B4] flex-shrink-0"
+                >
+                  البحث + الذكاء الاصطناعي
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleSubmit}
+          isLoading={isLoading}
+          isListening={isListening}
+          handleMicClick={handleMicClick}
+        />
+      </div>
+    </Card>
   );
 }

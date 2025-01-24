@@ -8,7 +8,7 @@ interface SearchSectionProps {
 
 export function SearchSection({ searchQuery, onSearchChange }: SearchSectionProps) {
   return (
-    <div className="max-w-2xl mx-auto mb-12">
+    <div className="max-w-2xl mx-auto mb-8 sm:mb-10 lg:mb-12">
       <div className="group relative">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#4CD6B4] transition-all duration-300 group-hover:scale-110" />
         <Input

@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Mic, MicOff } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
 
 interface ChatInputProps {
   input: string;
@@ -19,38 +21,67 @@ const ChatInput = ({
   isListening, 
   handleMicClick 
 }: ChatInputProps) => {
+  const { textareaRef, adjustHeight } = useAutoResizeTextarea({
+    minHeight: 48,
+    maxHeight: 164,
+  });
+
   return (
-    <form onSubmit={handleSubmit} className="flex gap-4">
-      <Button 
-        type="submit" 
-        disabled={isLoading || !input.trim()}
-        className="bg-gradient-to-r from-[#4CD6B4] to-[#2A9D8F] hover:from-[#2A9D8F] hover:to-[#1E7268] text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed h-[60px] w-[60px] rounded-xl shadow-lg hover:shadow-xl hover:shadow-[#4CD6B4]/20"
-      >
-        <Send className="w-6 h-6" />
-      </Button>
-
-      <Button
-        type="button"
-        onClick={handleMicClick}
-        className={`${
-          isListening
-            ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-            : 'bg-gradient-to-r from-[#4CD6B4] to-[#2A9D8F] hover:from-[#2A9D8F] hover:to-[#1E7268]'
-        } text-white transition-all duration-300 h-[60px] w-[60px] rounded-xl shadow-lg hover:shadow-xl hover:shadow-[#4CD6B4]/20`}
-      >
-        {isListening ? (
-          <MicOff className="w-6 h-6 animate-pulse" />
-        ) : (
-          <Mic className="w-6 h-6" />
-        )}
-      </Button>
-
-      <Textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="اكتب سؤالك هنا..."
-        className="flex-1 bg-[#111]/90 border border-[#4CD6B4]/20 text-white placeholder:text-[#4CD6B4]/40 focus:border-[#2A9D8F]/50 focus:ring-[#2A9D8F]/50 transition-all duration-300 rounded-xl h-[60px] py-4 resize-none hover:border-[#4CD6B4]/30"
-      />
+    <form onSubmit={handleSubmit} className="w-full py-4">
+      <div className="relative max-w-4xl w-full mx-auto">
+        <div className="relative flex flex-col">
+          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#1A1A1A]/90 to-[#111]/90 backdrop-blur-md border border-white/10 shadow-lg" style={{ maxHeight: "164px" }}>
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                adjustHeight();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              placeholder="اكتب سؤالك هنا..."
+              className="w-full px-5 py-4 bg-transparent border-none text-white/90 placeholder:text-white/30 resize-none focus-visible:ring-0 leading-relaxed"
+              dir="rtl"
+            />
+            <div className="h-14 flex items-center justify-between px-4 border-t border-white/10 bg-black/20">
+              <Button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className={cn(
+                  "rounded-xl p-2 transition-all duration-300 h-9 w-9",
+                  input.trim()
+                    ? "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90 hover:scale-105 shadow-lg shadow-[#4CD6B4]/20"
+                    : "bg-white/10 text-white/20"
+                )}
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+              
+              <Button
+                type="button"
+                onClick={handleMicClick}
+                className={cn(
+                  "rounded-xl p-2 transition-all duration-300 h-9 w-9",
+                  isListening
+                    ? "bg-red-500 text-white hover:bg-red-600 animate-pulse shadow-lg shadow-red-500/20"
+                    : "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90 hover:scale-105 shadow-lg shadow-[#4CD6B4]/20"
+                )}
+              >
+                {isListening ? (
+                  <MicOff className="w-4 h-4" />
+                ) : (
+                  <Mic className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
   );
 };
