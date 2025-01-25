@@ -9,11 +9,37 @@ function cleanQuery(query: string): string {
   return query.replace(/[^\w\s\u0600-\u06FF?.,-]/g, ' ').trim();
 }
 
+function truncateQuery(query: string, maxLength: number = 400): string {
+  if (query.length <= maxLength) return query;
+  
+  // Split into sentences and take as many complete sentences as possible
+  const sentences = query.split(/[.!?]+/);
+  let result = '';
+  
+  for (const sentence of sentences) {
+    const potentialResult = result + sentence.trim() + '. ';
+    if (potentialResult.length > maxLength) break;
+    result = potentialResult;
+  }
+  
+  // If we still don't have anything (single long sentence), just truncate
+  if (!result) {
+    return query.slice(0, maxLength - 3) + '...';
+  }
+  
+  return result.trim();
+}
+
 export async function searchHandler(query: string): Promise<SearchResult[]> {
   try {
     if (!query) return [];
 
     const cleanedQuery = cleanQuery(query);
+    const truncatedQuery = truncateQuery(cleanedQuery);
+    
+    console.log('Original query length:', query.length);
+    console.log('Truncated query length:', truncatedQuery.length);
+    
     const TAVILY_API_KEY = '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';
     
     // Tavily Search API endpoint
@@ -25,7 +51,7 @@ export async function searchHandler(query: string): Promise<SearchResult[]> {
         'Authorization': `Bearer ${TAVILY_API_KEY}`
       },
       body: JSON.stringify({
-        query: cleanedQuery,
+        query: truncatedQuery,
         search_depth: "advanced",
         max_results: 10,
         include_domains: [],

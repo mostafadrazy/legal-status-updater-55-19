@@ -11,19 +11,15 @@ interface ChatInputProps {
   isLoading: boolean;
   isListening: boolean;
   handleMicClick: () => void;
-  className?: string;
-  micButtonStyle?: string;
 }
 
-const ChatInput = ({
-  input,
-  setInput,
-  handleSubmit,
-  isLoading,
-  isListening,
-  handleMicClick,
-  className,
-  micButtonStyle
+const ChatInput = ({ 
+  input, 
+  setInput, 
+  handleSubmit, 
+  isLoading, 
+  isListening, 
+  handleMicClick 
 }: ChatInputProps) => {
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
     minHeight: 48,
@@ -31,10 +27,10 @@ const ChatInput = ({
   });
 
   return (
-    <form onSubmit={handleSubmit} className={cn("w-full py-4", className)}>
+    <form onSubmit={handleSubmit} className="w-full py-4">
       <div className="relative max-w-4xl w-full mx-auto">
         <div className="relative flex flex-col">
-          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#1A1A1A]/90 to-[#111]/90 backdrop-blur-md border border-white/10 shadow-lg" style={{ maxHeight: "164px" }}>
+          <div className="overflow-hidden rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg transition-all duration-300 hover:bg-white/[0.07] hover:border-white/20" style={{ maxHeight: "164px" }}>
             <Textarea
               ref={textareaRef}
               value={input}
@@ -59,7 +55,7 @@ const ChatInput = ({
                 className={cn(
                   "rounded-xl p-2 transition-all duration-300 h-9 w-9",
                   input.trim()
-                    ? "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90 hover:scale-105 shadow-lg shadow-[#4CD6B4]/20"
+                    ? "bg-gradient-to-r from-[#4CD6B4] to-[#34D399] text-white hover:shadow-lg hover:shadow-[#4CD6B4]/20 hover:scale-105"
                     : "bg-white/10 text-white/20"
                 )}
               >
@@ -71,10 +67,9 @@ const ChatInput = ({
                 onClick={handleMicClick}
                 className={cn(
                   "rounded-xl p-2 transition-all duration-300 h-9 w-9",
-                  micButtonStyle,
                   isListening
                     ? "bg-red-500 text-white hover:bg-red-600 animate-pulse shadow-lg shadow-red-500/20"
-                    : "bg-[#4CD6B4] text-black hover:bg-[#4CD6B4]/90 hover:scale-105 shadow-lg shadow-[#4CD6B4]/20"
+                    : "bg-gradient-to-r from-[#4CD6B4] to-[#34D399] text-white hover:shadow-lg hover:shadow-[#4CD6B4]/20 hover:scale-105"
                 )}
               >
                 {isListening ? (

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface MessageProps {
-  messageRole: 'assistant' | 'user';
+  role: 'assistant' | 'user';
   content: string;
   timestamp?: string;
   searchResults?: any[];
@@ -16,7 +16,6 @@ interface MessageProps {
     avatar_url?: string | null;
   };
   isTyping?: boolean;
-  className?: string;
 }
 
 const hasRTLCharacters = (text: string) => {
@@ -24,11 +23,11 @@ const hasRTLCharacters = (text: string) => {
   return rtlRegex.test(text);
 };
 
-const Message = ({ messageRole, content, timestamp, searchResults, userProfile, isTyping, className }: MessageProps) => {
+const Message = ({ role, content, timestamp, searchResults, userProfile, isTyping }: MessageProps) => {
   let mainContent = content;
   let sourcesContent = '';
   
-  if (messageRole === 'assistant' && content.includes('\n\nSources:')) {
+  if (role === 'assistant' && content.includes('\n\nSources:')) {
     [mainContent, sourcesContent] = content.split('\n\nSources:');
   }
 
@@ -41,8 +40,8 @@ const Message = ({ messageRole, content, timestamp, searchResults, userProfile, 
 
   const isContentRTL = hasRTLCharacters(mainContent);
   const isSourcesRTL = hasRTLCharacters(sourcesContent);
-  const messageAlignment = messageRole === 'assistant' ? 'items-start' : 'items-end';
-  const bubbleAlignment = messageRole === 'assistant' ? 'mr-auto' : 'ml-auto';
+  const messageAlignment = role === 'assistant' ? 'items-start' : 'items-end';
+  const bubbleAlignment = role === 'assistant' ? 'mr-auto' : 'ml-auto';
   const textAlignment = isContentRTL ? 'text-right' : 'text-left';
   const flexDirection = isContentRTL ? 'flex-row-reverse' : 'flex-row';
 
@@ -59,24 +58,25 @@ const Message = ({ messageRole, content, timestamp, searchResults, userProfile, 
   };
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className="w-full">
       <div className={`flex flex-col gap-4 ${messageAlignment}`}>
         <div className={`flex flex-col w-full max-w-3xl space-y-4 ${bubbleAlignment}`}>
           <div 
-            className={`inline-block w-full rounded-lg px-4 sm:px-6 py-4 ${
-              messageRole === 'assistant'
-                ? 'bg-[#1a1a1a] text-white'
-                : 'bg-[#2A9D8F] text-white'
-            }`}
+            className={cn(
+              "inline-block w-full rounded-xl px-6 py-4 backdrop-blur-xl shadow-lg transition-all duration-300",
+              role === 'assistant' 
+                ? "bg-white/[0.03] border border-white/10 hover:bg-white/[0.05] hover:border-white/20 text-white/90" 
+                : "bg-gradient-to-r from-[#4CD6B4]/80 to-[#34D399]/80 hover:from-[#4CD6B4] hover:to-[#34D399] text-white"
+            )}
             dir={isContentRTL ? 'rtl' : 'ltr'}
           >
-            {messageRole === 'assistant' && isTyping ? (
+            {role === 'assistant' && isTyping ? (
               <div className={`flex items-center gap-2 ${flexDirection}`}>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce [animation-delay:-0.3s]"></div>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce [animation-delay:-0.15s]"></div>
                 <div className="h-2 w-2 rounded-full bg-[#4CD6B4] animate-bounce"></div>
               </div>
-            ) : messageRole === 'assistant' ? (
+            ) : role === 'assistant' ? (
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 className={`prose prose-invert max-w-none break-words ${textAlignment}`}
@@ -97,8 +97,8 @@ const Message = ({ messageRole, content, timestamp, searchResults, userProfile, 
             )}
           </div>
 
-          {messageRole === 'assistant' && searchResults && searchResults.length > 0 && (
-            <div className="space-y-2 bg-[#1a1a1a] rounded-lg p-4 border border-white/10">
+          {role === 'assistant' && searchResults && searchResults.length > 0 && (
+            <div className="space-y-2 bg-white/[0.03] backdrop-blur-xl rounded-xl p-4 border border-white/10 hover:bg-white/[0.05] hover:border-white/20 transition-all duration-300">
               <div className={`flex items-center gap-2 text-[#4CD6B4] ${isSourcesRTL ? 'flex-row-reverse' : 'flex-row'} mb-3`}>
                 <Link2 className="h-4 w-4" />
                 <span className="text-sm font-medium" dir="auto">
@@ -159,8 +159,8 @@ const Message = ({ messageRole, content, timestamp, searchResults, userProfile, 
           )}
 
           {timestamp && (
-            <div className={`flex items-center gap-1 text-xs text-gray-400 ${
-              messageRole === 'assistant' ? 'justify-start' : 'justify-end'
+            <div className={`flex items-center gap-1 text-xs text-gray-400/60 ${
+              role === 'assistant' ? 'justify-start' : 'justify-end'
             }`}>
               <Clock className="h-3 w-3" />
               <span>{new Date(timestamp).toLocaleString(isContentRTL ? 'ar-MA' : 'en-US')}</span>

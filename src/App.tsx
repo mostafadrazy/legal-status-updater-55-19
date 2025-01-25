@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ChatHistoryProvider } from "./contexts/ChatHistoryContext";
 import { useAuth } from "./contexts/AuthContext";
 import { BackToTop } from "./components/BackToTop";
 import Index from "./pages/Index";
@@ -51,27 +52,29 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<DashboardRoute />} />
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/case-tracking" element={<CaseTracking />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/signup" element={<Signup view="sign_up" />} />
-            <Route path="/auth/callback" element={<Callback />} />
+        <ChatHistoryProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<DashboardRoute />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/case-tracking" element={<CaseTracking />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/signup" element={<Signup view="sign_up" />} />
+              <Route path="/auth/callback" element={<Callback />} />
 
-            {/* Protected routes */}
-            <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-            <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
-          </Routes>
-          <BackToTop />
-        </TooltipProvider>
+              {/* Protected routes */}
+              <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+              <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
+            </Routes>
+            <BackToTop />
+          </TooltipProvider>
+        </ChatHistoryProvider>
       </LanguageProvider>
     </AuthProvider>
   </QueryClientProvider>

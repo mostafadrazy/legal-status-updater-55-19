@@ -2,55 +2,33 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
-import { Bot, Globe } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
+import { Bot, Globe, Plus, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import TypingIndicator from "./TypingIndicator";
 import Message from "./Message";
 import ChatInput from "./ChatInput";
-import { searchHandler } from "@/api/search";
-import { geminiHandler } from "@/api/gemini";
-
-interface Message {
-  role: 'assistant' | 'user';
-  content: string;
-  timestamp?: string;
-  searchResults?: any[];
-}
-
-interface UserProfile {
-  full_name?: string | null;
-  avatar_url?: string | null;
-}
+import { useChatLogic } from "./ChatLogic";
+import { useChatHistory } from "@/contexts/ChatHistoryContext";
+import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 export function LegalAssistant() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState('');
-  const [searchEnabled, setSearchEnabled] = useState(false); // Search disabled by default
+  const [searchEnabled, setSearchEnabled] = useState(false);
   const { session, user } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isListening, setIsListening] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [progress, setProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Simulate progress for long operations
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isLoading) {
-      setProgress(0);
-      interval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 10, 90));
-      }, 300);
-    }
-    return () => clearInterval(interval);
-  }, [isLoading]);
+  const { messages, startNewChat } = useChatHistory();
+  
+  const {
+    input,
+    setInput,
+    isLoading,
+    isTyping,
+    handleSubmit
+  } = useChatLogic();
   
   const {
     transcript,
@@ -63,6 +41,7 @@ export function LegalAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Scroll to bottom when messages change or when AI is typing
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
@@ -71,11 +50,9 @@ export function LegalAssistant() {
     if (transcript) {
       setInput(transcript);
     }
-  }, [transcript]);
+  }, [transcript, setInput]);
 
   useEffect(() => {
-    setSessionId(uuidv4());
-    
     const fetchUserProfile = async () => {
       if (!user?.id) return;
       
@@ -98,7 +75,11 @@ export function LegalAssistant() {
 
   const handleMicClick = () => {
     if (!browserSupportsSpeechRecognition) {
-      toast.error("عذراً، متصفحك لا يدعم خاصية التحدث");
+      toast({
+        title: "خطأ",
+        description: "عذراً، متصفحك لا يدعم خاصية التحدث",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -112,232 +93,131 @@ export function LegalAssistant() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
+  const handleChatSubmit = (e: React.FormEvent) => {
     if (listening) {
       SpeechRecognition.stopListening();
       setIsListening(false);
     }
+    handleSubmit(e, searchEnabled);
+  };
 
-    const userMessage = input.trim();
-    setInput('');
-    resetTranscript();
-    
-    const newUserMessage = { 
-      role: 'user' as const, 
-      content: userMessage,
-      timestamp: new Date().toISOString()
-    };
-    
-    setMessages(prev => [...prev, newUserMessage]);
-    setIsLoading(true);
-    setIsTyping(true);
-
+  const handleNewChat = async () => {
     try {
-      // Get previous context if available
-      const previousMessage = messages.length >= 2 ? {
-        query: messages[messages.length - 2].content,
-        answer: messages[messages.length - 1].content
-      } : undefined;
-
-      let response;
-      const searchResults = searchEnabled ? await searchHandler(userMessage) : [];
-      response = await geminiHandler(userMessage, searchResults, previousMessage);
-
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: response,
-        timestamp: new Date().toISOString(),
-        searchResults: searchResults
-      };
-      setMessages(prev => [...prev, assistantMessage]);
-      
-    } catch (error: any) {
-      console.error('Error in handleSubmit:', error);
-      
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: `عذراً، حدث خطأ: ${error.message}`,
-        timestamp: new Date().toISOString()
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
-      
-      toast.error('عذراً، حدث خطأ أثناء معالجة طلبك', {
-        id: 'error-toast',
-        description: error.message
+      await startNewChat();
+      toast({
+        title: "تم إنشاء محادثة جديدة",
+        description: "يمكنك الآن بدء محادثة جديدة",
       });
-    } finally {
-      setIsLoading(false);
-      setIsTyping(false);
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء إنشاء محادثة جديدة",
+        variant: "destructive"
+      });
     }
   };
 
   return (
-    <Card
-      aria-label="المستشار القانوني"
-      role="region"
-      className="w-full h-full bg-gradient-to-br from-[#1a1a1a] via-[#0f0f0f] to-[#2a2a2a] border-0 flex flex-col overflow-hidden relative"
-      style={{ minHeight: 'calc(100vh - 4rem)' }}
-    >
-      {/* Animated background particles */}
-      <div className="absolute inset-0 z-0 opacity-10">
-        <div className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse" style={{ top: '15%', left: '20%' }} />
-        <div className="absolute w-1 h-1 bg-[#4CD6B4]/30 rounded-full animate-pulse" style={{ top: '30%', left: '70%' }} />
-      </div>
-
-      {/* Header Section */}
-      <div className="relative z-10 border-b border-white/10 bg-gradient-to-r from-[#1a1a1a]/80 to-[#2a2a2a]/80 backdrop-blur-sm">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#4CD6B4] to-[#2A9D8F] flex items-center justify-center">
-                <Bot className="h-6 w-6 text-white" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-[#4CD6B4] border-2 border-[#1a1a1a] flex items-center justify-center">
-                <span className="text-[8px] font-bold text-white">AI</span>
-              </div>
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">المستشار القانوني</h2>
-              <p className="text-xs text-[#4CD6B4] flex items-center gap-1">
-                <span className="h-2 w-2 bg-[#4CD6B4] rounded-full animate-pulse"></span>
-                جاهز للمساعدة
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-white/60">
-              الجلسة: <span className="font-mono">#{sessionId.slice(0,6)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ScrollArea
-        role="log"
-        aria-live="polite"
-        aria-relevant="additions"
-        aria-atomic="false"
-        className="flex-1 px-6 py-8"
-      >
-        <div role="list" className="space-y-6 max-w-4xl mx-auto">
+    <Card className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] border-0 flex flex-col relative overflow-hidden">
+      {/* Background gradient effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 via-transparent to-[#9b87f5]/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.015] pointer-events-none" />
+      
+      <ScrollArea className="flex-1 px-4 py-6 relative">
+        <div className="space-y-6 max-w-4xl mx-auto">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
-              <div className="h-16 w-16 rounded-full bg-[#2A9D8F] flex items-center justify-center">
-                <Bot className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-white">المستشار القانوني</h3>
-              <p className="text-sm text-gray-400 max-w-md">
-                مرحباً بك في المستشار القانوني. كيف يمكنني مساعدتك اليوم؟
-              </p>
-            </div>
-          )}
-          
-          {messages.map((message, index) => (
-            <motion.div
-              role="listitem"
-              aria-posinset={index + 1}
-              aria-setsize={messages.length}
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className={cn(
-                "w-full",
-                message.role === 'assistant' ? 'pr-10' : 'pl-10'
-              )}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6"
             >
-              <Message
-                key={index}
-                messageRole={message.role}
-                content={message.content}
-                timestamp={message.timestamp}
-                searchResults={message.searchResults}
-                userProfile={userProfile}
-                isTyping={isTyping && index === messages.length - 1}
-                className={cn(
-                  "px-4 py-3",
-                  message.role === 'assistant'
-                    ? 'text-gray-800'
-                    : 'text-gray-800'
-                )}
-              />
+              <div className="relative">
+                <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#4CD6B4] to-[#34D399] flex items-center justify-center shadow-lg shadow-[#4CD6B4]/20">
+                  <Bot className="h-10 w-10 text-white" />
+                </div>
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute -top-2 -right-2"
+                >
+                  <Sparkles className="h-6 w-6 text-[#4CD6B4]" />
+                </motion.div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-bold text-white">المستشار القانوني</h3>
+                <p className="text-base text-gray-400 max-w-md leading-relaxed">
+                  مرحباً بك في المستشار القانوني. كيف يمكنني مساعدتك اليوم؟
+                </p>
+              </div>
             </motion.div>
-          ))}
-          <div ref={messagesEndRef} />
-          {isLoading && (
-            <div className="w-full max-w-4xl mx-auto mt-6">
-              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#4CD6B4] transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className="mt-2 text-xs text-[#4CD6B4] text-center">
-                جاري معالجة طلبك...
-              </div>
-            </div>
           )}
+          
+          <AnimatePresence mode="popLayout">
+            {messages.map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Message
+                  role={message.role}
+                  content={message.content}
+                  timestamp={message.timestamp}
+                  searchResults={message.searchResults}
+                  userProfile={userProfile}
+                  isTyping={isTyping && index === messages.length - 1}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
 
-      <div className="flex-shrink-0 border-t border-white/10 bg-gradient-to-r from-[#1a1a1a]/90 to-[#2a2a2a]/90 backdrop-blur-lg px-6 py-8">
-        <div className="flex items-center justify-end mb-3 px-4">
+      <div className="flex-shrink-0 border-t border-white/5 bg-gradient-to-b from-black/50 to-black/80 backdrop-blur-xl p-4">
+        <div className="flex items-center justify-end gap-2 mb-3 px-4">
+          <Button
+            onClick={handleNewChat}
+            className={cn(
+              "rounded-xl transition-all flex items-center gap-2 px-4 py-2 h-9",
+              "bg-gradient-to-r from-[#4CD6B4]/80 to-[#34D399]/80 hover:from-[#4CD6B4] hover:to-[#34D399]",
+              "text-white shadow-lg shadow-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/30",
+              "border border-white/10 hover:border-white/20"
+            )}
+          >
+            <Plus className="w-4 h-4" />
+            <span className="text-sm font-medium">محادثة جديدة</span>
+          </Button>
+          
           <button
             onClick={() => setSearchEnabled(!searchEnabled)}
             className={cn(
-              "rounded-full transition-all flex items-center gap-2 px-3 py-2 border h-9",
+              "rounded-xl transition-all flex items-center gap-2 px-4 py-2 h-9 border",
               searchEnabled
-                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4] hover:bg-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/10 focus:ring-2 focus:ring-[#4CD6B4] focus:ring-offset-2 focus:ring-offset-[#1a1a1a]"
-                : "bg-white/5 border-transparent text-white/40 hover:text-white hover:bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#1a1a1a]",
-              "hover:shadow-md hover:scale-[1.02] active:scale-95 transition-transform duration-200 ease-in-out"
+                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4]"
+                : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
             )}
-            aria-label={searchEnabled ? "تعطيل البحث" : "تفعيل البحث"}
-            aria-pressed={searchEnabled}
           >
-            <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
-              <motion.div
-                animate={{
-                  rotate: searchEnabled ? 180 : 0,
-                  scale: searchEnabled ? 1.1 : 1,
-                }}
-                whileHover={{
-                  rotate: searchEnabled ? 180 : 15,
-                  scale: 1.1,
-                  transition: {
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 10,
-                  },
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 25,
-                }}
-              >
-                <Globe
-                  className={cn(
-                    "w-4 h-4",
-                    searchEnabled
-                      ? "text-[#4CD6B4]"
-                      : "text-inherit"
-                  )}
-                />
-              </motion.div>
-            </div>
+            <motion.div
+              animate={{
+                rotate: searchEnabled ? 180 : 0,
+                scale: searchEnabled ? 1.1 : 1,
+              }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            >
+              <Globe className="w-4 h-4" />
+            </motion.div>
             <AnimatePresence>
               {searchEnabled && (
                 <motion.span
                   initial={{ width: 0, opacity: 0 }}
-                  animate={{
-                    width: "auto",
-                    opacity: 1,
-                  }}
+                  animate={{ width: "auto", opacity: 1 }}
                   exit={{ width: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-sm overflow-hidden whitespace-nowrap text-[#4CD6B4] flex-shrink-0"
+                  className="text-sm overflow-hidden whitespace-nowrap"
                 >
                   البحث + الذكاء الاصطناعي
                 </motion.span>
@@ -348,16 +228,10 @@ export function LegalAssistant() {
         <ChatInput
           input={input}
           setInput={setInput}
-          handleSubmit={handleSubmit}
+          handleSubmit={handleChatSubmit}
           isLoading={isLoading}
           isListening={isListening}
           handleMicClick={handleMicClick}
-          className="bg-gradient-to-r from-[#1a1a1a]/90 to-[#2a2a2a]/90 backdrop-blur-lg border border-white/10 rounded-lg"
-          micButtonStyle={
-            isListening
-              ? 'animate-pulse bg-[#4CD6B4] text-white'
-              : 'bg-white/5 hover:bg-white/10'
-          }
         />
       </div>
     </Card>

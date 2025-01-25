@@ -1,22 +1,56 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { searchHandler } from './search';
 
-async function analyzeQuestion(query: string, apiKey: string): Promise<string[]> {
-  const prompt = `You are a search optimization expert. Analyze this question and generate 2-3 specific search queries that will help find the most relevant information. Focus on different aspects of the question.
+function detectLanguage(text: string): 'ar' | 'en' {
+  // Arabic Unicode range pattern
+  const arabicPattern = /[\u0600-\u06FF]/;
+  return arabicPattern.test(text) ? 'ar' : 'en';
+}
 
-Question: ${query}
+function shouldUseFullContext(query: string): boolean {
+  // Keywords that indicate we need more context
+  const fullContextKeywords = [
+    'before', 'previously', 'earlier', 'mentioned', 'said',
+    'قبل', 'سابقا', 'ذكرت', 'قلت', 'اشرت'
+  ];
+  
+  const lowercaseQuery = query.toLowerCase();
+  return fullContextKeywords.some(keyword => lowercaseQuery.includes(keyword.toLowerCase()));
+}
 
-Generate search queries that:
-1. cover different aspects of the question
-2. Use relevant keywords and terms
-3. Are specific enough to get accurate results
-4. Include any mentioned names, dates, or places
-5. Consider both recent and historical information if relevant
+async function understandContext(
+  query: string,
+  previousMessages?: { role: 'user' | 'assistant'; content: string }[]
+): Promise<string> {
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not set');
+  }
 
-Format your response as a simple list of queries, one per line. Do not include any other text.`;
+  const needsFullContext = shouldUseFullContext(query);
+  console.log('Query needs full context:', needsFullContext);
+
+  // Use either last 5 messages or just the last pair based on context needs
+  const context = previousMessages
+    ? previousMessages
+        .slice(needsFullContext ? -5 : -2)
+        .map(msg => `${msg.role}: ${msg.content}`)
+        .join('\n')
+    : '';
+
+  const contextPrompt = `
+${context ? `${needsFullContext ? 'Previous conversation' : 'Immediate context'}:\n${context}\n\n` : ''}
+Current question: ${query}
+
+${needsFullContext 
+  ? 'Analyze the conversation history and current question to generate a comprehensive search query.'
+  : 'Focus only on the immediate context and current question to generate a focused search query.'}
+Return ONLY the search query, nothing else.`;
+
+  console.log(`Understanding ${needsFullContext ? 'full' : 'immediate'} context and generating search query...`);
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: {
@@ -25,124 +59,126 @@ Format your response as a simple list of queries, one per line. Do not include a
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: prompt
+            text: contextPrompt
           }]
         }],
         generationConfig: {
-          temperature: 0.3,
-          topK: 20,
-          topP: 0.8,
-          maxOutputTokens: 256,
+          temperature: 0.1,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 100,
         }
       })
     }
   );
 
   if (!response.ok) {
-    throw new Error('Failed to analyze question');
+    throw new Error('Failed to understand context and generate search query');
   }
 
   const data = await response.json();
-  const queries = data.candidates[0].content.parts[0].text
-    .split('\n')
-    .filter(Boolean)
-    .map(q => q.trim());
-
-  return queries;
+  const searchQuery = data.candidates[0].content.parts[0].text.trim();
+  console.log('Generated search query:', searchQuery);
+  return searchQuery;
 }
 
-function detectLanguage(text: string): 'ar' | 'en' {
-  const arabicPattern = /[\u0600-\u06FF]/;
-  return arabicPattern.test(text) ? 'ar' : 'en';
+async function generateFinalResponse(
+  query: string,
+  searchResults: any[],
+  previousMessages?: { role: 'user' | 'assistant'; content: string }[]
+): Promise<string> {
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not set');
+  }
+
+  const isArabic = detectLanguage(query) === 'ar';
+  const needsFullContext = shouldUseFullContext(query);
+  
+  // Use either last 5 messages or just the last pair based on context needs
+  const contextToUse = previousMessages?.slice(needsFullContext ? -5 : -2) || [];
+  
+  const finalPrompt = `
+Question: ${query}
+${searchResults.length > 0 ? `\nRelevant information:\n${searchResults.map(r => r.snippet).join('\n')}` : ''}
+${contextToUse.length ? `\n${needsFullContext ? 'Conversation history' : 'Immediate context'}:\n${contextToUse.map(m => `${m.role}: ${m.content}`).join('\n')}` : ''}
+
+Based on the ${needsFullContext ? 'conversation history' : 'immediate context'} and search results above, provide a ${needsFullContext ? 'comprehensive' : 'focused'} response in ${isArabic ? 'Arabic' : 'English'} that:
+1. ${needsFullContext ? 'Addresses the question while considering the conversation history' : 'Directly addresses the current question'}
+2. ${needsFullContext ? 'Maintains continuity with the conversation history' : 'Maintains natural flow with the immediate context'}
+3. Incorporates relevant details from search results
+4. Provides accurate and helpful information
+${needsFullContext ? '5. Connects the response to previous context when relevant' : '5. Stays focused on the current topic without bringing up old context'}
+
+Important: Do not include or mention sources in your response. The sources will be handled separately.`;
+
+  console.log(`Generating ${needsFullContext ? 'comprehensive' : 'focused'} response based on ${needsFullContext ? 'conversation history' : 'immediate context'}...`);
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: finalPrompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.3,
+          topK: 20,
+          topP: 0.8,
+          maxOutputTokens: 800,
+        }
+      })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to generate final response');
+  }
+
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
 }
 
-export async function geminiHandler(query: string, searchResults: any[] = [], previousContext?: { query: string; answer: string }) {
+export async function geminiHandler(
+  query: string,
+  searchEnabled: boolean = false,
+  previousMessages?: { role: 'user' | 'assistant'; content: string }[]
+) {
   try {
+    console.log('Starting conversation processing...');
+    console.log('Input:', { query, searchEnabled, previousMessages });
+    
     const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
     if (!GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not set');
     }
 
-    const isArabic = /[\u0600-\u06FF]/.test(query);
+    let searchResults: any[] = [];
     
-    let promptText = '';
-    
-    if (searchResults.length > 0) {
-      const sources = searchResults
-        .map(result => `${result.title}\n${result.snippet}`)
-        .join('\n\n');
+    if (searchEnabled) {
+      // Step 1: Understand context and generate focused search query
+      const searchQuery = await understandContext(query, previousMessages);
+      console.log('Step 1 complete: Generated search query:', searchQuery);
 
-      promptText = isArabic 
-        ? `بناءً على نتائج البحث التالية، قدم إجابة واضحة ومباشرة على هذا السؤال: ${query}
-
-المعلومات المتوفرة:
-${sources}
-
-تعليمات مهمة:
-1. قدم إجابة مباشرة وواضحة
-2. لا تضع روابط في الإجابة
-3. تجنب الإشارة إلى المصادر في نص الإجابة
-4. اكتب بلغة سهلة ومفهومة`
-        : `Based on the following search results, provide a clear and direct answer to this question: ${query}\n\nContext:\n${sources}`;
-    } else {
-      promptText = isArabic
-        ? `قدم إجابة واضحة ومباشرة على هذا السؤال: ${query}
-
-تعليمات مهمة:
-1. قدم إجابة مباشرة وواضحة
-2. لا تضع روابط في الإجابة
-3. اكتب بلغة سهلة ومفهومة`
-        : `Provide a clear and direct answer to this question: ${query}`;
+      // Step 2: Perform search with the focused query
+      searchResults = await searchHandler(searchQuery);
+      console.log('Step 2 complete: Retrieved search results:', searchResults);
     }
 
-    if (previousContext) {
-      promptText = `Previous: ${previousContext.query}\nAnswer: ${previousContext.answer}\n\nCurrent: ${promptText}`;
-    }
+    // Step 3: Generate final response using appropriate context level
+    const finalResponse = await generateFinalResponse(query, searchResults, previousMessages);
+    console.log('Step 3 complete: Generated response');
 
-    promptText += isArabic ? '\n\nالرجاء الإجابة باللغة العربية.' : '\n\nPlease respond in English.';
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: promptText
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.3,
-            topK: 20,
-            topP: 0.8,
-            maxOutputTokens: 256,
-          }
-        })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to generate response');
-    }
-
-    const data = await response.json();
-    const answer = data.candidates[0].content.parts[0].text;
-
-    // Remove any URLs that might have been included in the response
-    const cleanAnswer = answer.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
-
-    if (searchResults.length > 0) {
-      const sourcesList = searchResults
-        .map(result => `- ${result.title}: ${result.link}`)
-        .join('\n');
-
-      return `${cleanAnswer}\n\n${isArabic ? 'المصادر' : 'Sources'}:\n${sourcesList}`;
-    }
-
-    return cleanAnswer;
+    return {
+      response: finalResponse,
+      searchResults: searchResults.length > 0 ? searchResults : undefined
+    };
   } catch (error: any) {
     console.error('Gemini API Error:', error);
     throw error;
