@@ -178,11 +178,11 @@ export function LegalAssistant() {
       </ScrollArea>
 
       <div className="flex-shrink-0 border-t border-white/5 bg-gradient-to-b from-black/50 to-black/80 backdrop-blur-xl p-4">
-        <div className="flex items-center justify-end gap-2 mb-3 px-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 mb-3 px-4">
           <Button
             onClick={handleNewChat}
             className={cn(
-              "rounded-xl transition-all flex items-center gap-2 px-4 py-2 h-9",
+              "rounded-xl transition-all flex items-center justify-center gap-2 px-4 py-2 h-9 w-full sm:w-auto",
               "bg-gradient-to-r from-[#4CD6B4]/80 to-[#34D399]/80 hover:from-[#4CD6B4] hover:to-[#34D399]",
               "text-white shadow-lg shadow-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/30",
               "border border-white/10 hover:border-white/20"
@@ -195,7 +195,7 @@ export function LegalAssistant() {
           <button
             onClick={() => setSearchEnabled(!searchEnabled)}
             className={cn(
-              "rounded-xl transition-all flex items-center gap-2 px-4 py-2 h-9 border",
+              "rounded-xl transition-all flex items-center justify-center gap-2 px-4 py-2 h-9 w-full sm:w-auto border",
               searchEnabled
                 ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4]"
                 : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
