@@ -17,7 +17,7 @@ export default function NextSession() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [startDate, setStartDate] = useState(() => {
     const today = new Date();
-    return startOfWeek(today, { weekStartsOn: 1 }); // Start from Monday
+    return startOfWeek(today, { weekStartsOn: 1 });
   });
   
   const isMobile = useIsMobile();
@@ -28,12 +28,7 @@ export default function NextSession() {
     queryKey: ['next-sessions', session?.user?.id, startDate],
     queryFn: async () => {
       try {
-        console.log('Fetching sessions for user:', session?.user?.id);
-        console.log('Start date:', startDate.toISOString());
-        console.log('End date:', addDays(startDate, 6).toISOString());
-
         if (!session?.user?.id) {
-          console.log('No user ID found, returning empty array');
           return [];
         }
 
@@ -61,39 +56,21 @@ export default function NextSession() {
           .lte('next_session_date', addDays(startDate, 6).toISOString())
           .order('next_session_date', { ascending: true });
 
-        if (fetchError) {
-          console.error('Error fetching sessions:', fetchError);
-          throw new Error(fetchError.message);
-        }
-
-        console.log('Fetched sessions:', data);
+        if (fetchError) throw fetchError;
         
-        const transformedData = data?.map(session => ({
+        return data?.map(session => ({
           ...session,
           court: session.cases?.court,
           case_type: session.cases?.case_type,
           client: session.cases?.client
         })) || [];
-        
-        return transformedData;
       } catch (error) {
         console.error('Error in query function:', error);
         throw error;
       }
     },
-    enabled: !!session?.user?.id,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    meta: {
-      errorMessage: 'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة مرة أخرى.'
-    },
-    gcTime: 0
+    enabled: !!session?.user?.id
   });
-
-  // Show error toast when query fails
-  if (error) {
-    toast.error('حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة مرة أخرى.');
-  }
 
   const handleNavigateWeek = (direction: 'prev' | 'next') => {
     setStartDate(currentDate => {
@@ -103,64 +80,72 @@ export default function NextSession() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A] relative overflow-hidden" dir="rtl">
-      {/* Animated background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 via-transparent to-transparent animate-pulse" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#4CD6B4]/10 via-transparent to-transparent blur-3xl" />
-      
+    <div className="min-h-screen flex bg-gradient-to-br from-[#111] to-[#1A1A1A]" dir="rtl">
       <main className={cn(
-        "flex-1 transition-all duration-300 ease-in-out relative z-10",
-        isMobile ? 'px-2 sm:px-4' : 'pr-64'
+        "flex-1 transition-all duration-300 ease-in-out",
+        isMobile ? "w-full" : "pr-64"
       )}>
-        <div className="p-3 md:p-8 max-w-7xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
-          {isMobile && (
-            <Button
-              variant="ghost"
-              className="text-white self-start p-2 rounded-lg mb-2 hover:bg-white/10 transition-colors"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          )}
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <div className="mb-6 flex items-center justify-between">
+            {isMobile && (
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
 
-          {/* Header Section */}
-          <div className="relative overflow-hidden rounded-xl md:rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#4CD6B4]/20 to-transparent opacity-50" />
-            <div className="relative bg-black/40 p-4 md:p-8 lg:p-12 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm">
-              <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                <div className="p-2 md:p-3 bg-[#4CD6B4]/20 rounded-lg md:rounded-xl">
-                  <CalendarIcon className="w-6 h-6 md:w-8 md:h-8 text-[#4CD6B4]" />
-                </div>
-                <div>
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 md:mb-3 gradient-text">الجلسات القادمة</h1>
-                  <p className="text-sm md:text-base lg:text-lg text-gray-400">عرض وإدارة مواعيد الجلسات القادمة</p>
+          <div className="space-y-6">
+            {/* Header Section */}
+            <div className="relative overflow-hidden rounded-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#4CD6B4]/20 to-transparent opacity-50" />
+              <div className="relative bg-black/40 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-[#4CD6B4]/20 rounded-xl">
+                    <CalendarIcon className="w-6 h-6 text-[#4CD6B4]" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-white mb-2 gradient-text">الجلسات القادمة</h1>
+                    <p className="text-gray-400">عرض وإدارة مواعيد الجلسات القادمة</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Calendar Controls */}
-          <div className="bg-black/40 p-3 md:p-6 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
-            <CalendarHeader 
-              startDate={startDate}
-              onNavigateWeek={handleNavigateWeek}
-            />
-          </div>
+            {/* Calendar Controls */}
+            <div className="bg-black/40 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
+              <CalendarHeader 
+                startDate={startDate}
+                onNavigateWeek={handleNavigateWeek}
+              />
+            </div>
 
-          {/* Calendar Grid */}
-          <div className="bg-black/40 p-3 md:p-6 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
-            <CalendarGrid
-              sessions={sessions}
-              isLoading={isLoading}
-              startDate={startDate}
-              error={error as Error}
-              onRetry={() => refetch()}
-            />
+            {/* Calendar Grid */}
+            <div className="bg-black/40 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
+              <CalendarGrid
+                sessions={sessions}
+                isLoading={isLoading}
+                startDate={startDate}
+                error={error as Error}
+                onRetry={() => refetch()}
+              />
+            </div>
           </div>
         </div>
       </main>
       
-      {(isSidebarOpen || !isMobile) && <Sidebar onClose={() => setIsSidebarOpen(false)} />}
+      {(isSidebarOpen || !isMobile) && (
+        <Sidebar 
+          onClose={() => setIsSidebarOpen(false)}
+          className={cn(
+            "transition-transform duration-300",
+            !isSidebarOpen && isMobile && "translate-x-full"
+          )}
+        />
+      )}
     </div>
   );
 }

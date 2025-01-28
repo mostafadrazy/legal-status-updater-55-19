@@ -29,7 +29,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protected route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuth();
   
@@ -39,7 +38,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Dashboard route that requires authentication
 const DashboardRoute = () => {
   const { session } = useAuth();
   if (!session) {
@@ -54,25 +52,27 @@ const App = () => (
       <LanguageProvider>
         <ChatHistoryProvider>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<DashboardRoute />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/case-tracking" element={<CaseTracking />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/signup" element={<Signup view="sign_up" />} />
-              <Route path="/auth/callback" element={<Callback />} />
+            <div className="min-h-screen bg-gradient-to-br from-[#111] to-[#1A1A1A]">
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<DashboardRoute />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/case-tracking" element={<CaseTracking />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/signup" element={<Signup view="sign_up" />} />
+                <Route path="/auth/callback" element={<Callback />} />
 
-              {/* Protected routes */}
-              <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
-              <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-              <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
-            </Routes>
-            <BackToTop />
+                {/* Protected routes */}
+                <Route path="/cases" element={<ProtectedRoute><Cases /></ProtectedRoute>} />
+                <Route path="/next-session" element={<ProtectedRoute><NextSession /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/legal-assistant" element={<ProtectedRoute><LegalAssistant /></ProtectedRoute>} />
+              </Routes>
+              <BackToTop />
+            </div>
           </TooltipProvider>
         </ChatHistoryProvider>
       </LanguageProvider>

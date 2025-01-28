@@ -83,7 +83,7 @@ export function SidebarProfile() {
 
   if (error) {
     return (
-      <div className="glass-card rounded-lg p-4">
+      <div className="p-4">
         <div className="text-center space-y-2">
           <p className="text-sm text-red-400">{error}</p>
           <Button
@@ -102,7 +102,7 @@ export function SidebarProfile() {
 
   if (isLoading) {
     return (
-      <div className="glass-card rounded-lg p-4">
+      <div className="p-4">
         <div className="flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-[#4CD6B4] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -111,24 +111,27 @@ export function SidebarProfile() {
   }
 
   return (
-    <div className="mt-auto glass-card rounded-lg p-4">
+    <div className="p-4 space-y-4">
       <div className="flex items-center gap-3">
-        <Avatar className="w-10 h-10 border-2 border-[#4CD6B4]/30">
+        <Avatar className="w-10 h-10 ring-2 ring-[#4CD6B4]/20 ring-offset-2 ring-offset-[#1A1A1A]">
           <AvatarImage src={profileData.avatar_url || undefined} className="object-cover" />
-          <AvatarFallback className="bg-[#4CD6B4]/10 text-[#4CD6B4]">
+          <AvatarFallback className="bg-gradient-to-br from-[#4CD6B4]/20 to-[#4CD6B4]/10 text-[#4CD6B4]">
             {profileData.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-white">{profileData.full_name || 'مستخدم'}</span>
-          <span className="text-xs text-[#4CD6B4]">محامي</span>
+          <span className="text-[15px] font-medium text-white/90">{profileData.full_name || 'مستخدم'}</span>
+          <span className="text-sm text-[#4CD6B4]/80 font-medium">محامي</span>
         </div>
       </div>
+      
       <button
         onClick={handleSignOut}
-        className="w-full flex items-center gap-3 px-3 py-2 mt-4 rounded-lg text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm hover:backdrop-blur-md"
+        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-red-400 
+                 hover:text-red-300 hover:bg-red-400/10
+                 rounded-md transition-all duration-300 text-sm font-medium"
       >
-        <LogOut className="w-5 h-5" />
+        <LogOut className="w-4 h-4" />
         <span>تسجيل الخروج</span>
       </button>
     </div>
