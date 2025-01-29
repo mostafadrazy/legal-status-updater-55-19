@@ -49,10 +49,11 @@ const Index = () => {
           )}
           
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-            <div className="w-full md:w-auto">
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+            <div className="w-full md:w-auto relative group">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-[#4CD6B4] to-white bg-clip-text text-transparent pb-2 animate-fade-in">
                 القضايا الحديثة
               </h1>
+              <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-[#4CD6B4]/50 via-white/50 to-[#4CD6B4]/50 transition-all duration-700 absolute bottom-0 left-0 rounded-full"></div>
             </div>
             <Button 
               className="glass-button w-full md:w-auto"

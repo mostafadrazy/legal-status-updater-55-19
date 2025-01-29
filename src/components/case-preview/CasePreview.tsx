@@ -3,6 +3,7 @@ import { StatusBadge } from "../StatusBadge";
 import { toast } from "sonner";
 import { useEffect, useRef } from "react";
 import VanillaTilt from "vanilla-tilt";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CasePreviewProps {
   title: string;
@@ -24,10 +25,11 @@ export function CasePreview({
   onClick
 }: CasePreviewProps) {
   const tiltRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const tiltNode = tiltRef.current;
-    if (tiltNode) {
+    if (tiltNode && !isMobile) {
       VanillaTilt.init(tiltNode, {
         max: 15,
         speed: 400,
@@ -38,11 +40,11 @@ export function CasePreview({
       });
     }
     return () => {
-      if (tiltNode) {
+      if (tiltNode && !isMobile) {
         (tiltNode as any)._vanilla?.destroy();
       }
     };
-  }, []);
+  }, [isMobile]);
 
   const handleCopyCode = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -58,7 +60,7 @@ export function CasePreview({
       onClick={onClick}
       className="glass-card relative p-6 rounded-xl cursor-pointer group animate-fade-in transform-gpu"
     >
-      <div className="bg-gradient-overlay" />
+      <div className={`absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 to-transparent rounded-xl -z-10 ${isMobile ? 'opacity-50' : ''}`} />
       <div className="relative">
         <div className="flex items-start justify-between mb-4">
           <div>
