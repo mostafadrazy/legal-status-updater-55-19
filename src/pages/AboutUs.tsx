@@ -106,7 +106,7 @@ const AboutUs = () => {
                   <div className="aspect-square rounded-[2rem] overflow-hidden transform transition-transform duration-500 group-hover:scale-[1.02]">
                     <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/30 to-[#4CD6B4]/10 animate-pulse" />
                     <img 
-                      src="/lovable-uploads/a9235b75-2871-4b7a-8e8f-c14daf378a79.png"
+                      src="/lovable-uploads/6cf1cec0-9514-445c-a878-610627864d8b.png"
                       alt="Mustapha Eddarrazy"
                       className="w-full h-full object-cover object-center relative z-10"
                     />
