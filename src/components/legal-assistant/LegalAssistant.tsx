@@ -118,37 +118,92 @@ export function LegalAssistant() {
   };
 
   return (
-    <Card className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] border-0 flex flex-col relative overflow-hidden">
-      {/* Background gradient effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#4CD6B4]/5 via-transparent to-[#9b87f5]/5 pointer-events-none" />
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.015] pointer-events-none" />
+    <div className="w-full h-full flex flex-col relative overflow-hidden">
+      {/* Modern Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#111] to-[#1a1a1a]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(76,214,180,0.1),transparent_50%)]" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(76,214,180,0.02)_50%,transparent_75%)] bg-[length:20px_20px]" />
       
-      <ScrollArea className="flex-1 px-4 py-6 relative">
-        <div className="space-y-6 max-w-4xl mx-auto">
+      {/* Header Section */}
+      <div className="flex-shrink-0 p-6 border-b border-white/10 bg-gradient-to-r from-black/20 to-transparent backdrop-blur-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-[#4CD6B4] to-[#34D399] flex items-center justify-center shadow-lg">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-black"></div>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">المستشار القانوني الذكي</h2>
+              <p className="text-sm text-gray-400">متاح الآن</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handleNewChat}
+              className="rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all duration-200"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              محادثة جديدة
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Chat Area */}
+      <ScrollArea className="flex-1 relative">
+        <div className="p-6 space-y-6 max-w-4xl mx-auto">
           {messages.length === 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6"
+              transition={{ duration: 0.6 }}
+              className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8"
             >
               <div className="relative">
-                <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#4CD6B4] to-[#34D399] flex items-center justify-center shadow-lg shadow-[#4CD6B4]/20">
-                  <Bot className="h-10 w-10 text-white" />
+                <div className="h-24 w-24 rounded-3xl bg-gradient-to-br from-[#4CD6B4] to-[#34D399] flex items-center justify-center shadow-2xl shadow-[#4CD6B4]/30">
+                  <Bot className="h-12 w-12 text-white" />
                 </div>
                 <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  animate={{ 
+                    rotate: 360,
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                    scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                  }}
                   className="absolute -top-2 -right-2"
                 >
                   <Sparkles className="h-6 w-6 text-[#4CD6B4]" />
                 </motion.div>
               </div>
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-white">المستشار القانوني</h3>
-                <p className="text-base text-gray-400 max-w-md leading-relaxed">
-                  مرحباً بك في المستشار القانوني. كيف يمكنني مساعدتك اليوم؟
+              
+              <div className="space-y-4">
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-white to-[#4CD6B4] bg-clip-text text-transparent">
+                  مرحباً بك في المستشار القانوني
+                </h3>
+                <p className="text-lg text-gray-300 max-w-lg leading-relaxed">
+                  أنا هنا لمساعدتك في جميع استفساراتك القانونية. يمكنك طرح أي سؤال وسأقدم لك الإجابة المناسبة
                 </p>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
+                  <h4 className="font-semibold text-white mb-2">صياغة العقود</h4>
+                  <p className="text-sm text-gray-400">ساعدني في صياغة عقد</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
+                  <h4 className="font-semibold text-white mb-2">الاستشارات القانونية</h4>
+                  <p className="text-sm text-gray-400">أحتاج استشارة قانونية</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
+                  <h4 className="font-semibold text-white mb-2">تحليل الوثائق</h4>
+                  <p className="text-sm text-gray-400">حلل هذه الوثيقة القانونية</p>
+                </div>
               </div>
             </motion.div>
           )}
@@ -160,7 +215,7 @@ export function LegalAssistant() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <Message
                   role={message.role}
@@ -177,54 +232,8 @@ export function LegalAssistant() {
         </div>
       </ScrollArea>
 
-      <div className="flex-shrink-0 border-t border-white/5 bg-gradient-to-b from-black/50 to-black/80 backdrop-blur-xl p-4">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 mb-3 px-4">
-          <Button
-            onClick={handleNewChat}
-            className={cn(
-              "rounded-xl transition-all flex items-center justify-center gap-2 px-4 py-2 h-9 w-full sm:w-auto",
-              "bg-gradient-to-r from-[#4CD6B4]/80 to-[#34D399]/80 hover:from-[#4CD6B4] hover:to-[#34D399]",
-              "text-white shadow-lg shadow-[#4CD6B4]/20 hover:shadow-[#4CD6B4]/30",
-              "border border-white/10 hover:border-white/20"
-            )}
-          >
-            <Plus className="w-4 h-4" />
-            <span className="text-sm font-medium">محادثة جديدة</span>
-          </Button>
-          
-          <button
-            onClick={() => setSearchEnabled(!searchEnabled)}
-            className={cn(
-              "rounded-xl transition-all flex items-center justify-center gap-2 px-4 py-2 h-9 w-full sm:w-auto border",
-              searchEnabled
-                ? "bg-[#4CD6B4]/10 border-[#4CD6B4] text-[#4CD6B4]"
-                : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
-            )}
-          >
-            <motion.div
-              animate={{
-                rotate: searchEnabled ? 180 : 0,
-                scale: searchEnabled ? 1.1 : 1,
-              }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            >
-              <Globe className="w-4 h-4" />
-            </motion.div>
-            <AnimatePresence>
-              {searchEnabled && (
-                <motion.span
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "auto", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-sm overflow-hidden whitespace-nowrap"
-                >
-                  البحث + الذكاء الاصطناعي
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
-        </div>
+      {/* Input Section */}
+      <div className="flex-shrink-0 border-t border-white/10 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-xl p-6">
         <ChatInput
           input={input}
           setInput={setInput}
@@ -232,8 +241,10 @@ export function LegalAssistant() {
           isLoading={isLoading}
           isListening={isListening}
           handleMicClick={handleMicClick}
+          searchEnabled={searchEnabled}
+          setSearchEnabled={setSearchEnabled}
         />
       </div>
-    </Card>
+    </div>
   );
 }
